@@ -1,0 +1,42 @@
+.blue {
+    color: blue;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
+
+#maincontent{
+background-color: white;
+height: 40vh;
+width: 100%;
+padding:10px; 
+
+
+}
+
+
+
+#maincontent1{
+background-color: white;
+height: 80vh;
+width: 100%;
+padding:10px; 
+
+
+}
+
+
+#page-selection{
+background-color: white;
+height: 80px;
+width: 100%;
+padding:10px; 
+
+
+}

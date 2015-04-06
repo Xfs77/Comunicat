@@ -1,0 +1,27 @@
+@(usuariForm: Form[Comunitat], pare:String)
+@import helper._
+@import helper.twitterBootstrap._
+@import play.i18n.Messages
+
+
+@main("Formulari Comunitats") {
+  
+  
+  <h2>@Messages.get("formulari_comunitats")</h2>
+  @helper.form(action = routes.Comunitats.guardarComunitat(pare),'enctype -> "multipart/form-data") {
+  <fieldset>
+  @helper.inputText(usuariForm("nif"), '_label -> "DNI",  'class -> "editable")
+  @helper.inputText(usuariForm("nom"),'_label -> Messages.get("Name"))
+  @helper.inputText(usuariForm("cognom"),'_label -> Messages.get("surname"))
+  @helper.inputText(usuariForm("email"),'_label -> Messages.get("Email"))
+  @helper.inputText(usuariForm("password"),'_label -> Messages.get("Password"))
+  @helper.inputFile(usuariForm("curriculum"), '_label->"Curriculum")
+  </fieldset>
+  <input type="submit" class="btn btn-success" value=@Messages.get("Save")>
+  <a class="btn btn-danger" href="@routes.Usuaris.llistarUsuaris(1)">@Messages.get("Cancel")</a>
+    
+    
+    }
+    
+    
+}
