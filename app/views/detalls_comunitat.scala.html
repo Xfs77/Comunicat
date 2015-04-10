@@ -1,4 +1,4 @@
-@(usuariForm: Form[Comunitat], pare:String)
+@(comunitatForm: Form[Comunitat], pare:models.Comunitat)
 @import helper._
 @import helper.twitterBootstrap._
 @import play.i18n.Messages
@@ -10,15 +10,20 @@
   <h2>@Messages.get("formulari_comunitats")</h2>
   @helper.form(action = routes.Comunitats.guardarComunitat(pare),'enctype -> "multipart/form-data") {
   <fieldset>
-  @helper.inputText(usuariForm("nif"), '_label -> "DNI",  'class -> "editable")
-  @helper.inputText(usuariForm("nom"),'_label -> Messages.get("Name"))
-  @helper.inputText(usuariForm("cognom"),'_label -> Messages.get("surname"))
-  @helper.inputText(usuariForm("email"),'_label -> Messages.get("Email"))
-  @helper.inputText(usuariForm("password"),'_label -> Messages.get("Password"))
-  @helper.inputFile(usuariForm("curriculum"), '_label->"Curriculum")
+  @if(comunitatForm("nif").value==null){
+  	@helper.inputText(comunitatForm("nif"), '_label -> Messages.get("nif"))
+  } else {
+  	@helper.inputText(comunitatForm("nif"), '_label -> Messages.get("nif"),   'readonly -> "readonly")
+  }
+  @helper.inputText(comunitatForm("nom"),'_label -> Messages.get("nom"))
+  @helper.inputText(comunitatForm("adreca"),'_label -> Messages.get("adreca"))
+  @helper.inputText(comunitatForm("cp"),'_label -> Messages.get("cp"))
+  @helper.inputText(comunitatForm("poblacio"),'_label -> Messages.get("poblacio"))
+  @helper.inputText(comunitatForm("coeficient"),'_label -> Messages.get("coeficient"))
+  
   </fieldset>
   <input type="submit" class="btn btn-success" value=@Messages.get("Save")>
-  <a class="btn btn-danger" href="@routes.Usuaris.llistarUsuaris(1)">@Messages.get("Cancel")</a>
+  <a class="btn btn-danger" href="@routes.Comunitats.llistarSubComunitats(pare,1)">@Messages.get("Cancel")</a>
     
     
     }
