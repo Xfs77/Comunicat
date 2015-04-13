@@ -1,0 +1,83 @@
+@(comunitats:List[Comunitat], page:Page, pare:models.Comunitat)
+@import play.i18n.Messages
+@main(Messages.get("Comunitats")) {
+
+ <div>
+    <div>
+<h2>@Messages.get("Comunitats")</h2>
+
+
+
+    <script>
+     function del(urlToDelete) {
+        $.ajax({
+          url: urlToDelete,
+          type: 'DELETE',
+          success: function(results) {
+            // Refresh the page
+            location.reload();
+          }
+        });
+      }
+   </script>
+
+
+   <table class="table table-striped">
+    <thead>
+      <tr>
+      	<th>@Messages.get("nif")</th>
+        <th>@Messages.get("nom")</th>
+        <th>@Messages.get("adreca")</th>
+        <th>@Messages.get("cp")</th>
+        <th>@Messages.get("poblacio")</th>
+        <th>@Messages.get("coeficient")</th>
+        <th>@Messages.get("opcions")</th>
+        
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    @for( comunitat <- comunitats) {
+
+      <tr>
+        <td>@comunitat.nif</td>
+        <td>@comunitat.nom</td>
+        <td>@comunitat.adreca</td>
+        <td>@comunitat.cp</td>
+        <td>@comunitat.poblacio</td>
+        <td>@comunitat.coeficient</td>
+        <td>
+        <a href="@routes.Comunitats.llistarSubComunitats(comunitat,1)"><i class="glyphicon glyphicon-search"></i>&nbsp</a>
+        <a href="@routes.Comunitats.detallComunitat(comunitat)"><i class="glyphicon glyphicon-pencil"></i>&nbsp </a> 
+        <a onclick="javascript:del('@routes.Comunitats.borrarComunitat(comunitat)')"><i class="glyphicon glyphicon-trash"></i>&nbsp</a> 
+        <a href=""><i class="glyphicon glyphicon-tower"></i>&nbsp</a> 
+        <a href=""><i class="glyphicon glyphicon-earphone"></i>&nbsp</a> 
+        </td>
+     </tr>
+      }
+    </tbody>
+   </table>
+  @if((comunitats.isEmpty && pare.nif=="arrel" )|| (pare.nif!="arrel")){
+  <a class="btn btn-primary" href="@routes.Comunitats.novaComunitat(pare)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>@Messages.get("registre")</a>
+  }
+  	@if(pare.pare!=null){
+     <a class="btn btn-primary" href="@routes.Comunitats.llistarSubComunitats(pare.pare)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>@Messages.get("back")</a>
+  }
+   <div id="page-selection"></div>
+    <script>
+        // init bootpag
+        $('#page-selection').bootpag({
+            total: @page.totalPages,
+            @if(pare!=null) {
+            	href: "?pare=@pare.nif&page={{number}}"
+            } else{
+            	href: "?pare=null&page={{number}}"
+
+            }
+        	
+        }).on("page", function(event, /* page number here */ num){
+        });
+    </script>
+ 
+}

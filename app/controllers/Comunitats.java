@@ -24,41 +24,49 @@ import com.google.common.io.Files;
 import play.mvc.Http.MultipartFormData;
 import play.db.jpa.Transactional;
 import views.html.*;
+import org.hibernate.exception.SQLGrammarException;
+
 
 //@Security.Authenticated(Secured.class)
 public class Comunitats extends Controller {
 
-	private static Form<Comunitat> comunitatForm = Form
-			.form(Comunitat.class);
+	private static Form<Comunitat> comunitatForm = Form.form(Comunitat.class);
 
-	
 	public static Result novaComunitat(Comunitat pare) {
 		Comunitat c = new Comunitat(pare);
 		comunitatForm.fill(c);
 		return ok(detalls_comunitat.render(comunitatForm, pare));
 	}
-	
-	@Transactional(readOnly=true)
-    public static Result detallComunitat(Comunitat comunitat) {
-		 Form<Comunitat> filledForm = comunitatForm.fill(comunitat);
+
+	@Transactional(readOnly = true)
+	public static Result detallComunitat(Comunitat comunitat) {
+		Form<Comunitat> filledForm = comunitatForm.fill(comunitat);
 		return ok(detalls_comunitat.render(filledForm, comunitat.pare));
-    }
-	
-	@Transactional(readOnly=true)
-    public static Result llistarSubComunitats(Comunitat pare,int page) {
-		Page p=Comunitat.llistarSubComunitats(pare, page) ;
-		List l=p.getList();
-		return ok(llista_comunitats.render(l,p, pare));
-    }
+	}
+
+	@Transactional(readOnly = true)
+	public static Result llistarSubComunitats(Comunitat pare, int page) {
+		try{
+		Page p = Comunitat.llistarSubComunitats(pare, page);
+		List l = p.getList();
+		return ok(llista_comunitats.render(l, p, pare));
+		}
+		catch (Exception e){
+			flash("error", Messages.get("constraint.SQL"));
+			
+		}
+		return redirect(null);
+	}
 
 	@Transactional
 	public static Result borrarComunitat(Comunitat comunitat) {
 		if (comunitat == null) {
 			return notFound(String.format("La Comunitat %s no existeix.",
-					comunitat));
+					comunitat.nom));
 		}
 		Comunitat.borrarComunitat(comunitat);
-		return redirect(routes.Comunitats.llistarSubComunitats(comunitat.pare, 1));
+		return redirect(routes.Comunitats.llistarSubComunitats(comunitat.pare,
+				1));
 	}
 
 	@Transactional
@@ -71,7 +79,7 @@ public class Comunitats extends Controller {
 			return badRequest(detalls_comunitat.render(boundForm, pare));
 		} else {
 			Comunitat comunitat = boundForm.get();
-			comunitat.pare=pare;
+			comunitat.pare = pare;
 			comunitat.guardarComunitat();
 			flash("success", String.format(
 					"La comunitat %s s'ha registrat correctament",

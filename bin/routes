@@ -1,0 +1,18 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+#Comunitat
+
+GET  /subcomunitats/:pare	controllers.Comunitats.llistarSubComunitats(pare:models.Comunitat,page: Int ?=1 )
+GET  /comunitats/nova/:pare	controllers.Comunitats.novaComunitat(pare:models.Comunitat)
+GET	/comunitats/:comunitat  	controllers.Comunitats.detallComunitat(comunitat: models.Comunitat)
+POST /subcomunitats/:pare    	controllers.Comunitats.guardarComunitat(pare:models.Comunitat)
+DELETE	/comunitats/borrar/:comunitat           controllers.Comunitats.borrarComunitat(comunitat: models.Comunitat)
+
