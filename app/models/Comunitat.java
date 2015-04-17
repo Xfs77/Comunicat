@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -102,18 +103,23 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "president")
 	public Comunitat president;
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "nif")
+	private Set<Element> elements;
 
 	public Comunitat() {
 
 	}
 
 	public Comunitat(Comunitat pare) {
-		this.pare = pare;
+		super();
+		this.pare=pare;
 	}
+	
+	
 
-	public Comunitat(String nif, String nom, String adreca, String cp,
-			String poblacio, float coeficient, Comunitat pare,
-			Comunitat president) {
+	public Comunitat(String nif, String nom, String adreca, String cp, String poblacio, float coeficient,
+			Comunitat pare, Comunitat president, Set<Element> elements) {
 		super();
 		this.nif = nif;
 		this.nom = nom;
@@ -123,6 +129,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		this.coeficient = coeficient;
 		this.pare = pare;
 		this.president = president;
+		this.elements = elements;
 	}
 
 	public static Page llistarComunitats(int page) {
@@ -147,7 +154,6 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 	}
 
 	public void guardarComunitat() {
-		Comunitat j = this;
 		JPA.em().merge(this);
 
 	}
@@ -169,6 +175,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		for (Comunitat candidate : comunitats) {
 			if (candidate.nif.toLowerCase().contains(id.toLowerCase())) {
 				result = candidate;
+				
 			}
 		}
 		return result;

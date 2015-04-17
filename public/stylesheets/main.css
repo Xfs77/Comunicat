@@ -10,10 +10,39 @@
     color: green;
 }
 
+body {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	background: url("../image/background.jpg") no-repeat fixed center ; 
+	
+
+}
+
+
+
+   ul.footer{
+            margin-top:10px;
+          }
+
+         ul.footer p{
+          color:#FFFFFF;
+          }
+
+
+       #footer{
+
+        bottom: 0px;
+        height: 80px;
+        left: 10;
+        position: absolute;
+        right: 10;
+        
+       }
+
 
 #maincontent{
 background-color: white;
-height: 40vh;
+height: 80%;
 width: 100%;
 padding:10px; 
 

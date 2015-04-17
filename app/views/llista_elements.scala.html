@@ -1,0 +1,43 @@
+@(elements:List[Element], page:Page, comunitat:models.Comunitat)
+@import play.i18n.Messages
+@main(Messages.get("elements")) {
+
+ <div id="maincontent" >
+<h2 class="titol">@Messages.get("elements")</h2>
+
+
+
+
+
+   <table class="table table-striped">
+    <thead>
+      <tr>
+      	<th>@Messages.get("codi")</th>
+        <th>@Messages.get("descripcio")</th>
+        <th class="text-right">@Messages.get("coeficient")</th>
+        <th  class="text-center">@Messages.get("opcions")</th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    @for( element <- elements) {
+
+      <tr>
+        <td>@element.codi</td>
+        <td>@element.descripcio</td>
+        <td  class="text-right">@element.coeficient</td>
+        <td  class="text-center">
+        <a href="@routes.Comunitats.detallElement(element)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_element")"></i>&nbsp</a>
+        <a onclick="javascript:del('@routes.Comunitats.borrarElement(element)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_element")"></i>&nbsp</a> 
+        </td>
+     </tr>
+      }
+    </tbody>
+          
+   </table>
+  
+   
+  }
+   
+   
+ 

@@ -1,0 +1,30 @@
+@(elementForm: Form[Element], comunitat:models.Comunitat)
+@import helper._
+@import helper.twitterBootstrap._
+@import play.i18n.Messages
+
+
+@main(Messages.get("formulari_elements")) {
+      <div id="maincontent">
+  
+  
+  <h2 class="titol">@Messages.get("formulari_elements")</h2>
+  @helper.form(action = routes.Comunitats.guardarElement(comunitat),'enctype -> "multipart/form-data") {
+  <fieldset>
+  @if(elementForm("nif").value==null){
+  	@helper.inputText(elementForm("codi"), '_label -> Messages.get("codi"))
+  } else {
+  	@helper.inputText(elementForm("codi"), '_label -> Messages.get("codi"),   'readonly -> "readonly")
+  }
+  @helper.inputText(elementForm("descripcio"),'_label -> Messages.get("descripcio"))
+  @helper.inputText(elementForm("coeficient"),'_label -> Messages.get("coeficient"))
+  
+  </fieldset>
+  <input type="submit" class="btn btn-success" value=@Messages.get("Save")>
+  <a class="btn btn-danger" href="@routes.Comunitats.llistarElements(comunitat,1)">@Messages.get("Cancel")</a>
+    </div>
+    
+    }
+    
+    
+}

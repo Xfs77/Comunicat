@@ -5,9 +5,10 @@
 
 
 @main("Formulari Comunitats") {
+      <div id="maincontent">
   
   
-  <h2>@Messages.get("formulari_comunitats")</h2>
+  <h2 class="titol">@Messages.get("formulari_comunitats")</h2>
   @helper.form(action = routes.Comunitats.guardarComunitat(pare),'enctype -> "multipart/form-data") {
   <fieldset>
   @if(comunitatForm("nif").value==null){
@@ -24,7 +25,7 @@
   </fieldset>
   <input type="submit" class="btn btn-success" value=@Messages.get("Save")>
   <a class="btn btn-danger" href="@routes.Comunitats.llistarSubComunitats(pare,1)">@Messages.get("Cancel")</a>
-    
+    </div>
     
     }
     
