@@ -3,7 +3,7 @@
 @main(Messages.get("elements")) {
 
  <div id="maincontent" >
-<h2 class="titol">@Messages.get("elements")</h2>
+<h2 class="titol">@Messages.get("elements") @comunitat.nom</h2>
 
 
 
@@ -35,6 +35,7 @@
     </tbody>
           
    </table>
+    <a class="btn btn-primary" href="@routes.Comunitats.nouElement(comunitat)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
   
    
   }

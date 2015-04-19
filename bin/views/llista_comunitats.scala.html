@@ -3,8 +3,11 @@
 @main(Messages.get("Comunitats")) {
 
  <div id="maincontent" >
-<h2 class="titol">@Messages.get("comunitats")</h2>
-
+ @if(pare.nif=="arrel"){
+<h2 class="titol">@Messages.get("Comunitat")</h2>
+}else{
+<h2 class="titol">@Messages.get("Mancomunitat")  @pare.nom</h2>
+}
 
 
 

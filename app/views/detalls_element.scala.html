@@ -11,7 +11,7 @@
   <h2 class="titol">@Messages.get("formulari_elements")</h2>
   @helper.form(action = routes.Comunitats.guardarElement(comunitat),'enctype -> "multipart/form-data") {
   <fieldset>
-  @if(elementForm("nif").value==null){
+  @if(elementForm("codi").value==null){
   	@helper.inputText(elementForm("codi"), '_label -> Messages.get("codi"))
   } else {
   	@helper.inputText(elementForm("codi"), '_label -> Messages.get("codi"),   'readonly -> "readonly")

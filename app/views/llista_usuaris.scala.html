@@ -1,0 +1,70 @@
+@(usuaris:List[Usuari], page:Page)
+@import play.i18n.Messages
+@main(Messages.get("usuaris")) {
+
+ <div id="maincontent" >
+ 
+<h2 class="titol">@Messages.get("usuaris")</h2>
+
+
+
+
+
+   <table class="table table-striped">
+    <thead>
+      <tr>
+      	<th>@Messages.get("dni")</th>
+        <th>@Messages.get("nom")</th>
+        <th>@Messages.get("cognoms")</th>
+        <th>@Messages.get("tel1")</th>
+        <th>@Messages.get("tel2")</th>
+        <th>@Messages.get("email")</th>
+        <th class="text-center">@Messages.get("baixa")</th>
+        <th class="text-center">@Messages.get("bloquejat")</th>
+        <th class="text-center">@Messages.get("president")</th>
+        <th class="text-center">@Messages.get("administrador")</th>
+        <th>@Messages.get("tipus")</th>
+        <th>@Messages.get("enviat")</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    @for( usuari <- usuaris) {
+
+      <tr>
+        <td>@usuari.dni</td>
+        <td>@usuari.nom</td>
+        <td>@usuari.cognoms</td>
+        <td>@usuari.tel1</td>
+        <td>@usuari.tel2</td>
+        <td>@usuari.email</td>
+        <td class="text-center">@if(usuari.baixa==true){Si}else{No}</td>
+        <td class="text-center">@if(usuari.bloquejat==true){Si}else{No}</td>
+        <td class="text-center">@if(usuari.president==true){Si}else{No}</td>
+        <td class="text-center">@if(usuari.administrador==true){Si}else{No}</td>
+        <td>@{if(usuari.tipus=="Propietari"){Messages.get("propietari")}else if(usuari.tipus=="Llogater"){Messages.get("propietari")}else{usuari.tipus}}</td>
+        <td class="text-center">@if(usuari.enviat==true){Si}else{No}</td>
+        
+        <td  class="text-center">
+        <a href=""><i class="glyphicon glyphicon-search" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
+        </td>
+     </tr>
+      }
+    </tbody>
+          
+   </table>
+  
+   
+  <a class="btn btn-primary" href=""><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
+  
+  <br>
+  &nbsp
+  <br>
+    </div>
+ 
+  }
+   
+   
+ 
+

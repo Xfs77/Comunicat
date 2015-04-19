@@ -13,6 +13,12 @@ public class ElementPK implements Serializable{
 		
 	}
 
+	public ElementPK(String comunitat, String codi) {
+		super();
+		this.comunitat = comunitat;
+		this.codi = codi;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		// TODO Auto-generated method stub

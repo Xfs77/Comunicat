@@ -70,7 +70,7 @@ public class Element implements Serializable,
 	}
 
 	@Id
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.MERGE)
 	@JoinColumn(name = "nif")
 	public Comunitat comunitat;
 	@Id
@@ -79,7 +79,7 @@ public class Element implements Serializable,
 	@Column(name = "descripcio")
 	public String descripcio;
 	@Column(name = "coeficient")
-	public String coeficient;
+	public float coeficient;
 	
 
 	public Element() {
@@ -87,12 +87,24 @@ public class Element implements Serializable,
 	}
 
 
-	public Element(Comunitat comunitat, String codi, String descripcio, String coeficient) {
+	public Element(Comunitat comunitat, String codi, String descripcio, float coeficient) {
 		super();
 		this.comunitat = comunitat;
 		this.codi = codi;
 		this.descripcio = descripcio;
 		this.coeficient = coeficient;
+	}
+	
+	public Element(Comunitat comunitat) {
+		super();
+		this.comunitat = comunitat;
+		
+	}
+	public static Element obtenirRefElement(Element element) {
+		EntityManager em = JPA.em();
+		ElementPK epk=new ElementPK(element.comunitat.nif,element.codi);
+		Element RefElement = em.find(Element.class,epk );
+		return RefElement;
 	}
 
 	public static Page llistarElements(Comunitat comunitat,int page) {
@@ -107,11 +119,18 @@ public class Element implements Serializable,
 	}
 	
 
-	public void guardarElement() {
-		EntityManager em = JPA.em();
-		Comunitat c=em.find(Comunitat.class, this.comunitat.nif);
-		this.comunitat=c;
-		em.merge(this);
+	public static void guardarElement(Element element) {
+		Element refElement=obtenirRefElement(element);
+		if(refElement!=null) {
+			refElement.descripcio=element.descripcio;
+			refElement.coeficient=element.coeficient;
+			
+			JPA.em().merge(refElement);
+		}else{
+			element.comunitat=Comunitat.obtenirRefComunitat(element.comunitat); 
+			JPA.em().merge(element);
+		}
+		
 
 	}
 

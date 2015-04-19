@@ -1,6 +1,7 @@
 package models;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,7 +23,11 @@ import javax.persistence.NoResultException;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Query;
+import javax.persistence.RollbackException;
 import javax.persistence.Table;
+
+import org.hibernate.JDBCException;
+import org.postgresql.util.PSQLException;
 
 import controllers.Comunitats;
 import play.libs.F;
@@ -113,13 +118,12 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 
 	public Comunitat(Comunitat pare) {
 		super();
-		this.pare=pare;
+		this.pare = pare;
 	}
-	
-	
 
-	public Comunitat(String nif, String nom, String adreca, String cp, String poblacio, float coeficient,
-			Comunitat pare, Comunitat president, Set<Element> elements) {
+	public Comunitat(String nif, String nom, String adreca, String cp,
+			String poblacio, float coeficient, Comunitat pare,
+			Comunitat president, Set<Element> elements) {
 		super();
 		this.nif = nif;
 		this.nom = nom;
@@ -141,6 +145,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		return p;
 
 	}
+
 	public static Page llistarSubComunitats(Comunitat pare, int page) {
 		Query query = null;
 
@@ -153,20 +158,37 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 
 	}
 
-	public void guardarComunitat() {
-		JPA.em().merge(this);
+	public static void guardarComunitat(Comunitat formComunitat, Comunitat pare) {
 
+		Comunitat refComunitat = obtenirRefComunitat(formComunitat);
+		if (refComunitat != null) {
+			refComunitat.nom = formComunitat.nom;
+			refComunitat.adreca = formComunitat.adreca;
+			refComunitat.cp = formComunitat.cp;
+			refComunitat.poblacio = formComunitat.poblacio;
+			refComunitat.coeficient = formComunitat.coeficient;
+			JPA.em().merge(refComunitat);
+
+		} else {
+			formComunitat.pare = pare;
+			JPA.em().merge(formComunitat);
+		}
 	}
 
 	public static void borrarComunitat(Comunitat comunitat) {
 		// TODO Auto-generated method stub
 		EntityManager em = JPA.em();
-		Comunitat actorToBeRemoved = em.getReference(Comunitat.class,
-				comunitat.nif);
-		em.remove(actorToBeRemoved);
-
+		Comunitat refComunitat = obtenirRefComunitat(comunitat);
+		em.remove(refComunitat);
 	}
 
+	public static Comunitat obtenirRefComunitat(Comunitat comunitat) {
+		EntityManager em = JPA.em();
+		Comunitat RefComunitat = em.find(Comunitat.class, comunitat.nif);
+		return RefComunitat;
+	}
+	
+	
 	public static Comunitat recercaPerNif(String id) {
 		Comunitat result = null;
 		Query query = JPA.em().createQuery("from Comunitat c");
@@ -175,7 +197,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		for (Comunitat candidate : comunitats) {
 			if (candidate.nif.toLowerCase().contains(id.toLowerCase())) {
 				result = candidate;
-				
+
 			}
 		}
 		return result;

@@ -19,7 +19,10 @@ DELETE	/comunitats/borrar/:comunitat           controllers.Comunitats.borrarComu
 
 
 GET  /elements/:comunitat	controllers.Comunitats.llistarElements(comunitat:models.Comunitat,page: Int ?=1 )
+GET  /elements/nou/:comunitat	controllers.Comunitats.nouElement(comunitat:models.Comunitat)
 GET	/detall_elements/:element  	controllers.Comunitats.detallElement(element: models.Element)
 POST /elements/:comunitat    	controllers.Comunitats.guardarElement(comunitat:models.Comunitat)
 DELETE	/elements/borrar/:element           controllers.Comunitats.borrarElement(element: models.Element)
+
+GET  /usuaris/	controllers.Usuaris.llistarUsuaris(page: Int ?=1 )
 
