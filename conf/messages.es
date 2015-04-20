@@ -42,3 +42,5 @@ enviat=Enviado
 llista_usuaris=Listado Usuarios
 propietari=Propietario
 llogater=Inquilino
+formulari_usuaris=Formulario Usuarios
+dni=Dni

@@ -35,7 +35,7 @@ import org.hibernate.exception.SQLGrammarException;
 //@Security.Authenticated(Secured.class)
 public class Usuaris extends Controller {
 
-	private static Form<Usuari> UsuariForm = Form.form(Usuari.class);
+	private static Form<Usuari> usuariForm = Form.form(Usuari.class);
 
 
 	@Transactional(readOnly = true)
@@ -44,4 +44,36 @@ public class Usuaris extends Controller {
 		List l = p.getList();
 		return ok(llista_usuaris.render(l, p));
 	}
+	
+	public static Result nouUsuari() {
+		Usuari usuari = new Usuari();
+		usuariForm.fill(usuari);
+		return ok(detalls_usuari.render(usuariForm));
+	}
+	
+	@Transactional(readOnly = true)
+	public static Result detallUsuari(Usuari usuari) {
+		Form<Usuari> filledForm = usuariForm.fill(usuari);
+		return ok(detalls_usuari.render(filledForm));
+	}
+	
+	@Transactional
+	public static Result guardarUsuari() {
+		play.mvc.Http.Request request = request();
+		RequestBody body = request().body();
+		Form<Usuari> boundForm = usuariForm.bindFromRequest();
+		if (boundForm.hasErrors()) {
+			flash("error", Messages.get("constraint.formulari"));
+			return badRequest(detalls_usuari.render(boundForm));
+		} else {
+			Usuari usuariForm = boundForm.get();
+			Usuari.guardarUsuari(usuariForm);
+			flash("success", String.format(
+					"L'usuari %s s'ha registrat correctament",
+					usuariForm.dni));
+
+			return redirect(routes.Usuaris.llistarUsuaris(1));
+		}
+	}
+
 }

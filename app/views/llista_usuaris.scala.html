@@ -47,7 +47,8 @@
         <td class="text-center">@if(usuari.enviat==true){Si}else{No}</td>
         
         <td  class="text-center">
-        <a href=""><i class="glyphicon glyphicon-search" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
+                <a href="@routes.Usuaris.detallUsuari(usuari)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_usuari")"></i>&nbsp</a>
+                <a href=""><i class="glyphicon glyphicon-search" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
         </td>
      </tr>
       }

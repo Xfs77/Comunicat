@@ -25,4 +25,6 @@ POST /elements/:comunitat    	controllers.Comunitats.guardarElement(comunitat:mo
 DELETE	/elements/borrar/:element           controllers.Comunitats.borrarElement(element: models.Element)
 
 GET  /usuaris/	controllers.Usuaris.llistarUsuaris(page: Int ?=1 )
+GET	/detall_usuaris/:usuari 	controllers.Usuaris.detallUsuari(usuari: models.Usuari)
+POST /usuaris/	controllers.Usuaris.guardarUsuari()
 

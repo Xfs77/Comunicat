@@ -1,0 +1,36 @@
+@(usuariForm: Form[Usuari])
+@import helper._
+@import helper.twitterBootstrap._
+@import play.i18n.Messages
+
+
+@main(Messages.get("formulari_usuaris")) {
+      <div id="maincontent">
+  
+  
+  <h2 class="titol">@Messages.get("formulari_usuaris")</h2>
+  @helper.form(action = routes.Usuaris.guardarUsuari(),'enctype -> "multipart/form-data") {
+  <fieldset>
+  @if(usuariForm("dni").value==null){
+  	@helper.inputText(usuariForm("dni"), '_label -> Messages.get("dni"))
+  } else {
+  	@helper.inputText(usuariForm("dni"), '_label -> Messages.get("dni"),   'readonly -> "readonly")
+  }
+  @helper.inputText(usuariForm("nom"),'_label -> Messages.get("nom"))
+  @helper.inputText(usuariForm("cognoms"),'_label -> Messages.get("cognoms"))
+  @helper.inputText(usuariForm("tel1"),'_label -> Messages.get("tel1"))
+  @helper.inputText(usuariForm("tel2"),'_label -> Messages.get("tel2"))
+  @helper.inputText(usuariForm("email"),'_label -> Messages.get("email"))
+  @inputRadioGroup(
+          usuariForm("tipus"),·
+          options = options("propietari"->"Propietari","llogater"->"Llogater")
+          '_label -> "Tipus")
+    </fieldset>
+  <input type="submit" class="btn btn-success" value=@Messages.get("Save")>
+  <a class="btn btn-danger" href="@routes.Usuaris.llistarUsuaris(1)">@Messages.get("Cancel")</a>
+    </div>
+    
+    }
+    
+    
+}
