@@ -1,0 +1,87 @@
+@(usuari:Usuari, comunitats: List[Comunitat], elements: List[Element])
+@import play.i18n.Messages
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(Messages.get("assignacio_elements")) {
+ <script type="text/javascript">
+ $(document).ready(function() {
+   $('#myModal').modal({
+    show: true,
+   })
+ });
+</script>
+
+
+
+<!-- Modal -->
+<div class="modal in" id="myModal" >
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-center"><b>@Messages.get("assignacio_elements")</b></h4>
+    
+      </div>
+    
+      <div class="modal-body" align=center>
+ @helper.form(action = routes.Usuaris.realitzarAssignacioElements(usuari), 'enctype -> "multipart/form-data") {
+
+    <select class="selectpicker" id="comunitat" >
+       <option></option>
+      
+    @for( comunitat <- comunitats) {
+ <option value=@comunitat>@comunitat.nif - @if(comunitat.pare.nom!="arrel"){@comunitat.pare.nom} @comunitat.nom</option>
+    
+      
+      }
+   
+  
+  </select>
+<br>
+	   <select class="selectpicker" id="element" name="element">
+
+      
+      
+       </select>
+       
+        <button type="button" class="btn btn-default" data-dismiss="modal">@Messages.get("cancel")</button>
+    <input type="submit" class="btn btn-primary" value=@Messages.get("enter")>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+
+ <script>
+ $(document).ready(function(){
+	 $("#comunitat").change( function() {
+			$("#element").find('option').remove();
+		 @for(element <- elements  ){
+			 if($("#comunitat").val()=="@element.comunitat"){
+				$("#element").append("<option value=@element.comunitat.nif"+"&"+"@element.codi>@element.codi</option>");
+}
+		 }
+	  }) ; 
+
+	 }) ;
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+}
+
+
+}
+

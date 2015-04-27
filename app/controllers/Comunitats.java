@@ -37,17 +37,20 @@ public class Comunitats extends Controller {
 
 	private static Form<Comunitat> comunitatForm = Form.form(Comunitat.class);
 	private static Form<Element> elementForm = Form.form(Element.class);
-
+	
+	@Transactional(readOnly = true)
 	public static Result novaComunitat(Comunitat pare) {
 		Comunitat comunitat = new Comunitat(pare);
 		comunitatForm.fill(comunitat);
-		return ok(detalls_comunitat.render(comunitatForm, pare));
+		List<Usuari> l=Usuari.obtenirUsuaris();
+		return ok(detalls_comunitat.render(comunitatForm, pare, l));
 	}
 
 	@Transactional(readOnly = true)
 	public static Result detallComunitat(Comunitat comunitat) {
 		Form<Comunitat> filledForm = comunitatForm.fill(comunitat);
-		return ok(detalls_comunitat.render(filledForm, comunitat.pare));
+		List<Usuari> l=Usuari.obtenirUsuaris();
+		return ok(detalls_comunitat.render(filledForm, comunitat.pare,l));
 	}
 
 	@Transactional(readOnly = true)
@@ -66,6 +69,8 @@ public class Comunitats extends Controller {
 
 	}
 
+	
+	
 	@Transactional
 	public static Result borrarComunitat(Comunitat comunitat) throws Exception {
 		if (comunitat == null) {
@@ -87,7 +92,8 @@ public class Comunitats extends Controller {
 		Form<Comunitat> boundForm = comunitatForm.bindFromRequest();
 		if (boundForm.hasErrors()) {
 			flash("error", Messages.get("constraint.formulari"));
-			return badRequest(detalls_comunitat.render(boundForm, pare));
+			return badRequest(detalls_comunitat.render(boundForm, pare,Usuari.obtenirUsuaris()
+					));
 		} else {
 			Comunitat comunitatForm = boundForm.get();
 			Comunitat.guardarComunitat(comunitatForm, pare);
@@ -114,6 +120,7 @@ public class Comunitats extends Controller {
 		return ok(llista_elements.render(l, p, comunitat));
 	}
 
+	
 	@Transactional
 	public static Result borrarElement(Element element) {
 		if (element == null) {

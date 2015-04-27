@@ -1,4 +1,4 @@
-@(comunitatForm: Form[Comunitat], pare:models.Comunitat)
+@(comunitatForm: Form[Comunitat], pare:models.Comunitat, candidats:List[Usuari])
 @import helper._
 @import helper.twitterBootstrap._
 @import play.i18n.Messages
@@ -6,8 +6,6 @@
 
 @main("Formulari Comunitats") {
       <div id="maincontent">
-  
-  
   <h2 class="titol">@Messages.get("formulari_comunitats")</h2>
   @helper.form(action = routes.Comunitats.guardarComunitat(pare),'enctype -> "multipart/form-data") {
   <fieldset>
@@ -21,7 +19,15 @@
   @helper.inputText(comunitatForm("cp"),'_label -> Messages.get("cp"))
   @helper.inputText(comunitatForm("poblacio"),'_label -> Messages.get("poblacio"))
   @helper.inputText(comunitatForm("coeficient"),'_label -> Messages.get("coeficient"))
-  
+  <select class="selectpicker" id="president" name="president"
+  >
+       <option></option>
+      
+    @for( candidat <- candidats) {
+
+ <option type="text"value=@candidat.dni @if( comunitatForm("president").value()==candidat.dni){selected} >@candidat.dni</option>
+    }
+    </select>
   </fieldset>
   <input type="submit" class="btn btn-success" value=@Messages.get("Save")>
   <a class="btn btn-danger" href="@routes.Comunitats.llistarSubComunitats(pare,1)">@Messages.get("Cancel")</a>

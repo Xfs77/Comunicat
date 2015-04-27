@@ -48,7 +48,10 @@
         
         <td  class="text-center">
                 <a href="@routes.Usuaris.detallUsuari(usuari)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_usuari")"></i>&nbsp</a>
-                <a href=""><i class="glyphicon glyphicon-search" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
+                        <a onclick="javascript:del('@routes.Usuaris.borrarUsuari(usuari)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a> 
+                        <a href="@routes.Usuaris.correuAlta(usuari)"><i class="glyphicon glyphicon-envelope" data-toggle="tooltip" data-placement="top" title="@Messages.get("enviar_email_alta")"></i>&nbsp</a>
+                
+                <a href="@routes.Usuaris.llistarElementsAssignats(usuari)"><i class="glyphicon glyphicon-tower" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
         </td>
      </tr>
       }
@@ -57,7 +60,7 @@
    </table>
   
    
-  <a class="btn btn-primary" href=""><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
+  <a class="btn btn-primary" href="@routes.Usuaris.nouUsuari()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
   
   <br>
   &nbsp

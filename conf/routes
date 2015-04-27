@@ -5,9 +5,6 @@
 # Home page
 GET     /                           controllers.Application.index()
 
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
-
 #Comunitat
 
 GET  /subcomunitats/:pare	controllers.Comunitats.llistarSubComunitats(pare:models.Comunitat,page: Int ?=1 )
@@ -25,6 +22,27 @@ POST /elements/:comunitat    	controllers.Comunitats.guardarElement(comunitat:mo
 DELETE	/elements/borrar/:element           controllers.Comunitats.borrarElement(element: models.Element)
 
 GET  /usuaris/	controllers.Usuaris.llistarUsuaris(page: Int ?=1 )
+GET  /usuaris/nou/	controllers.Usuaris.nouUsuari()
 GET	/detall_usuaris/:usuari 	controllers.Usuaris.detallUsuari(usuari: models.Usuari)
 POST /usuaris/	controllers.Usuaris.guardarUsuari()
+GET /usuaris/correu_alta/:usuari	controllers.Usuaris.correuAlta(usuari: models.Usuari)
+GET /usuaris/canvi_password/	controllers.Usuaris.canviPassword()
+GET /usuaris/efectuar_canvi_password/	controllers.Usuaris.efectuarCanviPassword()
+GET /usuaris/elements_assignats/:usuari	controllers.Usuaris.llistarElementsAssignats(usuari:models.Usuari,page:Int ?=1)
+GET  /usuaris/assignacio_elements/:usuari   controllers.Usuaris.assignarElements(usuari:models.Usuari)
+POST  /usuaris/realitzar_assignacio_elements/:usuari        controllers.Usuaris.realitzarAssignacioElements(usuari:models.Usuari)
+DELETE	/usuaris/borrar/:usuari           controllers.Usuaris.borrarUsuari(usuari: models.Usuari)
+DELETE	/usuaris/borrar_element_assignat/:usuari/:element           controllers.Usuaris.borrarElementAssignat(usuari: models.Usuari,element: models.Element)
 
+
+
+GET  /login        controllers.Application.login()
+GET     /logout                     controllers.Application.logout()
+POST /authenticate controllers.Application.authenticate()
+
+# Javascript routing
+GET    /assets/javascripts/routes      controllers.Application.javascriptRoutes()
+
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)

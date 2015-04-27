@@ -27,6 +27,8 @@ import javax.persistence.RollbackException;
 import javax.persistence.Table;
 
 import org.hibernate.JDBCException;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.postgresql.util.PSQLException;
 
 import controllers.Comunitats;
@@ -102,15 +104,18 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 	public String poblacio;
 	@Column(name = "coeficient")
 	public float coeficient;
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinColumn(name = "pare")
 	public Comunitat pare;
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinColumn(name = "president")
-	public Comunitat president;
-	@OneToMany(fetch = FetchType.LAZY)
+	public Usuari president;
+	@OneToMany(cascade=CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinColumn(name = "nif")
-	private Set<Element> elements;
+	private List<Element> elements = new ArrayList<Element>();
 
 	public Comunitat() {
 
@@ -123,7 +128,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 
 	public Comunitat(String nif, String nom, String adreca, String cp,
 			String poblacio, float coeficient, Comunitat pare,
-			Comunitat president, Set<Element> elements) {
+			Usuari president, List<Element> elements) {
 		super();
 		this.nif = nif;
 		this.nom = nom;
@@ -143,6 +148,17 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		Collections.sort(list, ComunitatComparator);
 		Page p = new Page(list, page);
 		return p;
+
+	}
+	
+	
+	public static List<Comunitat> llistarComunitatsElements() {
+		Query query = null;
+		query = JPA.em().createQuery("select c from Comunitat c  join c.elements group by c.nif");
+	    List list = query.getResultList();
+	    Collections.sort(list, ComunitatComparator);
+		
+		return list;
 
 	}
 
@@ -167,6 +183,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 			refComunitat.cp = formComunitat.cp;
 			refComunitat.poblacio = formComunitat.poblacio;
 			refComunitat.coeficient = formComunitat.coeficient;
+			refComunitat.president = formComunitat.president;
 			JPA.em().merge(refComunitat);
 
 		} else {
@@ -180,6 +197,31 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		EntityManager em = JPA.em();
 		Comunitat refComunitat = obtenirRefComunitat(comunitat);
 		em.remove(refComunitat);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((nif == null) ? 0 : nif.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Comunitat other = (Comunitat) obj;
+		if (nif == null) {
+			if (other.nif != null)
+				return false;
+		} else if (!nif.equals(other.nif))
+			return false;
+		return true;
 	}
 
 	public static Comunitat obtenirRefComunitat(Comunitat comunitat) {

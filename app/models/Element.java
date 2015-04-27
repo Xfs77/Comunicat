@@ -17,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NoResultException;
 import javax.persistence.OneToMany;
@@ -70,17 +71,51 @@ public class Element implements Serializable,
 	}
 
 	@Id
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.MERGE)
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name = "nif")
 	public Comunitat comunitat;
 	@Id
 	@Column(name = "codi")
 	public String codi;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((codi == null) ? 0 : codi.hashCode());
+		result = prime * result
+				+ ((comunitat == null) ? 0 : comunitat.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Element other = (Element) obj;
+		if (codi == null) {
+			if (other.codi != null)
+				return false;
+		} else if (!codi.equals(other.codi))
+			return false;
+		if (comunitat == null) {
+			if (other.comunitat != null)
+				return false;
+		} else if (!comunitat.equals(other.comunitat))
+			return false;
+		return true;
+	}
+
 	@Column(name = "descripcio")
 	public String descripcio;
 	@Column(name = "coeficient")
 	public float coeficient;
-	
+    @ManyToMany(mappedBy="elements_vei", fetch=FetchType.EAGER)
+    public List<Usuari> veins_element =new ArrayList<Usuari>();
+
 
 	public Element() {
 
@@ -107,6 +142,13 @@ public class Element implements Serializable,
 		return RefElement;
 	}
 
+	
+	public static List<Element> obtenirElements() {
+		Query query = null;
+		query = JPA.em().createQuery("from Element");
+		List<Element> elements=query.getResultList();
+		return elements;
+	}
 	public static Page llistarElements(Comunitat comunitat,int page) {
 		Query query = null;
 		query = JPA.em().createQuery("from Element e where e.comunitat=?1");
@@ -171,7 +213,11 @@ public class Element implements Serializable,
 
 		public int compare(Element e1, Element e2) {
 
-			return e1.codi.compareTo(e2.codi);
+			if(e1.comunitat.nif.compareTo(e2.comunitat.nif)==0){
+				return e1.codi.compareTo(e2.codi);}
+			else{
+				return e1.codi.compareTo(e2.codi);
+			}
 
 		}
 

@@ -19,7 +19,7 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li><a href="@routes.Application.index()"><span class="glyphicon glyphicon-home blue" aria-hidden="true"></span></i> @Messages.get("inici")</i> <span class="sr-only">(current)</span></a></li>
-     
+       	@if(session.get("dni")!=null){
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">@Messages.get("comunitats") <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
@@ -31,9 +31,11 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">@Messages.get("usuaris") <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
             <li><a href="@routes.Usuaris.llistarUsuaris(1)">@Messages.get("llista_usuaris")</a></li>
+               <li><a href="@routes.Usuaris.canviPassword()">@Messages.get("canvi_password")</a></li>
                     </ul>
                    
         </li>
+        }
       </ul>
     
       <ul class="nav navbar-nav navbar-right">
@@ -44,8 +46,11 @@
             <option value="es">@Messages.get("castella")</option>
             <option value="en">@Messages.get("ingles")</option>
         </select></a></li>
-                    <li><a href=""><span class="glyphicon glyphicon-user green" aria-hidden="true"></span></i> @Messages.get("login")</i> <span class="sr-only">(current)</span></a></li>
-  <div id="result" ><p></p></div>
+      	@if(session.get("dni")==null){
+              <li><a href="@routes.Application.login()"><span class="glyphicon glyphicon-user green" aria-hidden="true"></span></i> @Messages.get("login")</i> <span class="sr-only">(current)</span></a></li>
+  } else{
+  		 <li><a href="@routes.Application.logout()"><span class="glyphicon glyphicon-off red" aria-hidden="true"></span></i> @Messages.get("logout")</i> <span class="sr-only">(current)</span></a></li>
+  }
        
         
       </ul>

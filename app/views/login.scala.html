@@ -1,0 +1,51 @@
+@(loginForm: Form[Login])
+@import play.i18n.Messages
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(Messages.get("registre_usuari")) {
+ <script type="text/javascript">
+ $(document).ready(function() {
+   $('#myModal').modal({
+    show: true,
+   })
+ });
+</script>
+
+<!-- Modal -->
+<div class="modal in" id="myModal" >
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-center"><b>@Messages.get("registre_usuari")</b></h4>
+      @if(loginForm.hasGlobalErrors) {
+    <p>
+    </p>
+    <p class="text-danger text-center">
+        @Messages.get(loginForm.globalError.message)
+    </p>
+}
+      </div>
+    
+      <div class="modal-body">
+        @helper.form(action = routes.Application.authenticate()) {
+       <p>
+       <input type="text" class="form-control" name="dni" placeholder=@Messages.get("dni") >
+   </p>
+   <p>
+       <input type="password" class="form-control" name="password" placeholder=@Messages.get("password")>
+   </p>
+   <p>
+
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">@Messages.get("cancel")</button>
+    <input type="submit" class="btn btn-primary" value=@Messages.get("enter")>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+}
+}

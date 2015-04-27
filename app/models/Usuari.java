@@ -18,6 +18,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NoResultException;
 import javax.persistence.OneToMany;
@@ -30,9 +32,14 @@ import org.hibernate.JDBCException;
 import org.postgresql.util.PSQLException;
 
 import controllers.Comunitats;
+import controllers.Usuaris;
+import play.i18n.Messages;
 import play.libs.F;
 import play.libs.F.Some;
+import play.libs.mailer.Email;
+import play.libs.mailer.MailerPlugin;
 import play.mvc.QueryStringBindable;
+import play.mvc.Result;
 import play.db.jpa.JPA;
 import play.mvc.PathBindable;
 import play.db.jpa.Transactional;
@@ -100,21 +107,26 @@ PathBindable<Usuari> {
 	public boolean enviat;
 	@Column(name = "tipus")
 	public String tipus;
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "nif")
-	public Set<Comunitat> administradorsComunitats;
+	 @ManyToMany(cascade = {CascadeType.ALL}, fetch=FetchType.EAGER)
+	 @JoinTable(name="comunicat.elementvei", 
+	                joinColumns={@JoinColumn(name="vei", referencedColumnName="dni")}, 
+	                inverseJoinColumns={
+	    							@JoinColumn(table="element",name="comunitat",referencedColumnName="nif"),
+	    							@JoinColumn(table="element",name="element",referencedColumnName="codi")
+
+	   })
+	public List<Element> elements_vei=new ArrayList<Element>();
+	
+
 
 	public Usuari() {
 
 	}
 
-	
-
 	public Usuari(String dni, String nom, String cognoms, String tel1,
 			String tel2, String email, String password, boolean baixa,
 			boolean bloquejat, boolean president, boolean administrador,
-			boolean enviat, String tipus,
-			Set<Comunitat> administradorsComunitats) {
+			boolean enviat, String tipus, List<Element> elements_vei) {
 		super();
 		this.dni = dni;
 		this.nom = nom;
@@ -129,8 +141,10 @@ PathBindable<Usuari> {
 		this.administrador = administrador;
 		this.enviat = enviat;
 		this.tipus = tipus;
-		this.administradorsComunitats = administradorsComunitats;
+		this.elements_vei = elements_vei;
 	}
+
+
 
 	public static Usuari recercaPerDni(String dni) {
 		Usuari result = null;
@@ -141,7 +155,7 @@ PathBindable<Usuari> {
 		return usuari;
 	}
 
-
+		
 	public static Page llistarUsuaris(int page) {
 		Query query = null;
 		query = JPA.em().createQuery("from Usuari u");
@@ -152,24 +166,87 @@ PathBindable<Usuari> {
 
 	}
 	
+
+	public static List<Usuari> obtenirUsuaris() {
+		Query query = null;
+		query = JPA.em().createQuery("from Usuari u");
+		List list = query.getResultList();
+		return list;
+
+	}
+	
+	public static Usuari obtenirRefUsuari(Usuari usuari) {
+		EntityManager em = JPA.em();
+		Usuari RefUsuari = em.find(Usuari.class, usuari.dni);
+		return RefUsuari;
+	}
+	
 	public static void guardarUsuari(Usuari usuari) {
 
-		/*Comunitat refComunitat = obtenirRefComunitat(formComunitat);
-		if (refComunitat != null) {
-			refComunitat.nom = formComunitat.nom;
-			refComunitat.adreca = formComunitat.adreca;
-			refComunitat.cp = formComunitat.cp;
-			refComunitat.poblacio = formComunitat.poblacio;
-			refComunitat.coeficient = formComunitat.coeficient;
-			JPA.em().merge(refComunitat);
+		Usuari refUsuari = obtenirRefUsuari(usuari);
+		if (refUsuari != null) {
+			refUsuari.nom = usuari.nom;
+			refUsuari.cognoms = usuari.cognoms;
+			refUsuari.tel1 = usuari.tel1;
+			refUsuari.tel2 = usuari.tel2;
+			refUsuari.email = usuari.email;
+			refUsuari.tipus = usuari.tipus;
+			refUsuari.administrador = usuari.administrador;
+			refUsuari.president = usuari.president;
+			refUsuari.baixa = usuari.baixa;
+			refUsuari.bloquejat = usuari.bloquejat;
+			refUsuari.enviat = usuari.enviat;
+			JPA.em().merge(refUsuari);
+
+			
 
 		} else {
-			formComunitat.pare = pare;
-			JPA.em().merge(formComunitat);
-		}*/
+			Usuaris.correuAlta(usuari);
+			}
+
+		
 	}
 
+	public static void correuAlta(Usuari usuari) {
+		
+		usuari.password=PasswordGenerator.getPassword(
+			PasswordGenerator.MINUSCULAS+
+			PasswordGenerator.MAYUSCULAS+
+			PasswordGenerator.NUMEROS,6);
+		Email email = new Email();
+	
+		email.setSubject("Correu Alta a www.ComunicatComunitat");
+		email.setFrom("comunicatcomunitat@gmail.com");
+		email.addTo(usuari.email);
+		email.setBodyText("A text message");
+	
+		MailerPlugin.send(email);
+	
+		usuari.enviat=true;
+		JPA.em().merge(usuari);
+	}
 
+	public static Usuari authenticate(String dni, String password) {
+		// TODO Auto-generated method stub
+
+		 Query query =JPA.em().createQuery("SELECT u from  Usuari u where u.dni=?1");
+		 query.setParameter(1, dni);
+		 try {
+			 Usuari usuari=(Usuari) query.getSingleResult();
+			 if (usuari.password.equals(password) && usuari.baixa==false && usuari.bloquejat==false) {
+				 return usuari;
+			 }
+			 else{
+				 return null;
+			 }
+		 }
+		 catch (NoResultException nre) {
+			 // Code for handling NoResultException
+			 return null;
+			 
+		 } 
+	
+	}
 	public static Comparator<Usuari> UsuariComparator = new Comparator<Usuari>() {
 
 		public int compare(Usuari u1, Usuari u2) {
@@ -179,5 +256,39 @@ PathBindable<Usuari> {
 		}
 
 	};
+
+	
+	public static void assignarElement(Usuari usuari, Element element) {
+		// TODO Auto-generated method stub
+		Usuari refUsuari = obtenirRefUsuari(usuari);
+		Element refElement=Element.obtenirRefElement(element);
+		refUsuari.elements_vei.add(refElement);
+		
+	}
+
+
+
+	public static void borrarUsuari(Usuari usuari) {
+		// TODO Auto-generated method stub		
+			EntityManager em = JPA.em();
+			Usuari refUsuari = obtenirRefUsuari(usuari);
+			em.remove(refUsuari);
+		}
+	
+
+
+
+	public static void borrarElementAssignat(Usuari usuari, Element element) {
+		// TODO Auto-generated method stub
+		Element RefElement=Element.obtenirRefElement(element);
+		Usuari RefUsuari=Usuari.obtenirRefUsuari(usuari);
+		boolean b=RefUsuari.elements_vei.contains(element);
+		RefUsuari.elements_vei.remove(element);
+		EntityManager em = JPA.em();
+		em.merge(RefUsuari);
+			
+
+	}
+	
 
 }
