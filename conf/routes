@@ -11,6 +11,8 @@ GET  /subcomunitats/:pare	controllers.Comunitats.llistarSubComunitats(pare:model
 GET  /comunitats/	controllers.Comunitats.llistarComunitats(page: Int ?=1 )
 GET  /comunitats/nova/:pare	controllers.Comunitats.novaComunitat(pare:models.Comunitat)
 GET	/detall_comunitats/:comunitat  	controllers.Comunitats.detallComunitat(comunitat: models.Comunitat)
+GET	/contactes/:comunitat  	controllers.Comunitats.llistarContactes(comunitat: models.Comunitat,page: Int ?=1)
+
 POST /subcomunitats/:pare    	controllers.Comunitats.guardarComunitat(pare:models.Comunitat)
 DELETE	/comunitats/borrar/:comunitat           controllers.Comunitats.borrarComunitat(comunitat: models.Comunitat)
 
@@ -32,7 +34,7 @@ GET /usuaris/elements_assignats/:usuari	controllers.Usuaris.llistarElementsAssig
 GET  /usuaris/assignacio_elements/:usuari   controllers.Usuaris.assignarElements(usuari:models.Usuari)
 POST  /usuaris/realitzar_assignacio_elements/:usuari        controllers.Usuaris.realitzarAssignacioElements(usuari:models.Usuari)
 DELETE	/usuaris/borrar/:usuari           controllers.Usuaris.borrarUsuari(usuari: models.Usuari)
-DELETE	/usuaris/borrar_element_assignat/:usuari/:element           controllers.Usuaris.borrarElementAssignat(usuari: models.Usuari,element: models.Element)
+DELETE	/usuaris/borrar_element_assignat/:usuari/:element/:tipus          controllers.Usuaris.borrarElementAssignat(usuari: models.Usuari,element: models.Element,tipus:models.TipusVei)
 
 
 

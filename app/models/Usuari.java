@@ -18,6 +18,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -29,6 +30,8 @@ import javax.persistence.RollbackException;
 import javax.persistence.Table;
 
 import org.hibernate.JDBCException;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.postgresql.util.PSQLException;
 
 import controllers.Comunitats;
@@ -105,28 +108,37 @@ PathBindable<Usuari> {
 	public boolean administrador;
 	@Column(name = "enviat")
 	public boolean enviat;
-	@Column(name = "tipus")
-	public String tipus;
-	 @ManyToMany(cascade = {CascadeType.ALL}, fetch=FetchType.EAGER)
-	 @JoinTable(name="comunicat.elementvei", 
+	@ManyToOne(cascade = {CascadeType.ALL})
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@JoinColumn(name = "tipus")
+	public TipusVei tipus;
+		@OneToMany(mappedBy="usuari",cascade=CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	public List<ElementVei> elementsVei=new ArrayList<ElementVei>();
+	@ManyToMany
+     @LazyCollection(LazyCollectionOption.FALSE)
+	 @JoinTable(name="comunicat.accescomunitat", 
 	                joinColumns={@JoinColumn(name="vei", referencedColumnName="dni")}, 
 	                inverseJoinColumns={
-	    							@JoinColumn(table="element",name="comunitat",referencedColumnName="nif"),
-	    							@JoinColumn(table="element",name="element",referencedColumnName="codi")
-
-	   })
-	public List<Element> elements_vei=new ArrayList<Element>();
-	
-
-
+	    							@JoinColumn(table="comunitat",name="comunitat",referencedColumnName="nif")
+	    							})
+	 public List<Comunitat> accesComunitats= new ArrayList<Comunitat>();
+	 
+	 
+	 
 	public Usuari() {
 
 	}
 
-	public Usuari(String dni, String nom, String cognoms, String tel1,
-			String tel2, String email, String password, boolean baixa,
-			boolean bloquejat, boolean president, boolean administrador,
-			boolean enviat, String tipus, List<Element> elements_vei) {
+
+
+
+
+
+
+	public Usuari(String dni, String nom, String cognoms, String tel1, String tel2, String email, String password,
+			boolean baixa, boolean bloquejat, boolean president, boolean administrador, boolean enviat, TipusVei tipus,
+			List<ElementVei> elementsVei, List<Comunitat> accesComunitats) {
 		super();
 		this.dni = dni;
 		this.nom = nom;
@@ -141,7 +153,8 @@ PathBindable<Usuari> {
 		this.administrador = administrador;
 		this.enviat = enviat;
 		this.tipus = tipus;
-		this.elements_vei = elements_vei;
+		this.elementsVei = elementsVei;
+		this.accesComunitats = accesComunitats;
 	}
 
 
@@ -258,12 +271,24 @@ PathBindable<Usuari> {
 	};
 
 	
-	public static void assignarElement(Usuari usuari, Element element) {
+	public static void assignarElement(Usuari usuari, Element element, TipusVei t) {
 		// TODO Auto-generated method stub
 		Usuari refUsuari = obtenirRefUsuari(usuari);
 		Element refElement=Element.obtenirRefElement(element);
-		refUsuari.elements_vei.add(refElement);
+		ElementVei elementVei=new ElementVei(refUsuari,refElement,TipusVei.recerca(t.tipus));
+		refUsuari.elementsVei.add(elementVei);
 		
+	
+		
+		Comunitat c=(refElement.comunitat);
+		
+		while (c.pare!=null){
+			if(refUsuari.accesComunitats.contains(c)==false){
+					refUsuari.accesComunitats.add(c);
+				}
+			c=(c.pare);
+				
+		}
 	}
 
 
@@ -278,16 +303,29 @@ PathBindable<Usuari> {
 
 
 
-	public static void borrarElementAssignat(Usuari usuari, Element element) {
+	public static void borrarElementAssignat(Usuari usuari, Element element, TipusVei tipus) {
 		// TODO Auto-generated method stub
-		Element RefElement=Element.obtenirRefElement(element);
-		Usuari RefUsuari=Usuari.obtenirRefUsuari(usuari);
-		boolean b=RefUsuari.elements_vei.contains(element);
-		RefUsuari.elements_vei.remove(element);
+		Usuari refUsuari=Usuari.obtenirRefUsuari(usuari);
+		ElementVei elementVei=ElementVei.recerca(refUsuari, element, tipus);
 		EntityManager em = JPA.em();
-		em.merge(RefUsuari);
-			
+	//ElementVei evr=em.find(ElementVei.class,elementVei.elementveiid);
+	ElementVei evr=elementVei;
+	refUsuari.elementsVei.remove(evr);
+	em.remove(evr);
 
+		
+		refUsuari.accesComunitats.clear();
+		for (Integer i=0;i<refUsuari.elementsVei.size();i=i+1){
+			Comunitat c=refUsuari.elementsVei.get(i).element.comunitat;
+		
+		while (c.pare!=null){
+			if(refUsuari.accesComunitats.contains(c)==false){
+					refUsuari.accesComunitats.add(c);
+				}
+			c=(c.pare);
+			}	
+		}
+		
 	}
 	
 

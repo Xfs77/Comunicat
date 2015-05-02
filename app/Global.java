@@ -83,6 +83,27 @@ public String print(Usuari arg0, Locale arg1) {
        
 });
    
+    
+    Formatters.register(TipusVei.class, new Formatters.SimpleFormatter<TipusVei>()
+            {
+
+             
+public TipusVei parse(String text, Locale locale) 
+   throws java.text.ParseException {     
+	TipusVei t = (TipusVei.recerca(text));     
+	return t;
+}
+       
+
+
+
+@Override
+public String print(TipusVei arg0, Locale arg1) {
+	// TODO Auto-generated method stub
+	return (arg0.tipus);
+}
+       
+});
 }
 
 }

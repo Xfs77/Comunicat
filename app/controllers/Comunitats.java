@@ -69,6 +69,13 @@ public class Comunitats extends Controller {
 
 	}
 
+	@Transactional(readOnly = true)
+	public static Result llistarContactes(Comunitat comunitat, int page) {
+		Page p = Comunitat.llistarContactes(comunitat, page);
+		List l = p.getList();
+		return ok(llista_contactes.render(l, p, comunitat));
+
+	}
 	
 	
 	@Transactional

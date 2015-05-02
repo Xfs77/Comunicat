@@ -1,4 +1,4 @@
-@(elements:List[Element],  usuari:Usuari, page:Page)
+@(elements:List[ElementVei],  usuari:Usuari, page:Page)
 @import play.i18n.Messages
 @main(Messages.get("elements")) {
 
@@ -12,7 +12,8 @@
    <table class="table table-striped">
     <thead>
       <tr>
-            <th>@Messages.get("nif")</th>
+            <th>@Messages.get("tipus")</th>
+                  <th>@Messages.get("nif")</th>
            <th>@Messages.get("comunitat_pare")</th>
       <th>@Messages.get("comunitat")</th>
      	<th>@Messages.get("codi")</th>
@@ -26,14 +27,16 @@
     @for( element <- elements) {
 
       <tr>
-              <td>@element.comunitat.nif</td>
-              <td>@element.comunitat.pare.nom</td>
-        <td>@element.comunitat.nom</td>
-        <td>@element.codi</td>
-           <td>@element.descripcio</td>
-        <td  class="text-right">@element.coeficient</td>
+              <td>@Messages.get(element.tipus.tipus)</td>
+              <td>@element.element.comunitat.nif</td>
+              <td>@element.element.comunitat.pare.nom</td>
+        <td>@element.element.comunitat.nom</td>
+        <td>@element.element.codi</td>
+           <td>@element.element.descripcio</td>
+        <td  class="text-right">@element.element.coeficient</td>
+        
         <td  class="text-center">
-         <a onclick="javascript:del('@routes.Usuaris.borrarElementAssignat(usuari,element)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a> 
+         <a onclick="javascript:del('@routes.Usuaris.borrarElementAssignat(usuari,element.element,element.tipus)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a> 
                 </td>
      </tr>
       }

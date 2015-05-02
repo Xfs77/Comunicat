@@ -43,7 +43,7 @@
         <td class="text-center">@if(usuari.bloquejat==true){Si}else{No}</td>
         <td class="text-center">@if(usuari.president==true){Si}else{No}</td>
         <td class="text-center">@if(usuari.administrador==true){Si}else{No}</td>
-        <td>@{if(usuari.tipus=="Propietari"){Messages.get("propietari")}else if(usuari.tipus=="Llogater"){Messages.get("propietari")}else{usuari.tipus}}</td>
+        <td>@{if(usuari.tipus.tipus=="Propietari"){Messages.get("propietari")}else if(usuari.tipus.tipus=="Llogater"){Messages.get("llogater")}else{usuari.tipus.tipus}}</td>
         <td class="text-center">@if(usuari.enviat==true){Si}else{No}</td>
         
         <td  class="text-center">

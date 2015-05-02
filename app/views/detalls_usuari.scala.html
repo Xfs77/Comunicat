@@ -23,7 +23,7 @@
   @helper.inputText(usuariForm("email"),'_label -> Messages.get("email"))
   @inputRadioGroup(
           usuariForm("tipus"),
-          options = options("Propietari"->"Propietari","Llogater"->"Llogater"),
+          options = options("Propietari"->Messages.get("propietari"),"Llogater"->Messages.get("llogater")),
           '_label->Messages.get("tipus_vei"))
   @checkbox(field = usuariForm("administrador"))   
   @checkbox(field = usuariForm("president"))

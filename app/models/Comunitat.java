@@ -18,6 +18,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NoResultException;
 import javax.persistence.OneToMany;
@@ -38,6 +39,9 @@ import play.mvc.QueryStringBindable;
 import play.db.jpa.JPA;
 import play.mvc.PathBindable;
 import play.db.jpa.Transactional;
+
+import play.mvc.*;
+
 
 @Entity
 @Table(name = "comunicat.Comunitat")
@@ -112,10 +116,14 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinColumn(name = "president")
 	public Usuari president;
-	@OneToMany(cascade=CascadeType.ALL)
+	@OneToMany
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinColumn(name = "nif")
 	private List<Element> elements = new ArrayList<Element>();
+	@ManyToMany(mappedBy="accesComunitats")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	public List<Usuari> accesComunitats =new ArrayList<Usuari>();
+
 
 	public Comunitat() {
 
@@ -126,9 +134,10 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		this.pare = pare;
 	}
 
-	public Comunitat(String nif, String nom, String adreca, String cp,
-			String poblacio, float coeficient, Comunitat pare,
-			Usuari president, List<Element> elements) {
+	
+
+	public Comunitat(String nif, String nom, String adreca, String cp, String poblacio, float coeficient,
+			Comunitat pare, Usuari president, List<Element> elements, List<Usuari> accesComunitats) {
 		super();
 		this.nif = nif;
 		this.nom = nom;
@@ -139,11 +148,12 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		this.pare = pare;
 		this.president = president;
 		this.elements = elements;
+		this.accesComunitats = accesComunitats;
 	}
 
 	public static Page llistarComunitats(int page) {
 		Query query = null;
-		query = JPA.em().createQuery("from Comunitat c where c.pare is null");
+		query = JPA.em().createQuery("from Comunitat");
 		List list = query.getResultList();
 		Collections.sort(list, ComunitatComparator);
 		Page p = new Page(list, page);
@@ -165,8 +175,11 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 	public static Page llistarSubComunitats(Comunitat pare, int page) {
 		Query query = null;
 
-		query = JPA.em().createQuery("from Comunitat c where c.pare=?");
+		query = JPA.em().createQuery("select c from Comunitat c where c.pare=?1 ");
+		//query = JPA.em().createQuery("select c from Comunitat c join c.accesComunitats where c.pare=?1 ");
+		String dni=play.mvc.Controller.session().get("dni");
 		query.setParameter(1, pare);
+		//query.setParameter(2, dni);
 		List list = query.getResultList();
 		Collections.sort(list, ComunitatComparator);
 		Page p = new Page(list, page);
@@ -268,5 +281,15 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		}
 
 	};
+
+
+	public static Page llistarContactes(Comunitat comunitat, int page) {
+		// TODO Auto-generated method stub
+		Query query = JPA.em().createQuery("from Usuari u where u.administrador=true");
+		List<Usuari> contactes=query.getResultList();
+		contactes.add(comunitat.president);
+		Page p = new Page(contactes, page);
+		return p;
+	}
 
 }

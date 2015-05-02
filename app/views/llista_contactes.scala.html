@@ -1,0 +1,50 @@
+@(usuaris:List[Usuari], page:Page,comunitat:Comunitat )
+@import play.i18n.Messages
+@main(Messages.get("usuaris")) {
+
+ <div id="maincontent" >
+ 
+<h2 class="titol">@Messages.get("contactes") de @comunitat.nom</h2>
+
+
+
+
+
+   <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>@Messages.get("nom")</th>
+        <th>@Messages.get("cognoms")</th>
+        <th>@Messages.get("tel1")</th>
+        <th>@Messages.get("tel2")</th>
+        <th>@Messages.get("email")</th>
+        <th>@Messages.get("tipus")</th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    @for( usuari <- usuaris) {
+
+      <tr>
+        <td>@usuari.nom</td>
+        <td>@usuari.cognoms</td>
+        <td>@usuari.tel1</td>
+        <td>@usuari.tel2</td>
+        <td>@usuari.email</td>
+        <td>@{if(usuari.tipus.tipus=="Propietari"){Messages.get("propietari")}else if(usuari.tipus.tipus=="Llogater"){Messages.get("propietari")}else{usuari.tipus.tipus}}</td>
+        
+     </tr>
+      }
+    </tbody>
+          
+   </table>
+  
+   
+ 
+    </div>
+ 
+  }
+   
+   
+ 
+

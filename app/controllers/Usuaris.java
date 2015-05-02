@@ -16,9 +16,11 @@ import javax.persistence.PersistenceException;
 import models.CanviPassword;
 import models.Comunitat;
 import models.Element;
+import models.ElementVei;
 import models.Login;
 import models.Page;
 import models.PasswordGenerator;
+import models.TipusVei;
 import models.Usuari;
 import play.i18n.Messages;
 import play.libs.mailer.Email;
@@ -78,11 +80,13 @@ public class Usuaris extends Controller {
 		String text=text1.get("element")[0];
 		final String comunitat = text.substring(0,text.indexOf('&'));
 		final String element=text.substring(text.indexOf('&')+1, text.length());
+		String tipus=text1.get("tipus")[0];
+		TipusVei t= TipusVei.recerca(tipus);
 		Comunitat c = (Comunitat.recercaPerNif(comunitat));
 		Element	e = (Element.recercaPerCodi(c,element));
-		Usuari.assignarElement(usuari, e);
+		Usuari.assignarElement(usuari, e, t);
 	return redirect(
-            routes.Application.index());
+            routes.Usuaris.llistarElementsAssignats(usuari,1));
 	}
 	@Transactional
 	public static Result efectuarCanviPassword() {  
@@ -141,24 +145,24 @@ public class Usuaris extends Controller {
 	}
 	
 	@Transactional
-	public static Result borrarElementAssignat(Usuari usuari,Element element ) throws Exception {
+	public static Result borrarElementAssignat(Usuari usuari,Element element,TipusVei tipus ) throws Exception {
 		if (usuari==null || element== null) {
 			return notFound(String.format("El registre a eliminar no existeix."));
 		}
-		Usuari.borrarElementAssignat(usuari,element);
+		Usuari.borrarElementAssignat(usuari,element,tipus);
 		flash("success", String.format(
 				String.format("L'usuari %s s'ha desasignat de l'element %s de la comunitat %s.",
 						usuari.nom+" "+usuari.cognoms,element.codi,element.comunitat.nom)));
 
-		return redirect(routes.Usuaris.llistarUsuaris(1));
+		return redirect(routes.Usuaris.llistarElementsAssignats(usuari,1));
 	}
 	
 	@Transactional
 	public static Result llistarElementsAssignats(Usuari usuari, int page) {
-		List<Element> e=usuari.elements_vei;
-		Collections.sort(e,Element.ElementComparator);
-		Page p=new Page(usuari.elements_vei,page);
-		return ok(llista_elements_assignats.render(usuari.elements_vei,usuari,p));
+		List<ElementVei> e=usuari.elementsVei;
+		//Collections.sort(e,Element.ElementComparator);
+		Page p=new Page(usuari.elementsVei,page);
+		return ok(llista_elements_assignats.render(usuari.elementsVei,usuari,p));
 	}
 		
 

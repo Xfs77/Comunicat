@@ -17,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NoResultException;
@@ -24,6 +25,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import controllers.Comunitats;
 import play.libs.F;
@@ -71,65 +75,38 @@ public class Element implements Serializable,
 	}
 
 	@Id
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+//	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	@ManyToOne(fetch=FetchType.EAGER)
+
 	@JoinColumn(name = "nif")
 	public Comunitat comunitat;
 	@Id
 	@Column(name = "codi")
 	public String codi;
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((codi == null) ? 0 : codi.hashCode());
-		result = prime * result
-				+ ((comunitat == null) ? 0 : comunitat.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Element other = (Element) obj;
-		if (codi == null) {
-			if (other.codi != null)
-				return false;
-		} else if (!codi.equals(other.codi))
-			return false;
-		if (comunitat == null) {
-			if (other.comunitat != null)
-				return false;
-		} else if (!comunitat.equals(other.comunitat))
-			return false;
-		return true;
-	}
-
 	@Column(name = "descripcio")
 	public String descripcio;
 	@Column(name = "coeficient")
 	public float coeficient;
-    @ManyToMany(mappedBy="elements_vei", fetch=FetchType.EAGER)
-    public List<Usuari> veins_element =new ArrayList<Usuari>();
-
+	@OneToMany(mappedBy="element")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	public List<ElementVei> elementsVei=new ArrayList<ElementVei>();
 
 	public Element() {
 
 	}
 
 
-	public Element(Comunitat comunitat, String codi, String descripcio, float coeficient) {
+	
+	
+	public Element(Comunitat comunitat, String codi, String descripcio, float coeficient, List<ElementVei> elementsVei) {
 		super();
 		this.comunitat = comunitat;
 		this.codi = codi;
 		this.descripcio = descripcio;
 		this.coeficient = coeficient;
+		this.elementsVei = elementsVei;
 	}
-	
+
 	public Element(Comunitat comunitat) {
 		super();
 		this.comunitat = comunitat;
@@ -223,6 +200,37 @@ public class Element implements Serializable,
 
 	};
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((codi == null) ? 0 : codi.hashCode());
+		result = prime * result
+				+ ((comunitat == null) ? 0 : comunitat.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Element other = (Element) obj;
+		if (codi == null) {
+			if (other.codi != null)
+				return false;
+		} else if (!codi.equals(other.codi))
+			return false;
+		if (comunitat == null) {
+			if (other.comunitat != null)
+				return false;
+		} else if (!comunitat.equals(other.comunitat))
+			return false;
+		return true;
+	}
 
 
 }

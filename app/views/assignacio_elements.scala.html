@@ -28,7 +28,7 @@
  @helper.form(action = routes.Usuaris.realitzarAssignacioElements(usuari), 'enctype -> "multipart/form-data") {
 
     <select class="selectpicker" id="comunitat" >
-       <option></option>
+       <option value="" selected text-align=center>@Messages.get("seleccioni_comunitat")</option>
       
     @for( comunitat <- comunitats) {
  <option value=@comunitat>@comunitat.nif - @if(comunitat.pare.nom!="arrel"){@comunitat.pare.nom} @comunitat.nom</option>
@@ -38,12 +38,29 @@
    
   
   </select>
+  
+  
+<br>
 <br>
 	   <select class="selectpicker" id="element" name="element">
+       <option value="" selected text-align=center>@Messages.get("seleccioni_element")</option>
 
       
       
        </select>
+       
+       <br>
+       <div class="radio" name="tipus" >
+  <label>
+    <input type="radio" name="tipus" id="Propietari" value="Propietari" checked>
+	@Messages.get("propietari")
+  </label>
+  <label>
+    <input type="radio" name="tipus" id="Llogater" value="Llogater" checked>
+	@Messages.get("llogater")
+  </label>
+</div>
+       
        
         <button type="button" class="btn btn-default" data-dismiss="modal">@Messages.get("cancel")</button>
     <input type="submit" class="btn btn-primary" value=@Messages.get("enter")>
