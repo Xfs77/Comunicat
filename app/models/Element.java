@@ -65,7 +65,7 @@ public class Element implements Serializable,
 	@Override
 	public String javascriptUnbind() {
 		// TODO Auto-generated method stub
-		return this.codi;
+		return (this.comunitat.nif+"&"+this.codi);
 	}
 
 	@Override
@@ -75,9 +75,7 @@ public class Element implements Serializable,
 	}
 
 	@Id
-//	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@ManyToOne(fetch=FetchType.EAGER)
-
 	@JoinColumn(name = "nif")
 	public Comunitat comunitat;
 	@Id

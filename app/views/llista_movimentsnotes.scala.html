@@ -1,0 +1,66 @@
+@(moviments:List[MovimentNota],nota:Nota, page:Page)
+@import play.i18n.Messages
+@main(Messages.get("moviments")) {
+
+ <div id="maincontent" >
+
+<h2 class="titol">@Messages.get("moviments")</h2>
+
+
+<style>
+</style>
+
+
+   <table class="table table-striped">
+    <thead>
+      <tr>
+      	<th class="text-right">@Messages.get("codi")</th>
+        <th class="text-center">@Messages.get("data")</th>
+        <th >@Messages.get("detall")</th>
+        <th>@Messages.get("previsio")</th>
+        <th>@Messages.get("estat")</th>
+       	<th>@Messages.get("autor")</th>
+	    <th class="text-center">@Messages.get("notificat")</th>
+		<th  class="text-center">@Messages.get("opcions")</th>
+        
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    @for( moviment <- moviments) {
+
+      <tr>
+        <td class="text-right">@moviment.codi</td>
+        <td class="text-center">@moviment.fecha.format("dd/MM/yyyy")</td>
+        <td style="width: 20%;">@moviment.detall</td>
+        <td>@if(moviment.previsio!=null){@moviment.previsio.format("dd/MM/yyyy")}</td>
+        <td>@moviment.estat.descripcio</td>
+        <td>@moviment.usuari.nom @moviment.usuari.cognoms </td>
+		<td class="text-center">@if(moviment.notificada==true){Si}else{No} </td>
+		
+        <td  class="text-center">
+             <a href="@routes.Notes.detallMovimentNota(moviment)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a> 
+        
+               <a onclick="javascript:del('@routes.Notes.borrarMovimentNota(moviment)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a> 
+       
+        </td>
+     </tr>
+      }
+    </tbody>
+          
+   </table>
+  
+  <a class="btn btn-primary" href="@routes.Notes.nouMovimentNota(nota)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
+  <br>
+  &nbsp
+  <br>
+  
+  
+   
+   
+    </div>
+ 
+ 
+ 
+}

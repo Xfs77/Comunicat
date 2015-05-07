@@ -40,6 +40,7 @@ import views.html.*;
 
 import org.hibernate.JDBCException;
 import org.hibernate.exception.SQLGrammarException;
+import org.postgresql.util.PSQLException;
 
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerPlugin;
@@ -74,7 +75,7 @@ public class Usuaris extends Controller {
 	}
 	
 	@Transactional
-	public static Result realitzarAssignacioElements(Usuari usuari) {
+	public static Result realitzarAssignacioElements(Usuari usuari)  {
 	    final MultipartFormData values = request().body().asMultipartFormData();
 		Map<String, String[]> text1=values.asFormUrlEncoded();
 		String text=text1.get("element")[0];
@@ -85,7 +86,8 @@ public class Usuaris extends Controller {
 		Comunitat c = (Comunitat.recercaPerNif(comunitat));
 		Element	e = (Element.recercaPerCodi(c,element));
 		Usuari.assignarElement(usuari, e, t);
-	return redirect(
+
+		return redirect(
             routes.Usuaris.llistarElementsAssignats(usuari,1));
 	}
 	@Transactional
@@ -98,7 +100,12 @@ public class Usuaris extends Controller {
 			  CanviPassword canviPassword = canviPasswordForm.get();;
 			  Usuari usuari=Usuari.recercaPerDni(session().get("dni"));
 			  usuari.password=canviPassword.nou1;
-			  Usuari.guardarUsuari(usuari);
+			  try {
+				Usuari.guardarUsuari(usuari);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			  flash("success", Messages.get("ok_canvi_password"));
 
 			  return redirect(
@@ -123,7 +130,14 @@ public class Usuaris extends Controller {
 		} else {
 			Usuari usuariForm = boundForm.get();
 		
-			Usuari.guardarUsuari(usuariForm);
+			try{
+				Usuari.guardarUsuari(usuariForm);
+			}
+			catch (Exception e){
+				flash("error", Messages.get("error_enviament_email"));
+				return badRequest(detalls_usuari.render(boundForm));
+			}
+			
 			flash("success", String.format(
 					"L'usuari %s s'ha registrat correctament", usuariForm.dni));
 
@@ -167,7 +181,7 @@ public class Usuaris extends Controller {
 		
 
 	@Transactional
-	public static Result correuAlta(Usuari usuari) {
+	public static Result correuAlta(Usuari usuari) throws Exception {
 		
 		try {
 			
@@ -176,7 +190,7 @@ public class Usuaris extends Controller {
 
 			
 		} catch (Exception e) {
-			flash("error", Messages.get("error_enviament_mail"));
+			throw new Exception(e);
 		}
 
 		return redirect(routes.Usuaris.llistarUsuaris(1));

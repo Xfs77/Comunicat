@@ -69,5 +69,70 @@
    </script>
    
    
+<script>
+$(window).load(function(){
+	jsRoutes.controllers.Application.predeterminado().ajax({
+        success: function(data) {        	
+        	$("#idiom").val(String(data).replace(/(\r\n|\n|\r)/gm,""));
+        },
+        error: function
+        () {
+          alert("Error!")
+        } 
+ })
+	
+	});
+
+
+</script>
+
+   <script>
+$(document).ready(function(){
+$("#idiom").change( function() {
+    
+	 var selectedIdiom = $("#idiom").val();
+	 alert("");
+	    jsRoutes.controllers.Application.idioma(selectedIdiom).ajax({
+	        success: function(data) {
+	        	 var selectedIdiom = $("#idiom").val();
+	     	    jsRoutes.controllers.Application.idioma(selectedIdiom).ajax({
+	     	        success: function(data) {
+	     	            location.reload();
+	     	            
+	     	        },
+	     	        error: function() {
+	     	          alert("Error!")
+	     	        }
+	     	      })	            
+	        },
+	        error: function() {
+	          alert("Error!")
+	        }
+	      })
+ }) ; 
+
+}) ;
+
+
+
+</script>
+   
+<script>
+$(document).ready(function () {
+    
+	$('.input-group.date').datepicker({
+        format: "dd/mm/yyyy",
+        language: 'ca',
+        orientation: "top left",
+        autoclose: true
+    });
+	
+	
+    $("#data_alta").change( function() {
+    	
+    })
+
+});
+</script>
     
 </html>

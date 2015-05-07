@@ -68,3 +68,4 @@ acceptar=Aceptar
 assignacio_elements=Asignación Elementos
 seleccioni_comunitat=Seleccione la Comunidad a asignar
 seleccioni_element=Seleccione el Elemento a asignar
+must_login=Debe registrarse.

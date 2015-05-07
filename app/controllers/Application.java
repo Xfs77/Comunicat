@@ -19,6 +19,19 @@ public static Result login() {
 	
 	}
 
+public static Result predeterminado() {
+	
+	String idiom =lang().language();
+	
+	return ok(ajax_result.render(idiom));
+	
+	}
+
+public static Result idioma(String idioma) {
+	changeLang(idioma); 
+	return ok(index.render("live stream"));
+}
+
 
 public static Result logout() {
     session().clear();
@@ -55,7 +68,11 @@ public static Result authenticate() {
 	      return ok(
 	        Routes.javascriptRouter("jsRoutes",
 	          // Routes
-	          controllers.routes.javascript.Application.index()
+	          controllers.routes.javascript.Application.index(),
+	          controllers.routes.javascript.Application.predeterminado(),
+	          controllers.routes.javascript.Application.idioma()
+
+
 	        )
 	      );
 	    }

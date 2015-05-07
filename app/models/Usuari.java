@@ -25,6 +25,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NoResultException;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.RollbackException;
 import javax.persistence.Table;
@@ -108,7 +109,7 @@ PathBindable<Usuari> {
 	public boolean administrador;
 	@Column(name = "enviat")
 	public boolean enviat;
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinColumn(name = "tipus")
 	public TipusVei tipus;
@@ -194,7 +195,7 @@ PathBindable<Usuari> {
 		return RefUsuari;
 	}
 	
-	public static void guardarUsuari(Usuari usuari) {
+	public static void guardarUsuari(Usuari usuari) throws Exception {
 
 		Usuari refUsuari = obtenirRefUsuari(usuari);
 		if (refUsuari != null) {
@@ -214,10 +215,10 @@ PathBindable<Usuari> {
 			
 
 		} else {
-			Usuaris.correuAlta(usuari);
-			}
+				Usuaris.correuAlta(usuari);
 
-		
+
+		}
 	}
 
 	public static void correuAlta(Usuari usuari) {

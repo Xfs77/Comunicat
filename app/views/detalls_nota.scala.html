@@ -1,0 +1,86 @@
+@(notaForm: Form[Nota], usuari: Usuari, estats:List[EstatNota], comunitats:List[Comunitat], detall: String)
+@import helper._
+@import helper.twitterBootstrap._
+@import play.i18n.Messages
+
+
+@main(Messages.get("formulari_notes")) {
+      <div id="maincontent">
+  
+  
+  <h2 class="titol">@Messages.get("formulari_notes")</h2>
+  
+   @helper.form(action = routes.Notes.guardarNota(), 'enctype -> "multipart/form-data") {
+  
+  <fieldset>
+    @if(notaForm("codi").value!="0"){
+	  @helper.inputText(notaForm("codi"),'_label -> Messages.get("codi"),   'readonly -> "readonly")
+}
+    <label for="data">@Messages.get("autor")</label>  
+    <br>
+    <input type="text" value="@usuari.nom @usuari.cognoms" readonly>
+    <br>
+	<p class="sl"></p>
+	
+<div class="clearfix  " id="fecha">
+    <label for="data">@Messages.get("data_alta")</label>
+</div>
+    
+<div class="input-group date">
+  <input type="text" class="input" id="fecha" name="fecha" required value=@notaForm("fecha").value >
+      <span class="add-on"> <i class="glyphicon glyphicon-th blue"></i></span>
+ </div>
+  	<p class="sl"></p>
+  
+ 
+<input type="hidden" name="usuari" value=@notaForm("usuari").value />
+
+<strong>@Messages.get("estat")</strong>
+	<p class="sls"></p>
+
+  <select class="selectpicker"  id="estat"  name="estat" data-width="200px"  @if(notaForm("codi").value=="0"){disabled="true"} >
+    @for( estat <- estats) {
+ <option value=@estat.estat @if(notaForm("estat").value=="Pendent Publicar"){Selected}>@estat.descripcio</option>
+      }
+  </select>
+ <br>
+	<p class="sl"></p>
+<strong>@Messages.get("comunitat")</strong>
+<br>
+	<p class="sls"></p>
+
+  <select class="selectpicker" id="comunitat"  name="comunitat"  >
+    @for( comunitat <- comunitats) {
+ <option value=@comunitat.nif>@comunitat.nif - @comunitat.pare.nom @comunitat.nom</option>
+      }
+  </select>
+  <br>
+	<p class="sl"></p>
+  @helper.inputText(notaForm("descripcio"),'_label -> Messages.get("descripcio"), 'size -> 98)
+    @if(notaForm("codi").value=="0"){
+
+<strong>@Messages.get("detall")</strong>
+ <br>
+	<p class="sls"></p>
+}
+<textarea name="detall" id="detall" rows="4" cols="100" value="@detall"  @if(notaForm("codi").value!="0"){hidden}> </textarea> 
+<br>
+   @if(notaForm("codi").value=="0"){	<p class="sl"></p>}
+
+
+
+<input type="submit" onclick="habilita()" class="btn btn-success" value=@Messages.get("Save")>
+  <a class="btn btn-danger" href="@routes.Notes.llistarNotes(1)">@Messages.get("Cancel")</a>
+   </fieldset>
+    </div>
+    
+    <script>
+    function habilita() {
+        document.getElementById("estat").disabled=false;
+    }
+
+    </script>
+    
+   } 
+    
+}

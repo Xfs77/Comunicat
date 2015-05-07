@@ -116,7 +116,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinColumn(name = "president")
 	public Usuari president;
-	@OneToMany
+	@OneToMany(cascade=CascadeType.MERGE)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinColumn(name = "nif")
 	private List<Element> elements = new ArrayList<Element>();
@@ -158,6 +158,15 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		Collections.sort(list, ComunitatComparator);
 		Page p = new Page(list, page);
 		return p;
+
+	}
+	
+	public static List<Comunitat> obtenirComunitats() {
+		Query query = null;
+		query = JPA.em().createQuery("from Comunitat c where c.nif!=?1");
+		query.setParameter(1, "arrel");
+		List<Comunitat> comunitats = query.getResultList();
+		return comunitats;
 
 	}
 	

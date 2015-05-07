@@ -1,0 +1,80 @@
+@(movimentForm: Form[MovimentNota], nota:Nota, usuari: Usuari, estats:List[EstatNota])
+@import helper._
+@import helper.twitterBootstrap._
+@import play.i18n.Messages
+
+
+@main(Messages.get("formulari_moviments")) {
+      <div id="maincontent">
+  
+  
+  
+  <h2 class="titol">@Messages.get("formulari_moviments")</h2>
+  <strong>@Messages.get("autor")</strong>
+	<p class="sls"></p>
+  
+        <input type="text" readonly name="usuari" value="@usuari.nom @usuari.cognoms"  />
+     
+	<p class="sl"></p>
+   @helper.form(action = routes.Notes.guardarMovimentNota(), 'enctype -> "multipart/form-data") {
+  
+  <fieldset>
+   
+   	  @helper.inputText(movimentForm("nota"),'_label -> Messages.get("nota"),   'readonly -> "readonly")
+        @if(movimentForm("codi").value!="0"){
+    
+      @helper.inputText(movimentForm("codi"),'_label -> Messages.get("codi"),   'readonly -> "readonly")
+   }
+<div class="clearfix  " id="fecha">
+    <label for="data">@Messages.get("data_moviment")</label>
+</div>
+    
+<div class="input-group date">
+  <input type="text" class="input" id="fecha" name="fecha" required value=@movimentForm("fecha").value >
+      <span class="add-on"> <i class="glyphicon glyphicon-th blue"></i></span>
+ </div>
+  	<p class="sl"></p>
+  
+          @helper.textarea(movimentForm("detall"), '_label -> Messages.get("detall") )
+   
+   
+   <div class="clearfix  " id="fecha">
+    <label for="data">@Messages.get("data_moviment")</label>
+</div>
+    
+<div class="input-group date">
+  <input type="text" class="input" id="previsio" name="previsio"  value=@movimentForm("previsio").value >
+      <span class="add-on"> <i class="glyphicon glyphicon-th blue"></i></span>
+ </div>
+  	<p class="sl"></p>
+  
+   
+<strong>@Messages.get("estat")</strong>
+	<p class="sls"></p>
+
+  <select class="selectpicker"  id="estat"  name="estat" data-width="200px"  >
+    @for( estat <- estats) {
+ <option value=@estat.estat @if(movimentForm("estat").value==estat.estat){Selected}>@estat.descripcio</option>
+      }
+  </select>
+ <br>
+	<p class="sl"></p>
+	
+   <input type="text" readonly name="usuari" value="@usuari.dni" hidden />
+   
+   
+<input type="submit" onclick="habilita()" class="btn btn-success" value=@Messages.get("Save")>
+  <a class="btn btn-danger" href="@routes.Notes.llistarMoviments(nota,1)">@Messages.get("Cancel")</a>
+   </fieldset>
+    </div>
+    
+    <script>
+    function habilita() {
+        document.getElementById("estat").disabled=false;
+    }
+
+    </script>
+    
+   } 
+    
+}
