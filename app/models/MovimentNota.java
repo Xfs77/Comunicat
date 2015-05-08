@@ -187,8 +187,13 @@ import play.mvc.PathBindable;
 				Query query = null;
 				query = JPA.em().createQuery("SELECT MAX(m.codi) from MovimentNota m WHERE m.nota=?1");
 				query.setParameter(1, movimentNotaForm.nota);
+				try{
 				Integer i=(Integer) query.getSingleResult();
 				movimentNotaForm.codi=i+1;
+				}
+				catch (Exception e){
+					movimentNotaForm.codi=1;
+				}
 				MovimentNota m=(JPA.em().merge(movimentNotaForm));
 				refNota.estat=m.estat;
 				JPA.em().merge(refNota);

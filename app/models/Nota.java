@@ -55,7 +55,7 @@ import play.mvc.PathBindable;
 		@LazyCollection(LazyCollectionOption.FALSE)
 		@JoinColumn(name = "usuari")
 		public Usuari usuari;
-		@OneToMany(mappedBy="nota", cascade=CascadeType.ALL)
+		@OneToMany(mappedBy="nota")
 		private List<MovimentNota> movimentsNota = new ArrayList<MovimentNota>();
 		
 		public Nota(){
@@ -99,11 +99,11 @@ import play.mvc.PathBindable;
 			// TODO Auto-generated method stub
 			EntityManager em = JPA.em();
 			Nota refNota = obtenirRefNota(nota);
-			refNota.movimentsNota.clear();
 			try{
 				em.remove(refNota);
+				em.flush();
 			}catch (Exception e){
-				
+				String s="";
 			}
 		}
 		

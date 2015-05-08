@@ -69,7 +69,8 @@ public class Pare {
 	@Column(name = "txt")
 	public String txt;
 	
-	@OneToMany(cascade=CascadeType.ALL)
+	//@OneToMany(mappedBy="pare", cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="pare")
 	@LazyCollection( LazyCollectionOption.FALSE)
 	public List<Fill> fills = new ArrayList<Fill>();
 	
@@ -78,11 +79,10 @@ public class Pare {
 		
 	}
 
-	public Pare(String id, String txt, List<Fill> fills) {
+	public Pare(String id, String txt) {
 		super();
 		this.id = id;
 		this.txt = txt;
-		this.fills = fills;
 	}
 
 	public static void borrarPare() {
@@ -95,11 +95,13 @@ public class Pare {
 			EntityManager em = JPA.em();
 		
 		Pare refPare = em.find(Pare.class, id);
-		//refPare.fills.clear();
-		Fill f=new Fill(refPare,"2","hola");
-		refPare.fills.add(f);
-
-		em.merge(f);
+		refPare.fills.clear();
+		//Pare p=new Pare("4","4");
+		//Fill f=new Fill(p,"2","hola");
+	//	refPare.fills.add(f);
+	//	em.persist(refPare);
+//em.getTransaction().		
+		em.remove(refPare);
 		em.flush();
 		}
 		catch(Exception e){
