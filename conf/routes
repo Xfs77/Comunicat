@@ -7,6 +7,9 @@ GET     /                           controllers.Application.index()
 GET /predeterminado 			controllers.Application.predeterminado()
 GET    /idioma/:idioma                           controllers.Application.idioma(idioma: String)
 
+GET	/pare/borrar/       controllers.Parefill.borrarPare()
+GET	/fills/        controllers.Parefill.Fills()
+
 
 #Comunitat
 
@@ -60,6 +63,19 @@ GET  /notes/moviments/detall/:moviment	controllers.Notes.detallMovimentNota(movi
 GET  /login        controllers.Application.login()
 GET     /logout                     controllers.Application.logout()
 POST /authenticate controllers.Application.authenticate()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Javascript routing
 GET    /assets/javascripts/routes      controllers.Application.javascriptRoutes()

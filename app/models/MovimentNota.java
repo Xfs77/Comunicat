@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -44,7 +45,7 @@ import play.mvc.PathBindable;
 		public String detall;
 		@Column(name = "previsio")
 		public Date previsio;
-		@ManyToOne
+		@ManyToOne	
 		@LazyCollection(LazyCollectionOption.FALSE)
 		@JoinColumn(name = "estat")
 		public EstatNota estat;
