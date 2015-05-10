@@ -1,63 +1,60 @@
-@(notes:List[Nota], page:Page)
-@import play.i18n.Messages
+@(notes:List[Nota], page:Page) @import play.i18n.Messages
 @main(Messages.get("Notes")) {
 
- <div id="maincontent" >
+<div id="maincontent">
 
-<h2 class="titol">@Messages.get("Notes")</h2>
+	<h2 class="titol">@Messages.get("Notes")</h2>
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th class="text-right">@Messages.get("codi")</th>
+				<th class="text-center">@Messages.get("data")</th>
+				<th>@Messages.get("descripcio")</th>
+				<th>@Messages.get("estat")</th>
+				<th>@Messages.get("comunitat")</th>
+				<th>@Messages.get("autor")</th>
+				<th class="text-center">@Messages.get("opcions")</th>
+
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+
+			@for( nota <- notes) {
+
+			<tr>
+				<td class="text-right">@nota.codi</td>
+				<td class="text-center">@nota.fecha.format("dd/MM/yyyy")</td>
+				<td>@nota.descripcio</td>
+				<td>@nota.estat.descripcio</td>
+				<td>@nota.comunitat.pare.nom @nota.comunitat.nom</td>
+				<td>@nota.usuari.nom @nota.usuari.cognoms</td>
+				<td class="text-center"><a
+					href="@routes.Notes.detallNota(nota)"><i
+						class="glyphicon glyphicon-pencil" data-toggle="tooltip"
+						data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp
+					<a onclick="javascript:del('@routes.Notes.borrarNota(nota)')"><i
+						class="glyphicon glyphicon-trash" data-toggle="tooltip"
+						data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a>
+					<a href="@routes.Notes.llistarMoviments(nota,1)"><i
+						class="glyphicon glyphicon-search" data-toggle="tooltip"
+						data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
+
+					</td>
+			</tr>
+			}
+		</tbody>
+
+	</table>
+
+	<a class="btn btn-primary" href="@routes.Notes.novaNota()"><span
+		class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+		@Messages.get("registre")</a> <br> &nbsp <br>
 
 
 
 
+</div>
 
-   <table class="table table-striped">
-    <thead>
-      <tr>
-      	<th class="text-right">@Messages.get("codi")</th>
-        <th  class="text-center">@Messages.get("data")</th>
-        <th>@Messages.get("descripcio")</th>
-        <th>@Messages.get("estat")</th>
-        <th>@Messages.get("comunitat")</th>
-       	<th>@Messages.get("autor")</th>
-		<th  class="text-center">@Messages.get("opcions")</th>
-        
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-    
-    @for( nota <- notes) {
-
-      <tr>
-        <td class="text-right">@nota.codi</td>
-        <td  class="text-center">@nota.fecha.format("dd/MM/yyyy")</td>
-        <td>@nota.descripcio</td>
-        <td>@nota.estat.descripcio</td>
-        <td>@nota.comunitat.pare.nom @nota.comunitat.nom</td>
-        <td>@nota.usuari.nom @nota.usuari.cognoms </td>
-        <td  class="text-center">
-                <a href="@routes.Notes.detallNota(nota)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a> 
-        
-        <a onclick="javascript:del('@routes.Notes.borrarNota(nota)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a> 
-               <a href="@routes.Notes.llistarMoviments(nota,1)"><i class="glyphicon glyphicon-search" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
-       
-        </td>
-     </tr>
-      }
-    </tbody>
-          
-   </table>
-  
-  <a class="btn btn-primary" href="@routes.Notes.novaNota()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
-  <br>
-  &nbsp
-  <br>
-  
-  
-   
-   
-    </div>
- 
- 
- 
 }

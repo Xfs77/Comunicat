@@ -57,14 +57,17 @@
 
     <script>
      function del(urlToDelete) {
-        $.ajax({
+
+    	 $.ajax({
           url: urlToDelete,
           type: 'DELETE',
-          success: function(results) {
+          success: function(result) {
             // Refresh the page
             location.reload();
           }
         });
+         @flash.put("activa","");
+
       }
    </script>
    
@@ -91,7 +94,6 @@ $(document).ready(function(){
 $("#idiom").change( function() {
     
 	 var selectedIdiom = $("#idiom").val();
-	 alert("");
 	    jsRoutes.controllers.Application.idioma(selectedIdiom).ajax({
 	        success: function(data) {
 	        	 var selectedIdiom = $("#idiom").val();

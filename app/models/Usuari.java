@@ -236,8 +236,9 @@ PathBindable<Usuari> {
 	
 		MailerPlugin.send(email);
 	
-		usuari.enviat=true;
-		JPA.em().merge(usuari);
+		Usuari refUsuari = Usuari.obtenirRefUsuari(usuari);
+		refUsuari.enviat=true;
+		JPA.em().merge(refUsuari);
 	}
 
 	public static Usuari authenticate(String dni, String password) {

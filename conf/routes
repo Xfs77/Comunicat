@@ -55,6 +55,8 @@ GET  /notes/moviments/nou/:nota	controllers.Notes.nouMovimentNota(nota:models.No
 POST /notes/   	controllers.Notes.guardarNota()
 
 DELETE	/notes/borrar/:nota           controllers.Notes.borrarNota(nota: models.Nota)
+POST	/notes/borrar/:nota           controllers.Notes.borrarNota(nota: models.Nota)
+
 POST /notes/moviments   	controllers.Notes.guardarMovimentNota()
 GET  /notes/moviments/detall/:moviment	controllers.Notes.detallMovimentNota(moviment:models.MovimentNota)
 

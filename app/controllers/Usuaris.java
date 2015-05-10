@@ -187,13 +187,18 @@ public class Usuaris extends Controller {
 			
 			Usuari.correuAlta(usuari);
 			flash("success", Messages.get("ok_enviament_mail"));
-
+			return redirect(routes.Usuaris.llistarUsuaris(1));
+		
 			
 		} catch (Exception e) {
-			throw new Exception(e);
+			flash("error", e.getLocalizedMessage());
+			return redirect(routes.Usuaris.llistarUsuaris(1));
+
+			
+			
+
 		}
 
-		return redirect(routes.Usuaris.llistarUsuaris(1));
 
 	}
 

@@ -95,16 +95,16 @@ import play.mvc.PathBindable;
 
 		}
 		
-		public static void borrarNota(Nota nota) {
+		public static void borrarNota(Nota nota) throws Exception,PersistenceException {
 			// TODO Auto-generated method stub
 			EntityManager em = JPA.em();
 			Nota refNota = obtenirRefNota(nota);
 			try{
 				em.remove(refNota);
 				em.flush();
-			}catch (Exception e){
-				String s="";
-			}
+			}catch (PersistenceException e){
+				throw e;
+				}
 		}
 		
 		

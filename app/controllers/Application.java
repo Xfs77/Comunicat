@@ -70,7 +70,8 @@ public static Result authenticate() {
 	          // Routes
 	          controllers.routes.javascript.Application.index(),
 	          controllers.routes.javascript.Application.predeterminado(),
-	          controllers.routes.javascript.Application.idioma()
+	          controllers.routes.javascript.Application.idioma(),
+	          controllers.routes.javascript.Notes.borrarNota()
 
 
 	        )

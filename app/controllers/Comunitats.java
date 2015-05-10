@@ -136,7 +136,7 @@ public class Comunitats extends Controller {
 		}
 
 		Element.borrarElement(element);
-		return redirect(routes.Comunitats.llistarElements(element.comunitat, 1));
+		return redirect(routes.Comunitats.llistarComunitats(1));
 	}
 
 	@Transactional(readOnly = true)

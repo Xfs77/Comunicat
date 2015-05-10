@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.PersistenceException;
+
 import models.Comunitat;
 import models.Nota;
 import models.EstatNota;
@@ -115,11 +117,26 @@ public class Notes extends Controller {
 			return notFound(String.format("La Nota %s no existeix.",
 					nota.codi));
 		}
-		Nota.borrarNota(nota);
-		flash("success", String.format(
-				"La Nota %s s'ha registrat correctament", nota.codi));
+		try {
+			Nota.borrarNota(nota);
+			flash("success", String.format(
+					"La Nota %s s'ha borrat correctament", nota.codi));
+			return redirect(routes.Notes.llistarNotes(1));
+		} catch (PersistenceException e) {
+			flash("error", String.format(
+					"La Nota %s s'ha borrat correctament", nota.codi));
+			return redirect(routes.Notes.llistarNotes(1));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			flash("success", String.format(
+					"La Nota %s s'ha borrat correctament", nota.codi));
+			return redirect(routes.Notes.llistarNotes(1));
 
-		return redirect(routes.Notes.llistarNotes(1));
+		}
+	
+
+		
 	}
 	
 	@Transactional
