@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import play.db.jpa.JPA;
 import play.libs.F;
+import play.libs.mailer.Email;
+import play.libs.mailer.MailerPlugin;
 import play.mvc.PathBindable;
  
 	@Entity
@@ -36,7 +39,7 @@ import play.mvc.PathBindable;
 	public class Reunio implements Serializable, PathBindable<Reunio> {
 		@Id
 		@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_reunio")
-		@SequenceGenerator(name = "seq_reunio", sequenceName = "seq_reunio", allocationSize = 1, initialValue = 1)
+		@SequenceGenerator(name = "seq_reunio", sequenceName = "seq_reunio", allocationSize = 1, initialValue = 2)
 		@Column(name = "codi")
 		public int codi;
 		@Column(name = "fecha")
@@ -53,15 +56,21 @@ import play.mvc.PathBindable;
 		public Comunitat comunitat;
 		@ManyToOne
 		@LazyCollection(LazyCollectionOption.FALSE)
+		@JoinColumn(name = "estat")
 		public EstatReunio estat;
+		@Column(name = "notificada")
+		public boolean notificada;
+		@OneToMany(mappedBy="reunio")
+		public List<Document> documents = new ArrayList<Document>();
 		
 		
 		public Reunio(){
 		}
 
 
-		public Reunio(int codi, Date fecha, String hora, String lloc,
-				String descripcio, Comunitat comunitat, EstatReunio estat) {
+
+		public Reunio(int codi, Date fecha, String hora, String lloc, String descripcio, Comunitat comunitat,
+				EstatReunio estat, boolean notificada, List<Document> documents) {
 			super();
 			this.codi = codi;
 			this.fecha = fecha;
@@ -70,7 +79,10 @@ import play.mvc.PathBindable;
 			this.descripcio = descripcio;
 			this.comunitat = comunitat;
 			this.estat = estat;
+			this.notificada = notificada;
+			this.documents = documents;
 		}
+
 
 
 		@Override
@@ -142,6 +154,21 @@ import play.mvc.PathBindable;
 			return p;
 
 		}
+
+
+
+		public static Page llistarReunionsFiltrades(int page, ReunionsFiltre reunioFiltreForm) {
+			// TODO Auto-generated method stub
+			Query query = null;
+			query = JPA.em().createQuery("from Reunio r where r.fecha >?1 ");
+			query.setParameter(1, reunioFiltreForm.fechaIni);
+		//	query = JPA.em().createQuery("select n from Nota n join n.comunitat c join c.accesComunitats a");
+			List list = query.getResultList();
+			Collections.sort(list, ReunioComparator);
+			Page p = new Page(list, page);
+			return p;		
+			}
+
 		
 		public static void guardarReunio(Reunio formReunio) {
 
@@ -160,10 +187,44 @@ import play.mvc.PathBindable;
 					}
 		}
 		
+		public static void notificarReunio(Reunio reunio) {
+			Query query = null;
+			query = JPA.em().createQuery("select a from Reunio r join r.comunitat c join c.accesComunitats a where r=?1");
+			query.setParameter(1, Reunio.obtenirRefReunio(reunio));
+			List <Usuari>lu=query.getResultList();
+			
+			Iterator<Usuari> iterator = lu.iterator();
+			while (iterator.hasNext()) {
+				Usuari u=iterator.next();
+				Reunio.correuReunio(u, reunio);
+			}
+			
+			Reunio refReunio= Reunio.obtenirRefReunio(reunio);
+			refReunio.notificada=true;
+			JPA.em().merge(refReunio);
+		}
+		
+		public static void correuReunio(Usuari usuari, Reunio reunio) {
+			
+		
+			Email email = new Email();
+		
+			email.setSubject("Correu Reunio a www.ComunicatComunitat");
+			email.setFrom("comunicatcomunitat@gmail.com");
+			email.addTo(usuari.email);
+			email.setBodyText("A text message");
+		
+			
+			
+			MailerPlugin.send(email);
+		
+			
+		}
+		
 		public static Comparator<Reunio> ReunioComparator = new Comparator<Reunio>() {
 
 			public int compare(Reunio r1, Reunio r2) {
-				return 	r1.fecha.compareTo(r2.fecha);
+				return 	r1.fecha.compareTo(r2.fecha)*-1;
 
 			}
 			};
@@ -194,6 +255,7 @@ import play.mvc.PathBindable;
 			// TODO Auto-generated method stub
 			return Integer.toString(this.codi);
 		}
+
 		
 		
 	}

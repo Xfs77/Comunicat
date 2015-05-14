@@ -1,0 +1,63 @@
+@(documents:List[Document], page:Page, reunio:Reunio) @import play.i18n.Messages
+@main(Messages.get("Documents")) {
+
+<div id="maincontent">
+
+	<h2 class="titol">@Messages.get("documents")</h2>
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+							<th>@Messages.get("codi")</th>
+							<th>@Messages.get("descripcio")</th>
+			
+
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+
+			@for( document <- documents) {
+
+			<tr>
+							<td>@document.codi</td>
+							<td>@document.descripcio</td>
+				<td class="text-center">
+				        <a href="@routes.Reunions.detallDocument(document)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a> 
+        <a onclick="javascript:del('@routes.Reunions.borrarDocument(document)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a> 
+          <a onclick="javascript:pdf('@document.codi')"><i class="glyphicon glyphicon-eye-open"></i></a> 
+
+					</td>
+			</tr>
+			}
+		</tbody>
+
+	</table>
+
+	<a class="btn btn-primary" href="@routes.Reunions.nouDocument(reunio)"><span
+		class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+		@Messages.get("registre")</a> <br> &nbsp <br>
+
+
+
+
+<script>
+        	function pdf(nif) {
+ 	    	    jsRoutes.controllers.Reunions.readFile(nif).ajax({
+        	        success: function(data) {        	
+        	        	var a ="@routes.Assets.at("javascripts/web/viewer.html")";
+                		var b = encodeURIComponent("http://localhost:9000/assets/javascripts/web/tmp/"+data);
+                	    var fin=a+"?file="+b;  
+                	    window.open(fin);
+                	    },
+        	        error: function () {
+        	           alert("Error!")
+        	        } 
+        	 })
+        		
+        	}
+        </script>
+        
+</div>
+
+}

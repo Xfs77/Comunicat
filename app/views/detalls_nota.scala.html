@@ -11,7 +11,6 @@
   <h2 class="titol">@Messages.get("formulari_notes")</h2>
   
    @helper.form(action = routes.Notes.guardarNota(), 'enctype -> "multipart/form-data") {
-  
   <fieldset>
     @if(notaForm("codi").value!="0"){
 	  @helper.inputText(notaForm("codi"),'_label -> Messages.get("codi"),   'readonly -> "readonly")
@@ -51,9 +50,10 @@
 
   <select class="selectpicker" id="comunitat"  name="comunitat"  >
     @for( comunitat <- comunitats) {
- <option value=@comunitat.nif>@comunitat.nif - @comunitat.pare.nom @comunitat.nom</option>
+ <option value=@comunitat.nif @if(notaForm("comunitat").value()==comunitat.nif){selected}>@comunitat.nif - @comunitat.pare.nom @comunitat.nom</option>
       }
   </select>
+ 
   <br>
 	<p class="sl"></p>
   @helper.inputText(notaForm("descripcio"),'_label -> Messages.get("descripcio"), 'size -> 98)

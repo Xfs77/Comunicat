@@ -181,7 +181,7 @@ public class Usuaris extends Controller {
 		
 
 	@Transactional
-	public static Result correuAlta(Usuari usuari) throws Exception {
+	public static Result correuAlta(Usuari usuari)  {
 		
 		try {
 			
@@ -191,7 +191,7 @@ public class Usuaris extends Controller {
 		
 			
 		} catch (Exception e) {
-			flash("error", e.getLocalizedMessage());
+			flash("error", e.getCause().toString());
 			return redirect(routes.Usuaris.llistarUsuaris(1));
 
 			

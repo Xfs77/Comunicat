@@ -1,0 +1,31 @@
+@(documentForm: Form[Document],reunio:Reunio)
+@import helper._
+@import helper.twitterBootstrap._
+@import play.i18n.Messages
+
+
+@main("formulari_documents") {
+      <div id="maincontent">
+  <h2 class="titol">@Messages.get("formulari_documents")</h2>
+  @helper.form(action = routes.Reunions.guardarDocument(reunio),'enctype -> "multipart/form-data") {
+  <fieldset>
+  @if(documentForm("codi").value()!="0"){
+  	@helper.inputText(documentForm("codi"), '_label -> Messages.get("codi"),   'readonly -> "readonly")
+  	}
+  	@helper.inputText(documentForm("descripcio"), '_label -> Messages.get("descripcio"))
+	@helper.inputFile(documentForm("document"), '_label -> Messages.get("document"))
+	  	
+  
+  </fieldset>
+  <br>
+  	<p class="sls"></p>
+  
+  <input type="submit" class="btn btn-success" value=@Messages.get("Save")>
+  <a class="btn btn-danger" href="@routes.Reunions.llistarDocuments(reunio,1)">@Messages.get("Cancel")</a>
+    </div>
+      }
+    
+    
+    
+    
+}

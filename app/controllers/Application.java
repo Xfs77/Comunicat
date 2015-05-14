@@ -61,7 +61,6 @@ public static Result authenticate() {
     	return ok(index.render("Your new application is ready."));
     }
 
-	
 	 
 	  public static Result javascriptRoutes() {
 	      response().setContentType("text/javascript");
@@ -71,9 +70,7 @@ public static Result authenticate() {
 	          controllers.routes.javascript.Application.index(),
 	          controllers.routes.javascript.Application.predeterminado(),
 	          controllers.routes.javascript.Application.idioma(),
-	          controllers.routes.javascript.Notes.borrarNota()
-
-
+	          controllers.routes.javascript.Reunions.readFile()
 	        )
 	      );
 	    }

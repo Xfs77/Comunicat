@@ -1,9 +1,9 @@
 @(notes:List[Nota], page:Page) @import play.i18n.Messages
-@main(Messages.get("Notes")) {
+@main(Messages.get("notes")) {
 
 <div id="maincontent">
 
-	<h2 class="titol">@Messages.get("Notes")</h2>
+	<h2 class="titol">@Messages.get("notes")</h2>
 
 	<table class="table table-striped">
 		<thead>
@@ -39,6 +39,9 @@
 						data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a>
 					<a href="@routes.Notes.llistarMoviments(nota,1)"><i
 						class="glyphicon glyphicon-search" data-toggle="tooltip"
+						data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
+<a href="@routes.Notes.notificarNota(nota)"><i
+						class="glyphicon glyphicon-envelope" data-toggle="tooltip"
 						data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
 
 					</td>

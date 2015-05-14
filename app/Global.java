@@ -94,7 +94,27 @@ public class Global extends GlobalSettings {
 	}
            
    });
-        
+      
+      	Formatters.register(EstatReunio.class, new Formatters.SimpleFormatter<EstatReunio>()
+                {
+   
+                 
+    public EstatReunio parse(String text, Locale locale) 
+       throws java.text.ParseException {     
+	 	String t =text;
+    	EstatReunio estat= EstatReunio.recerca(text);
+    	return estat;                     
+    }
+           
+   
+	@Override
+	public String print(EstatReunio arg0, Locale arg1) {
+		// TODO Auto-generated method stub
+		return arg0.estat;
+	}
+           
+   });
+      	
         Formatters.register(Element.class, new Formatters.SimpleFormatter<Element>()
                 {
    

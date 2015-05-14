@@ -48,17 +48,16 @@ GET  /notes/nova/	controllers.Notes.novaNota()
 GET  /notes/detall/:nota	controllers.Notes.detallNota(nota:models.Nota)
 
 GET  /moviments_nota/:nota	controllers.Notes.llistarMoviments(nota:models.Nota,page: Int ?=1 )
-GET  /moviments_nota/auto/:nota	controllers.Notes.crearMovimentAuto(nota:models.Nota)
 DELETE	/notes/moviments/borrar/:moviment           controllers.Notes.borrarMovimentNota(moviment: models.MovimentNota)
 GET  /notes/moviments/nou/:nota	controllers.Notes.nouMovimentNota(nota:models.Nota)
 
 POST /notes/   	controllers.Notes.guardarNota()
 
 DELETE	/notes/borrar/:nota           controllers.Notes.borrarNota(nota: models.Nota)
-POST	/notes/borrar/:nota           controllers.Notes.borrarNota(nota: models.Nota)
 
 POST /notes/moviments   	controllers.Notes.guardarMovimentNota()
 GET  /notes/moviments/detall/:moviment	controllers.Notes.detallMovimentNota(moviment:models.MovimentNota)
+GET  /notes/notificar/:nota	controllers.Notes.notificarNota(nota:models.Nota)
 
 
 
@@ -67,13 +66,24 @@ GET     /logout                     controllers.Application.logout()
 POST /authenticate controllers.Application.authenticate()
 
 
+GET  /reunions/nova/	controllers.Reunions.novaReunio()
+GET  /reunions/	controllers.Reunions.llistarReunions(page: Int ?=1 )
+GET  /reunions/llistarFiltrades	controllers.Reunions.llistarReunionsFiltrades(page: Int ?=1 )
+
+GET  /reunions/detall/:reunio	controllers.Reunions.detallReunio(reunio:models.Reunio)
+POST /reunions/guardar/    	controllers.Reunions.guardarReunio()
+DELETE	/reunions/borrar/:reunio           controllers.Reunions.borrarReunio(reunio: models.Reunio)
 
 
 
 
-
-
-
+GET  /reunions/documents/nou/:reunio	controllers.Reunions.nouDocument(reunio:models.Reunio)
+GET  /reunions/documents/:reunio	controllers.Reunions.llistarDocuments(reunio:models.Reunio,page: Int ?=1 )
+GET  /reunions/documents/detall/:document	controllers.Reunions.detallDocument(document:models.Document)
+POST /reunions/documents/:reunio    	controllers.Reunions.guardarDocument(reunio:models.Reunio)
+DELETE	/reunions/documents/borrar/:document          controllers.Reunions.borrarDocument(document: models.Document)
+GET  /reunions/documents/obrir/:codi	controllers.Reunions.readFile(codi: String)
+GET  /reunions/notificar/:reunio	controllers.Reunions.notificarReunio(reunio:models.Reunio)
 
 
 

@@ -39,8 +39,16 @@ import play.mvc.QueryStringBindable;
 import play.db.jpa.JPA;
 import play.mvc.PathBindable;
 import play.db.jpa.Transactional;
-
 import play.mvc.*;
+import play.data.Form;
+import play.data.validation.ValidationError;
+import play.db.jpa.Transactional;
+import play.i18n.Messages;
+import play.mvc.Controller;
+import play.mvc.Result;
+import play.mvc.Security;
+import play.mvc.Http.RequestBody;
+import views.html.*;
 
 
 @Entity
@@ -301,4 +309,19 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		return p;
 	}
 
+	public static List<Comunitat> accesComunitats(){
+		
+		
+		 String dni=play.mvc.Controller.session("dni");
+	     Usuari usuari=Usuari.recercaPerDni(dni);
+		 List<Comunitat> lc=null;
+		 
+	if (usuari.administrador==true){
+		lc=Comunitat.obtenirComunitats();
+	}
+	else {
+		lc=usuari.accesComunitats;
+	}
+	return lc;
+	}
 }

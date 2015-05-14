@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,6 +31,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import play.db.jpa.JPA;
 import play.libs.F;
+import play.libs.mailer.Email;
+import play.libs.mailer.MailerPlugin;
 import play.mvc.PathBindable;
  
 	@Entity
@@ -55,7 +59,7 @@ import play.mvc.PathBindable;
 		@LazyCollection(LazyCollectionOption.FALSE)
 		@JoinColumn(name = "usuari")
 		public Usuari usuari;
-		@OneToMany(mappedBy="nota")
+		@OneToMany(mappedBy="nota", fetch=FetchType.EAGER)
 		private List<MovimentNota> movimentsNota = new ArrayList<MovimentNota>();
 		
 		public Nota(){
@@ -112,6 +116,43 @@ import play.mvc.PathBindable;
 			EntityManager em = JPA.em();
 			Nota RefNota = em.find(Nota.class, nota.codi);
 			return RefNota;
+		}
+		
+		public static void notificarNota(Nota nota) {
+			Query query = null;
+			query = JPA.em().createQuery("select a from Nota n join n.comunitat c join c.accesComunitats a where n=?1");
+			query.setParameter(1, Nota.obtenirRefNota(nota));
+			List <Usuari>lu=query.getResultList();
+			List<MovimentNota> lm= nota.movimentsNota;
+			Collections.sort(lm,MovimentNota.MovimentComparator);
+			MovimentNota m=lm.get(0);
+			
+			Iterator<Usuari> iterator = lu.iterator();
+			while (iterator.hasNext()) {
+				Usuari u=iterator.next();
+				Nota.correuNota(u, m);
+			}
+			MovimentNota refMoviment=MovimentNota.obtenirRefMovimentNota(m);
+			refMoviment.notificada=true;
+			JPA.em().merge(refMoviment);
+		}
+		
+		public static void correuNota(Usuari usuari, MovimentNota moviment) {
+			
+		
+			Email email = new Email();
+		
+			email.setSubject("Correu Nota a www.ComunicatComunitat");
+			email.setFrom("comunicatcomunitat@gmail.com");
+			email.addTo(usuari.email);
+			email.setBodyText("A text message");
+		
+			
+			
+			MailerPlugin.send(email);
+		
+			MovimentNota refMoviment=MovimentNota.obtenirRefMovimentNota(moviment);
+			
 		}
 		
 		public static Nota guardarNota(Nota formNota,String detall) {

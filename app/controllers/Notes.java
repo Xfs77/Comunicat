@@ -105,11 +105,7 @@ public class Notes extends Controller {
 		return ok(llista_movimentsnotes.render(l,nota, p));
 	}
 	
-	@Transactional(readOnly = true)
-	public static Result crearMovimentAuto(Nota nota) {
-		Form<MovimentNota>filledForm= movimentForm.fill(new MovimentNota());
-		return ok(pregunta_detallmoviment.render(movimentForm,nota));
-	}
+	
 	
 	@Transactional
 	public static Result borrarNota(Nota nota)  {
@@ -214,6 +210,14 @@ public class Notes extends Controller {
 
 			return redirect(routes.Notes.llistarMoviments(movimentNotaForm.nota,1));
 		}
+	}
+
+	@Transactional
+	public static Result notificarNota(Nota nota) {
+		
+			Nota.notificarNota(nota);
+			return redirect(routes.Notes.llistarNotes(1));
+		
 	}
 
 	

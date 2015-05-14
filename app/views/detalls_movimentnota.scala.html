@@ -39,7 +39,7 @@
    
    
    <div class="clearfix  " id="fecha">
-    <label for="data">@Messages.get("data_moviment")</label>
+    <label for="data">@Messages.get("data_previsio")</label>
 </div>
     
 <div class="input-group date">
@@ -54,7 +54,7 @@
 
   <select class="selectpicker"  id="estat"  name="estat" data-width="200px"  >
     @for( estat <- estats) {
- <option value=@estat.estat @if(movimentForm("estat").value==estat.estat){Selected}>@estat.descripcio</option>
+ <option value=@estat.estat @if(movimentForm("estat").value==estat.estat){Selected}>@Messages.get(estat.estat)</option>
       }
   </select>
  <br>
