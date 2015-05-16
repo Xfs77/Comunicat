@@ -54,7 +54,12 @@ public class Reunions extends Controller {
 	        Usuari usuari=Usuari.recercaPerDni(dni);	
 			List<Comunitat> lc=null;
 			if (usuari.administrador==true){
-				lc=Comunitat.obtenirComunitats();
+				try {
+					lc=Comunitat.obtenirComunitats();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else {
 				lc=usuari.accesComunitats;
@@ -68,7 +73,14 @@ public class Reunions extends Controller {
 		Page p = Reunio.llistarReunions(page);
 		List<Reunio> l = p.getList();
 		Form<ReunionsFiltre> filtre=reunioFiltreForm.fill(new ReunionsFiltre());
-		return ok(llista_reunions.render(l, p, filtre, Comunitat.accesComunitats(),EstatReunio.obtenirEstatsReunio()));
+		List<Comunitat> lc=null;
+		try {
+			lc = Comunitat.accesComunitats();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ok(llista_reunions.render(l, p, filtre, lc,EstatReunio.obtenirEstatsReunio()));
 	}
 	
 	@Transactional(readOnly = true)
@@ -82,7 +94,14 @@ public class Reunions extends Controller {
 			ReunionsFiltre filtre = boundForm.get();
 			Page p = Reunio.llistarReunionsFiltrades(1,filtre);
 			List<Reunio> l = p.getList();
-			return ok(llista_reunions.render(l, p, boundForm, Comunitat.accesComunitats(),EstatReunio.obtenirEstatsReunio()));
+			List<Comunitat> lc=null;
+			try {
+				lc = Comunitat.accesComunitats();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return ok(llista_reunions.render(l, p, boundForm, lc,EstatReunio.obtenirEstatsReunio()));
 		}
 	}
 	
@@ -95,7 +114,12 @@ public class Reunions extends Controller {
 		List<EstatReunio> ler=EstatReunio.obtenirEstatsReunio();
 			List<Comunitat> lc=null;
 			if (usuari.administrador==true){
-				lc=Comunitat.obtenirComunitats();
+				try {
+					lc=Comunitat.obtenirComunitats();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else {
 				lc=usuari.accesComunitats;
@@ -113,7 +137,12 @@ public class Reunions extends Controller {
 		        Usuari usuari=Usuari.recercaPerDni(dni);	
 				List<Comunitat> lc=null;
 				if (usuari.administrador==true){
-					lc=Comunitat.obtenirComunitats();
+					try {
+						lc=Comunitat.obtenirComunitats();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				else {
 					lc=usuari.accesComunitats;

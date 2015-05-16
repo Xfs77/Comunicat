@@ -37,59 +37,88 @@ public class Comunitats extends Controller {
 
 	private static Form<Comunitat> comunitatForm = Form.form(Comunitat.class);
 	private static Form<Element> elementForm = Form.form(Element.class);
-	
+
 	@Transactional(readOnly = true)
 	public static Result novaComunitat(Comunitat pare) {
 		Comunitat comunitat = new Comunitat(pare);
 		comunitatForm.fill(comunitat);
-		List<Usuari> l=Usuari.obtenirUsuaris();
+		List<Usuari> l = Usuari.obtenirUsuaris();
 		return ok(detalls_comunitat.render(comunitatForm, pare, l));
 	}
 
 	@Transactional(readOnly = true)
 	public static Result detallComunitat(Comunitat comunitat) {
 		Form<Comunitat> filledForm = comunitatForm.fill(comunitat);
-		List<Usuari> l=Usuari.obtenirUsuaris();
-		return ok(detalls_comunitat.render(filledForm, comunitat.pare,l));
+		List<Usuari> l = Usuari.obtenirUsuaris();
+		return ok(detalls_comunitat.render(filledForm, comunitat.pare, l));
 	}
 
 	@Transactional(readOnly = true)
 	public static Result llistarComunitats(int page) {
-		Comunitat pare = Comunitat.recercaPerNif("ARREL");
-		Page p = Comunitat.llistarSubComunitats(pare, page);
-		List l = p.getList();
-		return ok(llista_comunitats.render(l, p, pare));
+		Comunitat pare;
+		try {
+			pare = Comunitat.recercaPerNif("ARREL");
+			Page p = Comunitat.llistarSubComunitats(pare, page);
+			List l = p.getList();
+			return ok(llista_comunitats.render(l, p, pare));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return notFound();
 	}
 
 	@Transactional(readOnly = true)
 	public static Result llistarSubComunitats(Comunitat pare, int page) {
-		Page p = Comunitat.llistarSubComunitats(pare, page);
-		List l = p.getList();
-		return ok(llista_comunitats.render(l, p, pare));
+		Page p;
+		try {
+			p = Comunitat.llistarSubComunitats(pare, page);
+			List l = p.getList();
+			return ok(llista_comunitats.render(l, p, pare));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return notFound();
 
 	}
 
 	@Transactional(readOnly = true)
 	public static Result llistarContactes(Comunitat comunitat, int page) {
-		Page p = Comunitat.llistarContactes(comunitat, page);
-		List l = p.getList();
-		return ok(llista_contactes.render(l, p, comunitat));
+		Page p;
+		try {
+			p = Comunitat.llistarContactes(comunitat, page);
+			List l = p.getList();
+			return ok(llista_contactes.render(l, p, comunitat));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			try {
+				p=Comunitat.llistarSubComunitats(comunitat.pare, 1);
+				List l=p.getList();
+				flash("error",Messages.get("no_contactes"));
+				return redirect(routes.Comunitats.llistarSubComunitats(comunitat.pare, 1));
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		return badRequest();
+		}
+		
 
 	}
-	
-	
-	@Transactional
-	public static Result borrarComunitat(Comunitat comunitat) throws Exception {
-		if (comunitat == null) {
-			return notFound(String.format("La Comunitat %s no existeix.",
-					comunitat.nom));
-		}
-		Comunitat.borrarComunitat(comunitat);
-		flash("success", String.format(
-				"La comunitat %s s'ha registrat correctament", ""));
 
-		return redirect(routes.Comunitats.llistarSubComunitats(comunitat.pare,
-				1));
+	@Transactional
+	public static Result borrarComunitat(Comunitat comunitat) {
+		
+		try{
+		Comunitat.borrarComunitat(comunitat);
+		flash("success", String.format("La comunitat %s s'ha registrat correctament", ""));
+		}
+		catch(Exception e){
+			flash("error", Messages.get("error.dades_relacionades"));
+		}
+		return redirect(routes.Comunitats.llistarSubComunitats(comunitat.pare, 1));
 	}
 
 	@Transactional
@@ -99,27 +128,22 @@ public class Comunitats extends Controller {
 		Form<Comunitat> boundForm = comunitatForm.bindFromRequest();
 		if (boundForm.hasErrors()) {
 			flash("error", Messages.get("constraint.formulari"));
-			return badRequest(detalls_comunitat.render(boundForm, pare,Usuari.obtenirUsuaris()
-					));
+			return badRequest(detalls_comunitat.render(boundForm, pare, Usuari.obtenirUsuaris()));
 		} else {
 			Comunitat comunitatForm = boundForm.get();
 			Comunitat.guardarComunitat(comunitatForm, pare);
-			flash("success", String.format(
-					"La comunitat %s s'ha registrat correctament",
-					comunitatForm.nom));
+			flash("success", String.format("La comunitat %s s'ha registrat correctament", comunitatForm.nom));
 
 			return redirect(routes.Comunitats.llistarSubComunitats(pare, 1));
 		}
 	}
 
-	
-	
 	public static Result nouElement(Comunitat comunitat) {
 		Element element = new Element(comunitat);
 		elementForm.fill(element);
 		return ok(detalls_element.render(elementForm, comunitat));
 	}
-	
+
 	@Transactional(readOnly = true)
 	public static Result llistarElements(Comunitat comunitat, int page) {
 		Page p = Element.llistarElements(comunitat, page);
@@ -127,12 +151,10 @@ public class Comunitats extends Controller {
 		return ok(llista_elements.render(l, p, comunitat));
 	}
 
-	
 	@Transactional
 	public static Result borrarElement(Element element) {
 		if (element == null) {
-			return notFound(String.format("L'element %s no existeix.",
-					element.codi));
+			return notFound(String.format("L'element %s no existeix.", element.codi));
 		}
 
 		Element.borrarElement(element);
@@ -158,8 +180,7 @@ public class Comunitats extends Controller {
 			element.comunitat = comunitat;
 			Element.guardarElement(element);
 			Element e = element;
-			flash("success", String.format(
-					"L'element %s s'ha registrat correctament", element.codi));
+			flash("success", String.format("L'element %s s'ha registrat correctament", element.codi));
 
 			return redirect(routes.Comunitats.llistarElements(comunitat, 1));
 		}

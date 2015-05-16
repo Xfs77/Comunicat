@@ -50,7 +50,12 @@ public class Notes extends Controller {
 		List<EstatNota> len=EstatNota.obtenirEstatsNota();
 		List<Comunitat> lc=null;
 		if (usuari.administrador==true){
-			lc=Comunitat.obtenirComunitats();
+			try {
+				lc=Comunitat.obtenirComunitats();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else {
 			lc=usuari.accesComunitats;
@@ -81,7 +86,12 @@ public class Notes extends Controller {
 		List<EstatNota> len=EstatNota.obtenirEstatsNota();
 			List<Comunitat> lc=null;
 			if (usuari.administrador==true){
-				lc=Comunitat.obtenirComunitats();
+				try {
+					lc=Comunitat.obtenirComunitats();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else {
 				lc=usuari.accesComunitats;
@@ -152,7 +162,7 @@ public class Notes extends Controller {
 
 	
 	@Transactional
-	public static Result guardarNota() {
+	public static Result guardarNota() throws Exception {
 		play.mvc.Http.Request request = request();
 		RequestBody body = request().body();
 		Form<Nota> boundForm = notaForm.bindFromRequest();

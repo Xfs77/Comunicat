@@ -70,7 +70,15 @@ public class Usuaris extends Controller {
 	@Transactional
 	public static Result assignarElements(Usuari usuari) {
 		
-		return ok(assignacio_elements.render(usuari,Comunitat.llistarComunitatsElements(),Element.obtenirElements()));
+		List<Comunitat> lce=null;
+		try {
+				lce=Comunitat.llistarComunitatsElements();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		return ok(assignacio_elements.render(usuari,lce,Element.obtenirElements()));
 
 	}
 	
@@ -83,7 +91,13 @@ public class Usuaris extends Controller {
 		final String element=text.substring(text.indexOf('&')+1, text.length());
 		String tipus=text1.get("tipus")[0];
 		TipusVei t= TipusVei.recerca(tipus);
-		Comunitat c = (Comunitat.recercaPerNif(comunitat));
+		Comunitat c=null;
+		try {
+			c = (Comunitat.recercaPerNif(comunitat));
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		Element	e = (Element.recercaPerCodi(c,element));
 		Usuari.assignarElement(usuari, e, t);
 

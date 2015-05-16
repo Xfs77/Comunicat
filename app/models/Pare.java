@@ -105,6 +105,8 @@ public class Pare {
 		em.flush();
 		}
 		catch(Exception e){
+			Exception ee=e;
+			String eo=e.getMessage();
 			String s="";
 		}
 		}

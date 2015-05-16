@@ -28,6 +28,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NoResultException;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.RollbackException;
 import javax.persistence.Table;
@@ -36,9 +37,6 @@ import javax.validation.ConstraintValidator;
 import javax.validation.Payload;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Size;
-
-
-
 
 import org.hibernate.JDBCException;
 import org.hibernate.annotations.LazyCollection;
@@ -70,11 +68,60 @@ import play.mvc.Security;
 import play.mvc.Http.RequestBody;
 import views.html.*;
 
-
 @Entity
 @Table(name = "comunicat.Comunitat")
-public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
-		PathBindable<Comunitat> {
+public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, PathBindable<Comunitat> {
+
+	@Id
+	@Required
+	@MaxLength(50)
+	@Column(name = "nif")
+	public String nif;
+	@Required
+	@MaxLength(50)
+	@Column(name = "nom")
+	public String nom;
+	@Required
+	@MaxLength(50)
+	@Column(name = "adreca")
+	public String adreca;
+	@Required
+	@Pattern(value = "\\d{5}", message = ("error.cp"))
+	@Column(name = "cp")
+	public String cp;
+	@Required
+	@MaxLength(50)
+	@Column(name = "poblacio")
+	public String poblacio;
+	@Required
+	@Max(1)
+	@Min(0)
+	@Column(name = "coeficient")
+	public float coeficient;
+	@OneToOne(cascade = CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@JoinColumn(name = "pare")
+	public Comunitat pare;
+	@OneToOne
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@JoinColumn(name = "president")
+	public Usuari president;
+	@OneToMany(cascade = CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@JoinColumn(name = "nif")
+	private List<Element> elements = new ArrayList<Element>();
+	@ManyToMany(mappedBy = "accesComunitats")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	public List<Usuari> accesComunitats = new ArrayList<Usuari>();
+
+	public Comunitat() {
+
+	}
+
+	public Comunitat(Comunitat pare) {
+		super();
+		this.pare = pare;
+	}
 
 	@Override
 	public Comunitat bind(String arg0, final String arg1) {
@@ -91,8 +138,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 	}
 
 	@Override
-	public play.libs.F.Option<Comunitat> bind(final String arg0,
-			final Map<String, String[]> arg1) {
+	public play.libs.F.Option<Comunitat> bind(final String arg0, final Map<String, String[]> arg1) {
 		// TODO Auto-generated method stub
 
 		if (arg0 == "pare" && arg1.get("pare") != null) {
@@ -123,60 +169,6 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		return this.nif;
 	}
 
-	@Id
-	@Required
-	@MaxLength(50)
-	@Column(name = "nif")
-	public String nif;
-	@Required
-	@MaxLength(50)
-	@Column(name = "nom")
-	public String nom;
-	@Required
-	@MaxLength(50)
-	@Column(name = "adreca")
-	public String adreca;
-	@Required
-	@Pattern(value="\\d{5}",message=("error.cp"))
-	@Column(name = "cp")
-	public String cp;
-	@Required
-	@MaxLength(50)
-	@Column(name = "poblacio")
-	public String poblacio;
-	@Required
-	@Max(1)
-	@Min(0)
-	@Column(name = "coeficient")
-	public float coeficient;
-	@OneToOne
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@JoinColumn(name = "pare")
-	public Comunitat pare;
-	@OneToOne
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@JoinColumn(name = "president")
-	public Usuari president;
-	@OneToMany(cascade=CascadeType.MERGE)
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@JoinColumn(name = "nif")
-	private List<Element> elements = new ArrayList<Element>();
-	@ManyToMany(mappedBy="accesComunitats")
-	@LazyCollection(LazyCollectionOption.FALSE)
-	public List<Usuari> accesComunitats =new ArrayList<Usuari>();
-
-
-	public Comunitat() {
-
-	}
-
-	public Comunitat(Comunitat pare) {
-		super();
-		this.pare = pare;
-	}
-
-	
-
 	public Comunitat(String nif, String nom, String adreca, String cp, String poblacio, float coeficient,
 			Comunitat pare, Usuari president, List<Element> elements, List<Usuari> accesComunitats) {
 		super();
@@ -192,52 +184,62 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		this.accesComunitats = accesComunitats;
 	}
 
-	public static Page llistarComunitats(int page) {
+	public static Page llistarComunitats(int page) throws Exception {
 		Query query = null;
 		query = JPA.em().createQuery("from Comunitat");
-		List list = query.getResultList();
-		Collections.sort(list, ComunitatComparator);
-		Page p = new Page(list, page);
-		return p;
-
+		try {
+			List list = query.getResultList();
+			Collections.sort(list, ComunitatComparator);
+			Page p = new Page(list, page);
+			return p;
+		} catch (Exception e) {
+			throw e;
+		}
 	}
-	
-	public static List<Comunitat> obtenirComunitats() {
+
+	public static List<Comunitat> obtenirComunitats() throws Exception {
 		Query query = null;
 		query = JPA.em().createQuery("from Comunitat c where c.nif!=?1");
 		query.setParameter(1, "arrel");
-		List<Comunitat> comunitats = query.getResultList();
-		return comunitats;
-
+		try {
+			List<Comunitat> comunitats = query.getResultList();
+			return comunitats;
+		} catch (Exception e) {
+			throw e;
+		}
 	}
-	
-	
-	public static List<Comunitat> llistarComunitatsElements() {
+
+	public static List<Comunitat> llistarComunitatsElements() throws Exception{
 		Query query = null;
 		query = JPA.em().createQuery("select c from Comunitat c  join c.elements group by c.nif");
-	    List list = query.getResultList();
-	    Collections.sort(list, ComunitatComparator);
-		
-		return list;
-
+		try {
+			List list = query.getResultList();
+			Collections.sort(list, ComunitatComparator);
+			return list;
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
-	public static Page llistarSubComunitats(Comunitat pare, int page) {
+	public static Page llistarSubComunitats(Comunitat pare, int page) throws Exception {
 		Query query = null;
 
 		query = JPA.em().createQuery("select c from Comunitat c where c.pare=?1 ");
-		//query = JPA.em().createQuery("select c from Comunitat c join c.accesComunitats where c.pare=?1 ");
-		String dni=play.mvc.Controller.session().get("dni");
+		// query =
+		// JPA.em().createQuery("select c from Comunitat c join c.accesComunitats where c.pare=?1 ");
 		query.setParameter(1, pare);
-		//query.setParameter(2, dni);
-		List list = query.getResultList();
-		Collections.sort(list, ComunitatComparator);
-		Page p = new Page(list, page);
-		return p;
-
+		// query.setParameter(2, dni);
+		try {
+			List list = query.getResultList();
+			Collections.sort(list, ComunitatComparator);
+			Page p = new Page(list, page);
+			return p;
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
-	public static void guardarComunitat(Comunitat formComunitat, Comunitat pare) {
+	public static void guardarComunitat(Comunitat formComunitat, Comunitat pare) throws PersistenceException {
 
 		Comunitat refComunitat = obtenirRefComunitat(formComunitat);
 		if (refComunitat != null) {
@@ -247,19 +249,108 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 			refComunitat.poblacio = formComunitat.poblacio;
 			refComunitat.coeficient = formComunitat.coeficient;
 			refComunitat.president = formComunitat.president;
-			JPA.em().merge(refComunitat);
+			try {
+				JPA.em().merge(refComunitat);
+			} catch (PersistenceException e) {
+				throw e;
+			}
 
 		} else {
 			formComunitat.pare = pare;
-			JPA.em().merge(formComunitat);
+			try {
+				JPA.em().merge(formComunitat);
+			} catch (PersistenceException e) {
+				throw e;
+			}
 		}
 	}
 
-	public static void borrarComunitat(Comunitat comunitat) {
+	public static void borrarComunitat(Comunitat comunitat) throws Exception {
 		// TODO Auto-generated method stub
 		EntityManager em = JPA.em();
 		Comunitat refComunitat = obtenirRefComunitat(comunitat);
-		em.remove(refComunitat);
+		try {
+			em.remove(refComunitat);
+			em.flush();
+		} catch (Exception e) {
+			throw e;
+		}
+
+	}
+
+	public static Comunitat obtenirRefComunitat(Comunitat comunitat) {
+		EntityManager em = JPA.em();
+		Comunitat RefComunitat = em.find(Comunitat.class, comunitat.nif);
+		return RefComunitat;
+	}
+
+	public static Comunitat recercaPerNif(String id) throws Exception{
+		Comunitat result = null;
+		Query query = JPA.em().createQuery("from Comunitat c");
+		try {
+			List<Comunitat> comunitats = query.getResultList();
+			for (Comunitat candidate : comunitats) {
+				if (candidate.nif.toLowerCase().contains(id.toLowerCase())) {
+					result = candidate;
+				}
+			}
+			return result;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+/*
+	public static Comunitat recercaPerNifIni() {
+		Comunitat result = null;
+		Query query = JPA.em().createQuery("from Comunitat c");
+		
+		List<Comunitat> comunitats = query.getResultList();
+
+		for (Comunitat candidate : comunitats) {
+			if (candidate.pare == null) {
+				result = candidate;
+
+			}
+		}
+		return result;
+	}
+*/
+	public static Comparator<Comunitat> ComunitatComparator = new Comparator<Comunitat>() {
+
+		public int compare(Comunitat c1, Comunitat c2) {
+
+			return c1.nif.compareTo(c2.nif);
+
+		}
+
+	};
+
+	public static Page llistarContactes(Comunitat comunitat, int page) throws Exception {
+		// TODO Auto-generated method stub
+		Query query = JPA.em().createQuery("from Usuari u where u.administrador=true");
+		try{
+		List<Usuari> contactes = query.getResultList();
+		contactes.add(comunitat.president);
+		Page p = new Page(contactes, page);
+		return p;
+		} catch (Exception e) {
+			throw e;
+		}
+		
+	}
+
+	public static List<Comunitat> accesComunitats() throws Exception {
+
+		String dni = play.mvc.Controller.session("dni");
+		Usuari usuari = Usuari.recercaPerDni(dni);
+		List<Comunitat> lc = null;
+
+		if (usuari.administrador == true) {
+			lc = Comunitat.obtenirComunitats();
+		} else {
+			lc = usuari.accesComunitats;
+		}
+		return lc;
 	}
 
 	@Override
@@ -285,76 +376,5 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 		} else if (!nif.equals(other.nif))
 			return false;
 		return true;
-	}
-
-	public static Comunitat obtenirRefComunitat(Comunitat comunitat) {
-		EntityManager em = JPA.em();
-		Comunitat RefComunitat = em.find(Comunitat.class, comunitat.nif);
-		return RefComunitat;
-	}
-	
-	
-	public static Comunitat recercaPerNif(String id) {
-		Comunitat result = null;
-		Query query = JPA.em().createQuery("from Comunitat c");
-		List<Comunitat> comunitats = query.getResultList();
-
-		for (Comunitat candidate : comunitats) {
-			if (candidate.nif.toLowerCase().contains(id.toLowerCase())) {
-				result = candidate;
-
-			}
-		}
-		return result;
-	}
-
-	public static Comunitat recercaPerNifIni() {
-		Comunitat result = null;
-		Query query = JPA.em().createQuery("from Comunitat c");
-		List<Comunitat> comunitats = query.getResultList();
-
-		for (Comunitat candidate : comunitats) {
-			if (candidate.pare == null) {
-				result = candidate;
-
-			}
-		}
-		return result;
-	}
-
-	public static Comparator<Comunitat> ComunitatComparator = new Comparator<Comunitat>() {
-
-		public int compare(Comunitat c1, Comunitat c2) {
-
-			return c1.nif.compareTo(c2.nif);
-
-		}
-
-	};
-
-
-	public static Page llistarContactes(Comunitat comunitat, int page) {
-		// TODO Auto-generated method stub
-		Query query = JPA.em().createQuery("from Usuari u where u.administrador=true");
-		List<Usuari> contactes=query.getResultList();
-		contactes.add(comunitat.president);
-		Page p = new Page(contactes, page);
-		return p;
-	}
-
-	public static List<Comunitat> accesComunitats(){
-		
-		
-		 String dni=play.mvc.Controller.session("dni");
-	     Usuari usuari=Usuari.recercaPerDni(dni);
-		 List<Comunitat> lc=null;
-		 
-	if (usuari.administrador==true){
-		lc=Comunitat.obtenirComunitats();
-	}
-	else {
-		lc=usuari.accesComunitats;
-	}
-	return lc;
 	}
 }
