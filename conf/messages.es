@@ -100,4 +100,28 @@ formulari_reunions=Formulario Reuniones
 Pendent=Pendiente
 Realitzada=Realizada
 documents=Documentos
-
+filtre_seleccio=Filtro selección datos a mostrar
+desde=Desde:
+fins=Hasta:
+constraint.formulari=Revise que haya introducido correctamente los datos en el formulario
+constraint.required=Obligatorio
+constraint.min=Valor mínimo: {0}
+constraint.max=Valor máximo: {0}
+constraint.minLength=Longitud mínima: {0}
+constraint.maxLength=Longitud máxima: {0}
+constraint.email=Email
+constraint.pattern=Formato específico
+# --- Formats
+format.date=Date (''{0}'')
+format.numeric=Numèrico
+# --- Errors
+error.invalid=Valor incorrecto
+error.required=El campo es obligatorio
+error.number=El campo espera un valor numèrico
+error.min=El campo debe ser mayor o igual que {0}
+error.max=El campo debe ser menor o igual que {0}
+error.minLength=El campo tiene una longitud mínima de {0}
+error.maxLength=El campo tiene una longitud màxima de {0}
+error.email=El campo debe ser una dirección de correo
+error.pattern=Wl campo debe satisfacer {0}
+error.cp=El código postal debe seguir el patrón: ddddd

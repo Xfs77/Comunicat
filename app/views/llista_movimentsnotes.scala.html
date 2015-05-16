@@ -35,7 +35,7 @@
         <td class="text-center">@moviment.fecha.format("dd/MM/yyyy")</td>
         <td style="width: 20%;">@moviment.detall</td>
         <td>@if(moviment.previsio!=null){@moviment.previsio.format("dd/MM/yyyy")}</td>
-        <td>@moviment.estat.descripcio</td>
+        <td>@Messages.get(moviment.estat.estat)</td>
         <td>@moviment.usuari.nom @moviment.usuari.cognoms </td>
 		<td class="text-center">@if(moviment.notificada==true){Si}else{No} </td>
 		

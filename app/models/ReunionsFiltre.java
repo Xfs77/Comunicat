@@ -17,8 +17,8 @@ public class ReunionsFiltre {
 	
 	
 public ReunionsFiltre(){
-	this.fechaIni = sumarRestarDiasFecha(new Date(),-150);
-	this.fechaFi = sumarRestarDiasFecha(new Date(),150);
+	this.fechaIni=sumarRestarDiasFecha(new Date(),-3650);
+	this.fechaFi=sumarRestarDiasFecha(new Date(),365);
 	
 }
 		

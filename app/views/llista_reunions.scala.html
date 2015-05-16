@@ -4,49 +4,89 @@
 <div id="maincontent">
 
 	<h2 class="titol">@Messages.get("reunions")</h2>
+  	<p class="sls">&nbsp</p>
+  	
+  	
+	<h4>@Messages.get("filtre_seleccio")</h4>
 
 
   @helper.form(action = routes.Reunions.llistarReunionsFiltrades(1),'enctype -> "multipart/form-data") {
   <fieldset>
+  
+  <table class="filtre">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Comunidad</th>
+        <th>Estado</th>
+        <th></th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td align="right">
+        <div class="input-group date"  >
+  			<strong>@Messages.get("desde") </strong>  <input type="text" class="input" id="filtre_fecha1" name="fechaIni" required value=@filtre("fechaIni").value >
+  		    <span class="add-on"> <i class="glyphicon glyphicon-th blue"></i></span>
+ 		</div>
+        </td>
+        <td>
+		 			<p class="sl"></p>
+		 
+		  <select class="selectpicker" id="comunitat"  name="comunitat"  >
+		       <option></option>
+		
+		    @for( comunitat <- comunitats) {
+		 <option value=@comunitat.nif @if(filtre("comunitat").value()==comunitat.nif){selected}>@comunitat.nif - @comunitat.pare.nom @comunitat.nom</option>
+		      }
+		  </select>
+		  <br>
+			<p class="sl"></p>
+			       
+        </td>
+        <td>
+        
+		  <select class="selectpicker" id="estat" name="estat">
+		       <option></option>
+		      
+		    @for( estat <- estats) {
+		
+		 <option type="text"value=@estat.estat @if( filtre("estat").value()==estat.estat){selected} >@Messages.get(estat.estat)</option>
+		    }
+		    </select>
+        </td>
+        <td>
+          <button type="submit" class="btn btn-success" value=@Messages.get("filtre")><span
+		class="glyphicon glyphicon-filter" aria-hidden="true"></span>
 
+        </td>
+      </tr>
+      <tr>
+        <td align="right">
+        	<div class="input-group date" >  
+  			<strong>@Messages.get("fins") </strong> <input type="text" class="input" id="filtre_fecha2" name="fechaFi" required value=@filtre("fechaFi").value >
+      		<span class="add-on"> <i class="glyphicon glyphicon-th blue"></i></span>
+ 			</div>
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
  
-<div class="input-group date">
-  <input type="text" class="input" id="filtre_fecha1" name="filtre_fecha1" required value=@filtre("fechaIni").value >
-      <span class="add-on"> <i class="glyphicon glyphicon-th blue"></i></span>
  
-  <input type="text" class="input" id="filtre_fecha1" name="filtre_fecha1" required value=@filtre("fechaFi").value >
-      <span class="add-on"> <i class="glyphicon glyphicon-th blue"></i></span>
- </div>
- 
- <strong>@Messages.get("comunitat")</strong>
-<br>
-	<p class="sls"></p>
-
-  <select class="selectpicker" id="comunitat"  name="comunitat"  >
-       <option></option>
-
-    @for( comunitat <- comunitats) {
- <option value=@comunitat.nif @if(filtre("comunitat").value()==comunitat.nif){selected}>@comunitat.nif - @comunitat.pare.nom @comunitat.nom</option>
-      }
-  </select>
-  <br>
-	<p class="sl"></p>
 	
-	
-  <select class="selectpicker" id="estat" name="estat">
-       <option></option>
-      
-    @for( estat <- estats) {
-
- <option type="text"value=@estat.estat @if( filtre("estat").value()==estat.estat){selected} >@Messages.get(estat.estat)</option>
-    }
-    </select>
 
  </fieldset>
   <br>
   	<p class="sls"></p>
   
-  <input type="submit" class="btn btn-success" value=@Messages.get("filtre")>
   
   }
 	<table class="table table-striped">

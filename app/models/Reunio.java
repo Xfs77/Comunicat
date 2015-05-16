@@ -28,6 +28,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
 import play.libs.F;
 import play.libs.mailer.Email;
@@ -37,29 +38,38 @@ import play.mvc.PathBindable;
 	@Entity
 	@Table(name = "comunicat.reunio")
 	public class Reunio implements Serializable, PathBindable<Reunio> {
+		
 		@Id
 		@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_reunio")
 		@SequenceGenerator(name = "seq_reunio", sequenceName = "seq_reunio", allocationSize = 1, initialValue = 2)
 		@Column(name = "codi")
 		public int codi;
+		@Required
 		@Column(name = "fecha")
 		public Date fecha;
+		@Required		
 		@Column(name = "hora")
 		public String hora;
+		@Required
 		@Column(name = "lloc")
 		public String lloc;
+		@Required
 		@Column(name = "descripcio")
 		public String descripcio;
+		@Required
 		@ManyToOne
 		@LazyCollection(LazyCollectionOption.FALSE)
 		@JoinColumn(name = "comunitat")
 		public Comunitat comunitat;
+		@Required
 		@ManyToOne
 		@LazyCollection(LazyCollectionOption.FALSE)
 		@JoinColumn(name = "estat")
 		public EstatReunio estat;
+		@Required
 		@Column(name = "notificada")
 		public boolean notificada;
+		@Required
 		@OneToMany(mappedBy="reunio")
 		public List<Document> documents = new ArrayList<Document>();
 		
@@ -143,6 +153,7 @@ import play.mvc.PathBindable;
 		}
 		
 
+		
 
 		public static Page llistarReunions(int page) {
 			Query query = null;
@@ -160,8 +171,35 @@ import play.mvc.PathBindable;
 		public static Page llistarReunionsFiltrades(int page, ReunionsFiltre reunioFiltreForm) {
 			// TODO Auto-generated method stub
 			Query query = null;
-			query = JPA.em().createQuery("from Reunio r where r.fecha >?1 ");
+			ReunionsFiltre r=reunioFiltreForm;
+			String exp="from Reunio r where r.fecha >=?1 and r.fecha<=?2";
+			query = JPA.em().createQuery(exp);
 			query.setParameter(1, reunioFiltreForm.fechaIni);
+			query.setParameter(2,reunioFiltreForm.fechaFi);
+
+			if(reunioFiltreForm.comunitat!=null){
+				exp=exp+" and r.comunitat=?3";
+				query = JPA.em().createQuery(exp);
+				query.setParameter(1, reunioFiltreForm.fechaIni);
+				query.setParameter(2,reunioFiltreForm.fechaFi);
+				query.setParameter(3,Comunitat.obtenirRefComunitat(reunioFiltreForm.comunitat));
+
+			}
+			if(reunioFiltreForm.estat!=null){
+				exp=exp+" and r.estat=?4";
+				query = JPA.em().createQuery(exp);
+				query.setParameter(1, reunioFiltreForm.fechaIni);
+				query.setParameter(2,reunioFiltreForm.fechaFi);
+				query.setParameter(4,EstatReunio.obtenirRefEstatReunio(reunioFiltreForm.estat));
+
+				if (exp.contains("?3")){
+					query.setParameter(3,Comunitat.obtenirRefComunitat(reunioFiltreForm.comunitat));
+				}
+
+			}
+		
+			
+
 		//	query = JPA.em().createQuery("select n from Nota n join n.comunitat c join c.accesComunitats a");
 			List list = query.getResultList();
 			Collections.sort(list, ReunioComparator);

@@ -1,6 +1,11 @@
 package models;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.io.Serializable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,10 +31,19 @@ import javax.persistence.OneToOne;
 import javax.persistence.Query;
 import javax.persistence.RollbackException;
 import javax.persistence.Table;
+import javax.validation.Constraint;
+import javax.validation.ConstraintValidator;
+import javax.validation.Payload;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Size;
+
+
+
 
 import org.hibernate.JDBCException;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.validator.constraints.Length;
 import org.postgresql.util.PSQLException;
 
 import controllers.Comunitats;
@@ -41,6 +55,12 @@ import play.mvc.PathBindable;
 import play.db.jpa.Transactional;
 import play.mvc.*;
 import play.data.Form;
+import play.data.validation.Constraints.Max;
+import play.data.validation.Constraints.MaxLength;
+import play.data.validation.Constraints.Min;
+import play.data.validation.Constraints.Pattern;
+import play.data.validation.Constraints.Required;
+import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
 import play.db.jpa.Transactional;
 import play.i18n.Messages;
@@ -104,16 +124,29 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
 	}
 
 	@Id
+	@Required
+	@MaxLength(50)
 	@Column(name = "nif")
 	public String nif;
+	@Required
+	@MaxLength(50)
 	@Column(name = "nom")
 	public String nom;
+	@Required
+	@MaxLength(50)
 	@Column(name = "adreca")
 	public String adreca;
+	@Required
+	@Pattern(value="\\d{5}",message=("error.cp"))
 	@Column(name = "cp")
 	public String cp;
+	@Required
+	@MaxLength(50)
 	@Column(name = "poblacio")
 	public String poblacio;
+	@Required
+	@Max(1)
+	@Min(0)
 	@Column(name = "coeficient")
 	public float coeficient;
 	@OneToOne

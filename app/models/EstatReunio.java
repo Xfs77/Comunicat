@@ -51,6 +51,12 @@ public class EstatReunio implements Serializable, PathBindable<EstatReunio> {
 	}
 		
 
+	public static EstatReunio obtenirRefEstatReunio(EstatReunio estatReunio) {
+		EntityManager em = JPA.em();
+		EstatReunio refEstatReunio = em.find(EstatReunio.class, estatReunio.estat);
+		return refEstatReunio;
+	}
+
 	public static List<EstatReunio> obtenirEstatsReunio() {
 		Query query = null;
 		query = JPA.em().createQuery("from EstatReunio e");

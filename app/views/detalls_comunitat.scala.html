@@ -19,21 +19,22 @@
   @helper.inputText(comunitatForm("cp"),'_label -> Messages.get("cp"))
   @helper.inputText(comunitatForm("poblacio"),'_label -> Messages.get("poblacio"))
   @helper.inputText(comunitatForm("coeficient"),'_label -> Messages.get("coeficient"))
-  <select class="selectpicker" id="president" name="president"
-  >
+      	<p class="sls">&nbsp</p>
+  
+  <select class="select" data-style="btn-primary">
        <option></option>
       
     @for( candidat <- candidats) {
-
- <option type="text"value=@candidat.dni @if( comunitatForm("president").value()==candidat.dni){selected} >@candidat.dni</option>
+ <option type="text"value=@candidat.dni @if( comunitatForm("president").value()==candidat.dni){selected} >@candidat.nom @candidat.cognoms</option>
     }
     </select>
   </fieldset>
+    	<p class="sl">&nbsp</p>
+  
   <input type="submit" class="btn btn-success" value=@Messages.get("Save")>
   <a class="btn btn-danger" href="@routes.Comunitats.llistarSubComunitats(pare,1)">@Messages.get("Cancel")</a>
     </div>
     
     }
-    
-    
+   
 }
