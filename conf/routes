@@ -19,7 +19,7 @@ GET  /comunitats/nova/:pare	controllers.Comunitats.novaComunitat(pare:models.Com
 GET	/detall_comunitats/:comunitat  	controllers.Comunitats.detallComunitat(comunitat: models.Comunitat)
 GET	/contactes/:comunitat  	controllers.Comunitats.llistarContactes(comunitat: models.Comunitat,page: Int ?=1)
 
-POST /subcomunitats/:pare    	controllers.Comunitats.guardarComunitat(pare:models.Comunitat)
+POST /subcomunitats/:pare    	controllers.Comunitats.guardarComunitat(pare:models.Comunitat, nou:Boolean)
 DELETE	/comunitats/borrar/:comunitat           controllers.Comunitats.borrarComunitat(comunitat: models.Comunitat)
 
 

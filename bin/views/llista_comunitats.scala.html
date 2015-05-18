@@ -29,7 +29,7 @@
     <tbody>
     
     @for( comunitat <- comunitats) {
-
+	@if(comunitat.nif!="arrel"){
       <tr>
         <td>@comunitat.nif</td>
         <td>@comunitat.nom</td>
@@ -42,9 +42,10 @@
         <a href="@routes.Comunitats.detallComunitat(comunitat)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a> 
         <a onclick="javascript:del('@routes.Comunitats.borrarComunitat(comunitat)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a> 
         <a href="@routes.Comunitats.llistarElements(comunitat)"><i class="glyphicon glyphicon-tower" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_elements_comunitat")"></i>&nbsp</a> 
-        <a href=""><i class="glyphicon glyphicon-earphone" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_contactes_comunitat")"></i>&nbsp</a> 
+        <a href="@routes.Comunitats.llistarContactes(comunitat,1)"><i class="glyphicon glyphicon-earphone" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_contactes_comunitat")"></i>&nbsp</a> 
         </td>
      </tr>
+      }
       }
     </tbody>
           
@@ -56,12 +57,6 @@
   <br>
   &nbsp
   <br>
-  <!--  	@if(pare.pare!=null){
-     <a class="btn btn-primary" href="@routes.Comunitats.llistarSubComunitats(pare.pare)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>@Messages.get("back")</a>
-  -->
-  }
-   
-   
     </div>
  
  

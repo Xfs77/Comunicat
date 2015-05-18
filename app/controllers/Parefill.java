@@ -21,8 +21,14 @@ public class Parefill extends Controller {
 	
 	@Transactional
 	public static Result borrarPare() {
-		Pare.borrarPare();
+		try{
+			Pare.borrarPare();
+		}catch(Exception e){
+					return TODO;
+
+		}
 		return ok("");
+
 	}
 	
 	@Transactional

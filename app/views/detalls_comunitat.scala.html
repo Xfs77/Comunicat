@@ -1,4 +1,4 @@
-@(comunitatForm: Form[Comunitat], pare:models.Comunitat, candidats:List[Usuari])
+@(comunitatForm: Form[Comunitat], pare:models.Comunitat, candidats:List[Usuari], nou:Boolean)
 @import helper._
 @import helper.twitterBootstrap._
 @import play.i18n.Messages
@@ -8,10 +8,10 @@
 
 <div id="maincontent">
 	<h2 class="titol">@Messages.get("formulari_comunitats")</h2>
-	@helper.form(action = routes.Comunitats.guardarComunitat(pare),'enctype
+	@helper.form(action = routes.Comunitats.guardarComunitat(pare,nou),'enctype
 	-> "multipart/form-data") {
 	<fieldset>
-		@if(comunitatForm("nif").value==null){
+		@if(nou==true){
 		@helper.inputText(comunitatForm("nif"), '_label ->
 		Messages.get("nif")) } else { @helper.inputText(comunitatForm("nif"),
 		'_label -> Messages.get("nif"), 'readonly -> "readonly") }

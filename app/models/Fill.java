@@ -27,7 +27,8 @@ import play.db.jpa.JPA;
 public class Fill implements Serializable {
 
 	@Id
-	@ManyToOne(cascade=CascadeType.ALL)
+	//@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "pareid" , nullable=true)
 	public Pare pare;
 	@Id

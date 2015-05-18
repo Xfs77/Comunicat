@@ -85,7 +85,7 @@ public class Pare {
 		this.txt = txt;
 	}
 
-	public static void borrarPare() {
+	public static void borrarPare() throws Exception{
 		
 		
 	String id="1";
@@ -105,9 +105,8 @@ public class Pare {
 		em.flush();
 		}
 		catch(Exception e){
-			Exception ee=e;
-			String eo=e.getMessage();
-			String s="";
+			throw e;
+			
 		}
 		}
 	

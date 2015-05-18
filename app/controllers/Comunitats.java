@@ -43,14 +43,14 @@ public class Comunitats extends Controller {
 		Comunitat comunitat = new Comunitat(pare);
 		comunitatForm.fill(comunitat);
 		List<Usuari> l = Usuari.obtenirUsuaris();
-		return ok(detalls_comunitat.render(comunitatForm, pare, l));
+		return ok(detalls_comunitat.render(comunitatForm, pare, l,true));
 	}
 
 	@Transactional(readOnly = true)
 	public static Result detallComunitat(Comunitat comunitat) {
 		Form<Comunitat> filledForm = comunitatForm.fill(comunitat);
 		List<Usuari> l = Usuari.obtenirUsuaris();
-		return ok(detalls_comunitat.render(filledForm, comunitat.pare, l));
+		return ok(detalls_comunitat.render(filledForm, comunitat.pare, l,false));
 	}
 
 	@Transactional(readOnly = true)
@@ -113,26 +113,33 @@ public class Comunitats extends Controller {
 		
 		try{
 		Comunitat.borrarComunitat(comunitat);
-		flash("success", String.format("La comunitat %s s'ha registrat correctament", ""));
+		flash("success", String.format(Messages.get("success.comuunitat_borrar"), comunitat.nom));
 		}
 		catch(Exception e){
-			flash("error", Messages.get("error.dades_relacionades"));
+			flash("error", String.format(Messages.get("error.comuunitat_borrar"), comunitat.nom)+" (" +e.getCause().getCause().toString()+")");
 		}
 		return redirect(routes.Comunitats.llistarSubComunitats(comunitat.pare, 1));
 	}
 
 	@Transactional
-	public static Result guardarComunitat(Comunitat pare) {
+	public static Result guardarComunitat(Comunitat pare,boolean nou) {
 		play.mvc.Http.Request request = request();
 		RequestBody body = request().body();
 		Form<Comunitat> boundForm = comunitatForm.bindFromRequest();
 		if (boundForm.hasErrors()) {
 			flash("error", Messages.get("constraint.formulari"));
-			return badRequest(detalls_comunitat.render(boundForm, pare, Usuari.obtenirUsuaris()));
+			return badRequest(detalls_comunitat.render(boundForm, pare, Usuari.obtenirUsuaris(),nou));
 		} else {
 			Comunitat comunitatForm = boundForm.get();
-			Comunitat.guardarComunitat(comunitatForm, pare);
-			flash("success", String.format("La comunitat %s s'ha registrat correctament", comunitatForm.nom));
+			try {
+				Comunitat.guardarComunitat(comunitatForm, pare,nou);
+				flash("success", String.format(Messages.get("success.comuunitat_guardar"), comunitatForm.nom));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				flash("error", String.format(Messages.get("error.comuunitat_guardar"), comunitatForm.nom+" ("+e.getLocalizedMessage()+")"));
+			}
+		
 
 			return redirect(routes.Comunitats.llistarSubComunitats(pare, 1));
 		}

@@ -42,7 +42,8 @@
   
 <br>
 <br>
-	   <select class="selectpicker" id="element" name="element">
+	   <select id="element" class="selectpicker
+	   " name="element">
        <option value="" selected text-align=center>@Messages.get("seleccioni_element")</option>
 
       
@@ -74,18 +75,16 @@
  <script>
  $(document).ready(function(){
 	 $("#comunitat").change( function() {
-			$("#element").find('option').remove();
+			 $("#element").find('option').remove();
 		 @for(element <- elements  ){
 			 if($("#comunitat").val()=="@element.comunitat"){
-				$("#element").append("<option value=@element.comunitat.nif"+"&"+"@element.codi>@element.codi</option>");
+				$("#element").append('<option value=@element.comunitat.nif"+"&"+"@element.codi>@element.codi</option>');
 }
 		 }
+		 $("#element").selectpicker('refresh');
+		 alert("");
 	  }) ; 
-
 	 }) ;
-
-
-
 </script>
 
 

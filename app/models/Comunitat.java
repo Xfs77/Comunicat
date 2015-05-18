@@ -98,7 +98,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 	@Min(0)
 	@Column(name = "coeficient")
 	public float coeficient;
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinColumn(name = "pare")
 	public Comunitat pare;
@@ -222,13 +222,15 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 	}
 
 	public static Page llistarSubComunitats(Comunitat pare, int page) throws Exception {
+	  Usuari usuari=Usuari.recercaPerDni( play.mvc.Controller.session().get("dni"));
 		Query query = null;
-
+		if (usuari.administrador==true){
 		query = JPA.em().createQuery("select c from Comunitat c where c.pare=?1 ");
-		// query =
-		// JPA.em().createQuery("select c from Comunitat c join c.accesComunitats where c.pare=?1 ");
+		}
+		else{
+		query= JPA.em().createQuery("select c from Comunitat c join c.accesComunitats where c.pare=?1 ");
+		}
 		query.setParameter(1, pare);
-		// query.setParameter(2, dni);
 		try {
 			List list = query.getResultList();
 			Collections.sort(list, ComunitatComparator);
@@ -239,10 +241,10 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 		}
 	}
 
-	public static void guardarComunitat(Comunitat formComunitat, Comunitat pare) throws PersistenceException {
+	public static void guardarComunitat(Comunitat formComunitat, Comunitat pare,boolean nou) throws Exception {
 
 		Comunitat refComunitat = obtenirRefComunitat(formComunitat);
-		if (refComunitat != null) {
+		if (refComunitat != null && nou==false) {
 			refComunitat.nom = formComunitat.nom;
 			refComunitat.adreca = formComunitat.adreca;
 			refComunitat.cp = formComunitat.cp;
@@ -251,15 +253,15 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 			refComunitat.president = formComunitat.president;
 			try {
 				JPA.em().merge(refComunitat);
-			} catch (PersistenceException e) {
+			} catch (Exception e) {
 				throw e;
 			}
 
 		} else {
 			formComunitat.pare = pare;
 			try {
-				JPA.em().merge(formComunitat);
-			} catch (PersistenceException e) {
+				JPA.em().persist(formComunitat);
+			} catch (Exception e) {
 				throw e;
 			}
 		}
@@ -299,22 +301,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 			throw e;
 		}
 	}
-/*
-	public static Comunitat recercaPerNifIni() {
-		Comunitat result = null;
-		Query query = JPA.em().createQuery("from Comunitat c");
-		
-		List<Comunitat> comunitats = query.getResultList();
 
-		for (Comunitat candidate : comunitats) {
-			if (candidate.pare == null) {
-				result = candidate;
-
-			}
-		}
-		return result;
-	}
-*/
 	public static Comparator<Comunitat> ComunitatComparator = new Comparator<Comunitat>() {
 
 		public int compare(Comunitat c1, Comunitat c2) {
