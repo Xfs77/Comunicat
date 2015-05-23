@@ -26,13 +26,15 @@ DELETE	/comunitats/borrar/:comunitat           controllers.Comunitats.borrarComu
 GET  /elements/:comunitat	controllers.Comunitats.llistarElements(comunitat:models.Comunitat,page: Int ?=1 )
 GET  /elements/nou/:comunitat	controllers.Comunitats.nouElement(comunitat:models.Comunitat)
 GET	/detall_elements/:element  	controllers.Comunitats.detallElement(element: models.Element)
-POST /elements/:comunitat    	controllers.Comunitats.guardarElement(comunitat:models.Comunitat)
+POST /elements/:comunitat    	controllers.Comunitats.guardarElement(comunitat:models.Comunitat,nou:Boolean)
 DELETE	/elements/borrar/:element           controllers.Comunitats.borrarElement(element: models.Element)
 
 GET  /usuaris/	controllers.Usuaris.llistarUsuaris(page: Int ?=1 )
+GET  /usuaris/llistarFiltrats	controllers.Usuaris.llistarUsuarisFiltrats(page: Int ?=1 )
+
 GET  /usuaris/nou/	controllers.Usuaris.nouUsuari()
 GET	/detall_usuaris/:usuari 	controllers.Usuaris.detallUsuari(usuari: models.Usuari)
-POST /usuaris/	controllers.Usuaris.guardarUsuari()
+POST /usuaris/	controllers.Usuaris.guardarUsuari(nou:Boolean)
 GET /usuaris/correu_alta/:usuari	controllers.Usuaris.correuAlta(usuari: models.Usuari)
 GET /usuaris/canvi_password/	controllers.Usuaris.canviPassword()
 GET /usuaris/efectuar_canvi_password/	controllers.Usuaris.efectuarCanviPassword()
@@ -43,7 +45,8 @@ DELETE	/usuaris/borrar/:usuari           controllers.Usuaris.borrarUsuari(usuari
 DELETE	/usuaris/borrar_element_assignat/:usuari/:element/:tipus          controllers.Usuaris.borrarElementAssignat(usuari: models.Usuari,element: models.Element,tipus:models.TipusVei)
 
 
-GET  /notes/	controllers.Notes.llistarNotes(page: Int ?=1 )
+GET  /notes/llistarFiltrades	controllers.Notes.llistarNotesFiltrades(page: Int ?=1 )
+
 GET  /notes/nova/	controllers.Notes.novaNota()
 GET  /notes/detall/:nota	controllers.Notes.detallNota(nota:models.Nota)
 
@@ -51,11 +54,11 @@ GET  /moviments_nota/:nota	controllers.Notes.llistarMoviments(nota:models.Nota,p
 DELETE	/notes/moviments/borrar/:moviment           controllers.Notes.borrarMovimentNota(moviment: models.MovimentNota)
 GET  /notes/moviments/nou/:nota	controllers.Notes.nouMovimentNota(nota:models.Nota)
 
-POST /notes/   	controllers.Notes.guardarNota()
+POST /notes/   	controllers.Notes.guardarNota(nou:Boolean)
 
 DELETE	/notes/borrar/:nota           controllers.Notes.borrarNota(nota: models.Nota)
 
-POST /notes/moviments   	controllers.Notes.guardarMovimentNota()
+POST /notes/moviments   	controllers.Notes.guardarMovimentNota(nou:Boolean)
 GET  /notes/moviments/detall/:moviment	controllers.Notes.detallMovimentNota(moviment:models.MovimentNota)
 GET  /notes/notificar/:nota	controllers.Notes.notificarNota(nota:models.Nota)
 
@@ -71,7 +74,7 @@ GET  /reunions/	controllers.Reunions.llistarReunions(page: Int ?=1 )
 GET  /reunions/llistarFiltrades	controllers.Reunions.llistarReunionsFiltrades(page: Int ?=1 )
 
 GET  /reunions/detall/:reunio	controllers.Reunions.detallReunio(reunio:models.Reunio)
-POST /reunions/guardar/    	controllers.Reunions.guardarReunio()
+POST /reunions/guardar/    	controllers.Reunions.guardarReunio(nou:Boolean)
 DELETE	/reunions/borrar/:reunio           controllers.Reunions.borrarReunio(reunio: models.Reunio)
 
 
@@ -80,7 +83,7 @@ DELETE	/reunions/borrar/:reunio           controllers.Reunions.borrarReunio(reun
 GET  /reunions/documents/nou/:reunio	controllers.Reunions.nouDocument(reunio:models.Reunio)
 GET  /reunions/documents/:reunio	controllers.Reunions.llistarDocuments(reunio:models.Reunio,page: Int ?=1 )
 GET  /reunions/documents/detall/:document	controllers.Reunions.detallDocument(document:models.Document)
-POST /reunions/documents/:reunio    	controllers.Reunions.guardarDocument(reunio:models.Reunio)
+POST /reunions/documents/:reunio    	controllers.Reunions.guardarDocument(reunio:models.Reunio,nou:Boolean)
 DELETE	/reunions/documents/borrar/:document          controllers.Reunions.borrarDocument(document: models.Document)
 GET  /reunions/documents/obrir/:codi	controllers.Reunions.readFile(codi: String)
 GET  /reunions/notificar/:reunio	controllers.Reunions.notificarReunio(reunio:models.Reunio)
