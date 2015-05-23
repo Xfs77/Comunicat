@@ -51,7 +51,13 @@ public class Reunions extends Controller {
 		reunio.estat=er;
 		Form<Reunio> filledForm =reunioForm.fill(reunio);
 		 String dni=session("dni");
-	        Usuari usuari=Usuari.recercaPerDni(dni);	
+	        Usuari usuari=null;
+	        try {
+				usuari=Usuari.recercaPerDni(dni);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	
 			List<Comunitat> lc=null;
 			if (usuari.administrador==true){
 				try {
@@ -64,23 +70,30 @@ public class Reunions extends Controller {
 			else {
 				lc=usuari.accesComunitats;
 			}	
-		return ok(detalls_reunio.render(filledForm, lc, EstatReunio.obtenirEstatsReunio()));
+		return ok(detalls_reunio.render(filledForm, lc, EstatReunio.obtenirEstatsReunio(),true));
 	}
 	
 	
 	@Transactional(readOnly = true)
 	public static Result llistarReunions(int page) {
-		Page p = Reunio.llistarReunions(page);
-		List<Reunio> l = p.getList();
-		Form<ReunionsFiltre> filtre=reunioFiltreForm.fill(new ReunionsFiltre());
-		List<Comunitat> lc=null;
+		Page p;
 		try {
-			lc = Comunitat.accesComunitats();
-		} catch (Exception e) {
+			p = Reunio.llistarReunions(page);
+			List<Reunio> l = p.getList();
+			Form<ReunionsFiltre> filtre=reunioFiltreForm.fill(new ReunionsFiltre());
+			List<Comunitat> lc=null;
+			try {
+				lc = Comunitat.accesComunitats();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return ok(llista_reunions.render(l, p, filtre, lc,EstatReunio.obtenirEstatsReunio()));
+		} catch (Exception e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return badRequest();
 		}
-		return ok(llista_reunions.render(l, p, filtre, lc,EstatReunio.obtenirEstatsReunio()));
+		
 	}
 	
 	@Transactional(readOnly = true)
@@ -90,18 +103,24 @@ public class Reunions extends Controller {
 		Form<ReunionsFiltre> boundForm = reunioFiltreForm.bindFromRequest();
 		if (boundForm.hasErrors()) {
 			 return badRequest();
-		} else {
+		}
+		else {
 			ReunionsFiltre filtre = boundForm.get();
-			Page p = Reunio.llistarReunionsFiltrades(1,filtre);
-			List<Reunio> l = p.getList();
-			List<Comunitat> lc=null;
+			Page p;
 			try {
-				lc = Comunitat.accesComunitats();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				p = Reunio.llistarReunionsFiltrades(1,filtre);
+				List<Reunio> l = p.getList();
+				List<Comunitat> lc=null;
+					lc = Comunitat.accesComunitats();
+					return ok(llista_reunions.render(l, p, boundForm, lc,EstatReunio.obtenirEstatsReunio()));
 			}
-			return ok(llista_reunions.render(l, p, boundForm, lc,EstatReunio.obtenirEstatsReunio()));
+			catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				 return badRequest();
+
+			}
+			
 		}
 	}
 	
@@ -110,7 +129,13 @@ public class Reunions extends Controller {
 	public static Result detallReunio(Reunio reunio ) {
 		Form<Reunio> filledForm = reunioForm.fill(reunio);
 		 String dni=session("dni");
-	        Usuari usuari=Usuari.recercaPerDni(dni);	
+	        Usuari usuari=null;
+	        try {
+				usuari=Usuari.recercaPerDni(dni);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	
 		List<EstatReunio> ler=EstatReunio.obtenirEstatsReunio();
 			List<Comunitat> lc=null;
 			if (usuari.administrador==true){
@@ -123,19 +148,26 @@ public class Reunions extends Controller {
 			}
 			else {
 				lc=usuari.accesComunitats;
-			}		return ok(detalls_reunio.render(filledForm,lc, ler));
+			}		return ok(detalls_reunio.render(filledForm,lc, ler, false));
 	}
 
 	
 	@Transactional
-	public static Result guardarReunio() {
+	public static Result guardarReunio(boolean nou) {
 		play.mvc.Http.Request request = request();
 		RequestBody body = request().body();
 		Form<Reunio> boundForm = reunioForm.bindFromRequest();
+		List<Comunitat> lc=null;
+
 		if (boundForm.hasErrors()) {
 			 String dni=session("dni");
-		        Usuari usuari=Usuari.recercaPerDni(dni);	
-				List<Comunitat> lc=null;
+		        Usuari usuari=null;
+		        try {
+					usuari=Usuari.recercaPerDni(dni);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}	
 				if (usuari.administrador==true){
 					try {
 						lc=Comunitat.obtenirComunitats();
@@ -148,30 +180,38 @@ public class Reunions extends Controller {
 					lc=usuari.accesComunitats;
 				}	
 			flash("error", Messages.get("constraint.formulari"));
-			return badRequest(detalls_reunio.render(boundForm, lc,EstatReunio.obtenirEstatsReunio()	));
+			return badRequest(detalls_reunio.render(boundForm, lc,EstatReunio.obtenirEstatsReunio(),nou));
 		} else {
 			Reunio reunioForm = boundForm.get();
-			Reunio.guardarReunio(reunioForm);
-			flash("success", String.format(
-					"La reunio %s s'ha registrat correctament",
-					reunioForm.codi));
+			try {
+				Reunio.guardarReunio(reunioForm,nou);
+				flash("success", String.format(Messages.get("success.guardar_reunio"), reunioForm.codi));
 
-			return redirect(routes.Reunions.llistarReunions(1));
+				return redirect(routes.Reunions.llistarReunions(1));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				flash("error", String.format(Messages.get("error.guardar_reunio"), reunioForm.codi));
+				return badRequest(detalls_reunio.render(boundForm, lc,EstatReunio.obtenirEstatsReunio(),nou));
+			
+		}
 		}
 	}
 
 	
 	@Transactional
-	public static Result borrarReunio(Reunio reunio) throws Exception {
+	public static Result borrarReunio(Reunio reunio)  {
 		if (reunio == null) {
-			return notFound(String.format("La Reunio %s no existeix.",
-					reunio.codi));
+			return notFound(String.format(Messages.get("error.borrar_reunio"), reunio.codi));
 		}
-		Reunio.borrarReunio(reunio);
-		flash("success", String.format(
-				"La reunio %s s'ha borrat correctament", reunio.codi));
-
+		try {
+			Reunio.borrarReunio(reunio);
+			flash("success", String.format(Messages.get("success.borrar_reunio"), reunio.codi));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			flash("error", String.format(Messages.get("error.borrar_reunio")+" ("+e.getLocalizedMessage()+")", reunio.codi));
+				}
 		return redirect(routes.Reunions.llistarReunions(1));
+		
 	}
 	
 	
@@ -181,7 +221,7 @@ public class Reunions extends Controller {
 		document.reunio=reunio;
 		Form<Document> filledForm =documentForm.fill(document);
 		
-		return ok(detalls_document.render(filledForm, document.reunio));
+		return ok(detalls_document.render(filledForm, document.reunio,true));
 	}
 	
 	
@@ -195,34 +235,38 @@ public class Reunions extends Controller {
 	@Transactional(readOnly = true)
 	public static Result detallDocument(Document document ) {
 		Form<Document> filledForm = documentForm.fill(document);
-		return ok(detalls_document.render(filledForm,document.reunio));
+		return ok(detalls_document.render(filledForm,document.reunio,false));
 	}
 
 	
 	@Transactional
-	public static Result guardarDocument(Reunio reunio) {
+	public static Result guardarDocument(Reunio reunio, boolean nou) {
 		play.mvc.Http.Request request = request();
 		RequestBody body = request().body();
 		Form<Document> boundForm = documentForm.bindFromRequest();
 		if (boundForm.hasErrors()) {
 			 flash("error", Messages.get("constraint.formulari"));
-			return badRequest(detalls_document.render(boundForm,reunio));
+			return badRequest(detalls_document.render(boundForm,reunio,nou));
 		} else {
 			Document documentForm = boundForm.get();
 			MultipartFormData m = request().body().asMultipartFormData();
 			MultipartFormData.FilePart part = m.getFile("document");
 		    if(part != null) {
 			      File document = part.getFile();
-		    
+			String tipus=part.getContentType();
+		    if(!tipus.equals("application/pdf")){
+		    	 flash("error", Messages.get("constraint.kkkkkkk"));
+					return badRequest(detalls_document.render(boundForm,reunio,nou));
+		    }
 			 try {
 			        documentForm.document = Files.toByteArray(document);
-			        String s="";
 			      } catch (IOException e) {
 			        return internalServerError("Error reading file upload");
 			      }
 		    }
 			documentForm.reunio=reunio;
-			Document.guardarDocument(documentForm);
+			
+			Document.guardarDocument(documentForm,nou);
 			flash("success", String.format(
 					"El document %s s'ha registrat correctament",
 					documentForm.codi));

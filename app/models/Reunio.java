@@ -28,6 +28,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
 import play.libs.F;
@@ -51,9 +52,11 @@ import play.mvc.PathBindable;
 		@Column(name = "hora")
 		public String hora;
 		@Required
+		@MaxLength(50)
 		@Column(name = "lloc")
 		public String lloc;
 		@Required
+		@MaxLength(150)
 		@Column(name = "descripcio")
 		public String descripcio;
 		@Required
@@ -69,7 +72,6 @@ import play.mvc.PathBindable;
 		@Required
 		@Column(name = "notificada")
 		public boolean notificada;
-		@Required
 		@OneToMany(mappedBy="reunio")
 		public List<Document> documents = new ArrayList<Document>();
 		
@@ -119,28 +121,30 @@ import play.mvc.PathBindable;
 		}
 	
 
-		public static Reunio recercaPerCodi(int codi) {
+		public static Reunio recercaPerCodi(int codi) throws Exception {
 			Reunio result = null;
 			Query query = JPA.em().createQuery("from Reunio r");
+			try{
 			List<Reunio> reunions = query.getResultList();
-
 			for (Reunio candidate : reunions) {
 				if (candidate.codi==codi) {
 					result = candidate;
-
 				}
 			}
 			return result;
+			}catch(Exception e){
+				throw e;
+			}
 		}
 		
-		public static void borrarReunio(Reunio reunio) throws Exception,PersistenceException {
+		public static void borrarReunio(Reunio reunio) throws Exception {
 			// TODO Auto-generated method stub
 			EntityManager em = JPA.em();
 			Reunio refReunio = obtenirRefReunio(reunio);
 			try{
 				em.remove(refReunio);
 				em.flush();
-			}catch (PersistenceException e){
+			}catch (Exception e){
 				throw e;
 				}
 		}
@@ -155,23 +159,26 @@ import play.mvc.PathBindable;
 
 		
 
-		public static Page llistarReunions(int page) {
+		public static Page llistarReunions(int page) throws Exception{
 			Query query = null;
 			query = JPA.em().createQuery("from Reunio");
 		//	query = JPA.em().createQuery("select n from Nota n join n.comunitat c join c.accesComunitats a");
+			try{
 			List list = query.getResultList();
 			Collections.sort(list, ReunioComparator);
 			Page p = new Page(list, page);
 			return p;
+			}catch(Exception e){
+				throw e;
+			}
 
 		}
 
 
 
-		public static Page llistarReunionsFiltrades(int page, ReunionsFiltre reunioFiltreForm) {
+		public static Page llistarReunionsFiltrades(int page, ReunionsFiltre reunioFiltreForm) throws Exception{
 			// TODO Auto-generated method stub
 			Query query = null;
-			ReunionsFiltre r=reunioFiltreForm;
 			String exp="from Reunio r where r.fecha >=?1 and r.fecha<=?2";
 			query = JPA.em().createQuery(exp);
 			query.setParameter(1, reunioFiltreForm.fechaIni);
@@ -197,32 +204,42 @@ import play.mvc.PathBindable;
 				}
 
 			}
-		
-			
-
-		//	query = JPA.em().createQuery("select n from Nota n join n.comunitat c join c.accesComunitats a");
+			try{
 			List list = query.getResultList();
 			Collections.sort(list, ReunioComparator);
 			Page p = new Page(list, page);
-			return p;		
+			return p;
+			}catch(Exception e){
+				throw e;
+			}
 			}
 
 		
-		public static void guardarReunio(Reunio formReunio) {
+		public static void guardarReunio(Reunio formReunio, boolean nou) throws Exception {
 
 			Reunio refReunio= obtenirRefReunio(formReunio);
-			if (refReunio != null) {
+			if (nou != true) {
 				refReunio.fecha = formReunio.fecha;
+				refReunio.comunitat=formReunio.comunitat;
 				refReunio.hora = formReunio.hora;
 				refReunio.descripcio = formReunio.descripcio;
 				refReunio.lloc = formReunio.lloc;
 				refReunio.estat = formReunio.estat;
+				try{
 				JPA.em().merge(refReunio);
-
+				JPA.em().flush();
+				}catch(Exception e){
+					throw e;
+				}
 			} else {
 				
+				try{
 				JPA.em().persist(formReunio);
-					}
+				JPA.em().flush();
+				}catch(Exception e){
+					throw e;
+				}
+				}
 		}
 		
 		public static void notificarReunio(Reunio reunio) {

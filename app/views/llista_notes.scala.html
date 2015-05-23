@@ -1,10 +1,57 @@
-@(notes:List[Nota], page:Page) @import play.i18n.Messages
+@(notes:List[Nota], page:Page,filtre:Form[NotesFiltre], comunitats:List[Comunitat], estats:List[EstatNota]) @import play.i18n.Messages
 @main(Messages.get("notes")) {
 
 <div id="maincontent">
 
 	<h2 class="titol">@Messages.get("notes")</h2>
-
+<br>
+@helper.form(action = routes.Notes.llistarNotesFiltrades(1), 'enctype -> "multipart/form-data") {
+  <fieldset>
+  
+  <div class="row">
+   	<div class="col-md-2"  align="right">
+  		 <div class="input-group date"  >
+  			<strong>@Messages.get("desde") </strong>  <input type="text" class="input" size="10" id="filtre_fecha1" name="fechaIni" required value=@filtre("fechaIni").value >
+  		    <span class="add-on"> <i class="glyphicon glyphicon-th blue"></i></span>
+ 		</div>
+ 	</div>
+ 	 	<div class="col-md-2">
+ 	
+	 	  <select class="selectpicker" id="estat" name="estat"  data-width="220px" >
+	  	<option value="">@Messages.get("seleccioni_estat")</option>
+			      
+			    @for( estat <- estats) {
+				 <option type="text"value=@estat.estat @if( filtre("estat").value()==estat.estat){selected} >@Messages.get(estat.estat)</option>
+			    }
+			    </select>
+		</div>
+		    
+   	<div class="col-md-2">
+		<select class="selectpicker"  id="comunitat"  name="comunitat" data-width="220px" >
+	  	<option value="">@Messages.get("seleccioni_comunitat")</option>
+	    @for( comunitat <- comunitats) {
+	 	<option value=@comunitat.nif @if(filtre("comunitat").value()==comunitat.nif){selected}>@comunitat.nif - @comunitat.pare.nom @comunitat.nom</option>
+	      }
+	  	</select>
+	</div>
+	<div class="col-md-2">
+	   	<button type="submit" class="btn btn-success" value=@Messages.get("filtre")><span
+		class="glyphicon glyphicon-filter" aria-hidden="true"></span>
+	</div>
+  </div>
+  <div class="row">
+   	<div class="col-md-2"  align="right">
+  		 <div class="input-group date"  >
+  			<p class="text-right">
+  			<strong>@Messages.get("fins") </strong>  <input type="text" class="input" id="filtre_fecha2" name="fechaFi" required value=@filtre("fechaFi").value size=10>
+  		    <span class="add-on"> <i class="glyphicon glyphicon-th blue"></i></span>
+  		    </p>
+ 		</div>
+ 	</div>
+ 	</div>
+	</fieldset>
+	<br>
+	}
 	<table class="table table-striped">
 		<thead>
 			<tr>
@@ -27,22 +74,22 @@
 				<td class="text-right">@nota.codi</td>
 				<td class="text-center">@nota.fecha.format("dd/MM/yyyy")</td>
 				<td>@nota.descripcio</td>
-				<td>@nota.estat.descripcio</td>
+				<td>@Messages.get(nota.estat.estat)</td>
 				<td>@nota.comunitat.pare.nom @nota.comunitat.nom</td>
 				<td>@nota.usuari.nom @nota.usuari.cognoms</td>
 				<td class="text-center"><a
 					href="@routes.Notes.detallNota(nota)"><i
 						class="glyphicon glyphicon-pencil" data-toggle="tooltip"
-						data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp
+						data-placement="top" title="@Messages.get("editar_nota")"></i>&nbsp
 					<a onclick="javascript:del('@routes.Notes.borrarNota(nota)')"><i
 						class="glyphicon glyphicon-trash" data-toggle="tooltip"
-						data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a>
+						data-placement="top" title="@Messages.get("eliminar_nota")"></i>&nbsp</a>
 					<a href="@routes.Notes.llistarMoviments(nota,1)"><i
 						class="glyphicon glyphicon-search" data-toggle="tooltip"
-						data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
+						data-placement="top" title="@Messages.get("detall_nota")"></i>&nbsp</a>
 <a href="@routes.Notes.notificarNota(nota)"><i
 						class="glyphicon glyphicon-envelope" data-toggle="tooltip"
-						data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
+						data-placement="top" title="@Messages.get("notificar_nota")"></i>&nbsp</a>
 
 					</td>
 			</tr>

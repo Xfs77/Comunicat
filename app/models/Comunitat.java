@@ -106,7 +106,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinColumn(name = "president")
 	public Usuari president;
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinColumn(name = "nif")
 	private List<Element> elements = new ArrayList<Element>();
@@ -198,6 +198,8 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 	}
 
 	public static List<Comunitat> obtenirComunitats() throws Exception {
+		Usuari usuari = Usuari.recercaPerDni(play.mvc.Controller.session().get(
+				"dni"));
 		Query query = null;
 		query = JPA.em().createQuery("from Comunitat c where c.nif!=?1");
 		query.setParameter(1, "arrel");
@@ -232,7 +234,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 		}
 		query.setParameter(1, pare);
 		try {
-			List list = query.getResultList();
+			List<Comunitat> list = query.getResultList();
 			Collections.sort(list, ComunitatComparator);
 			Page p = new Page(list, page);
 			return p;
@@ -336,6 +338,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 			lc = Comunitat.obtenirComunitats();
 		} else {
 			lc = usuari.accesComunitats;
+			String s="";
 		}
 		return lc;
 	}

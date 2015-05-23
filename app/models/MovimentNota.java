@@ -97,13 +97,14 @@ import play.mvc.PathBindable;
 			return (m[0]);
 		}
 
-		public static MovimentNota recercaPerCodi(models.Nota nota, int codi) {
+		public static MovimentNota recercaPerCodi(models.Nota nota, int codi) throws Exception{
 			// TODO Auto-generated method stub
 				MovimentNota result = null;
 				Query query = JPA.em().createQuery("from MovimentNota m where m.nota=?1 and m.codi=?2");
 				query.setParameter(1,nota);
 				query.setParameter(2, codi);
 				
+				try{
 				List<MovimentNota> moviments = query.getResultList();
 
 				for (MovimentNota candidate : moviments) {
@@ -112,6 +113,9 @@ import play.mvc.PathBindable;
 					}
 				}
 				return result;
+				}catch(Exception e){
+					throw e;
+				}
 					}
 
 		public static MovimentNota obtenirRefMovimentNota(MovimentNota movimentNota) {
@@ -122,15 +126,20 @@ import play.mvc.PathBindable;
 		}
 		
 	
-		public static Page llistarMoviments(Nota nota, int page) {
+		public static Page llistarMoviments(Nota nota, int page) throws Exception {
 			// TODO Auto-generated method stub
 			Query query = null;
 			query = JPA.em().createQuery("from MovimentNota m where m.nota=?1");
 			query.setParameter(1, nota);
+			try{
 			List list = query.getResultList();
 			Collections.sort(list, MovimentComparator);
 			Page p = new Page(list, page);
 			return p;		
+			}
+			catch(Exception e){
+			throw e;	
+			}
 			}
 
 		public static Comparator<MovimentNota> MovimentComparator = new Comparator<MovimentNota>() {
@@ -161,27 +170,36 @@ import play.mvc.PathBindable;
 			return (Integer.toString(this.nota.codi)+"&"+Integer.toString(this.codi));
 		}
 
-		public static void borrarNota(MovimentNota moviment) {
+		public static void borrarMovimentNota(MovimentNota moviment) throws Exception  {
 			// TODO Auto-generated method stub
 				EntityManager em = JPA.em();
 				MovimentNota refMovimentNota = obtenirRefMovimentNota(moviment);
+				try{
 				em.remove(refMovimentNota);
-			
+				}catch(Exception e){
+					throw e;
+				}
 		}
 
-		public static MovimentNota guardarMovimentNota(MovimentNota movimentNotaForm) {
+		public static MovimentNota guardarMovimentNota(MovimentNota movimentNotaForm,Boolean nou) throws Exception {
 			// TODO Auto-generated method stub
 			MovimentNota refMovimentNota= obtenirRefMovimentNota(movimentNotaForm);
 			Nota refNota=Nota.obtenirRefNota(movimentNotaForm.nota);
 			
-			if (refMovimentNota != null) {
+			if (nou== false) {
 
 				refMovimentNota.detall=movimentNotaForm.detall;
 				refMovimentNota.fecha=movimentNotaForm.fecha;
 				refMovimentNota.previsio=movimentNotaForm.previsio;
 				refMovimentNota.estat=movimentNotaForm.estat;
+				try{
 				MovimentNota m=JPA.em().merge(refMovimentNota);
+				JPA.em().flush();
 				return m;
+				}
+				catch(Exception e){
+					throw e;
+				}
 
 			} else {
 				Query query = null;
@@ -194,10 +212,15 @@ import play.mvc.PathBindable;
 				catch (Exception e){
 					movimentNotaForm.codi=1;
 				}
-				MovimentNota m=(JPA.em().merge(movimentNotaForm));
+				MovimentNota m=JPA.em().merge(movimentNotaForm);
 				refNota.estat=m.estat;
+				try{
 				JPA.em().merge(refNota);
+				JPA.em().flush();
 				return(m);
+				}catch(Exception e){
+					throw e;
+				}
 			}
 		}
 

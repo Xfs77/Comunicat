@@ -69,8 +69,9 @@ public class Pare {
 	@Column(name = "txt")
 	public String txt;
 	
-	//@OneToMany(mappedBy="pare", cascade=CascadeType.ALL)
-	@OneToMany(mappedBy="pare")
+//	@OneToMany(cascade=CascadeType.ALL)
+
+	@OneToMany(mappedBy="pare",cascade=CascadeType.ALL)
 	@LazyCollection( LazyCollectionOption.FALSE)
 	public List<Fill> fills = new ArrayList<Fill>();
 	

@@ -1,14 +1,42 @@
-@(usuaris:List[Usuari], page:Page)
+@(usuaris:List[Usuari], page:Page, filtre:Form[UsuarisFiltre], comunitats:List[Comunitat])
 @import play.i18n.Messages
+@import helper._
+@import helper.twitterBootstrap._
+
 @main(Messages.get("usuaris")) {
 
  <div id="maincontent" >
  
 <h2 class="titol">@Messages.get("usuaris")</h2>
 
+ 
+  @helper.form(action = routes.Usuaris.llistarUsuarisFiltrats(1), 'enctype -> "multipart/form-data") {
+  <fieldset>
+	
+  <div class="row">
+   	<div class="col-md-2">
+<br>   	
+  <select class="selectpicker"  id="comunitat"  name="comunitat" data-width="300px" >
+  <option value="">@Messages.get("seleccioni_comunitat")</option>
+    @for( comunitat <- comunitats) {
+ <option value=@comunitat.nif @if(filtre("comunitat").value()==comunitat.nif){selected}>@comunitat.nif - @comunitat.pare.nom @comunitat.nom</option>
+      }
+  </select>
+	 	</div>
+	 		   	<div class="col-md-2">
+	 	   	<br>
+	   	  <button type="submit" class="btn btn-success" value=@Messages.get("filtre")><span
+		class="glyphicon glyphicon-filter" aria-hidden="true"></span>
+		</div>
+    </div>
 
 
 
+   </fieldset>
+
+
+} 
+<br>
 
    <table class="table table-striped">
     <thead>
@@ -23,9 +51,9 @@
         <th class="text-center">@Messages.get("bloquejat")</th>
         <th class="text-center">@Messages.get("president")</th>
         <th class="text-center">@Messages.get("administrador")</th>
-        <th>@Messages.get("tipus")</th>
-        <th>@Messages.get("enviat")</th>
-        <th>@Messages.get("opcions")</th>
+        <th class="text-center">@Messages.get("tipus")</th>
+        <th class="text-center">@Messages.get("enviat")</th>
+        <th class="text-center">@Messages.get("opcions")</th>
       </tr>
     </thead>
     <tbody>
@@ -43,15 +71,15 @@
         <td class="text-center">@if(usuari.bloquejat==true){Si}else{No}</td>
         <td class="text-center">@if(usuari.president==true){Si}else{No}</td>
         <td class="text-center">@if(usuari.administrador==true){Si}else{No}</td>
-        <td>@{if(usuari.tipus.tipus=="Propietari"){Messages.get("propietari")}else if(usuari.tipus.tipus=="Llogater"){Messages.get("llogater")}else{usuari.tipus.tipus}}</td>
+        <td class="text-center">@{if(usuari.tipus.tipus=="Propietari"){Messages.get("Propietari")}else if(usuari.tipus.tipus=="Llogater"){Messages.get("Llogater")}else{usuari.tipus.tipus}}</td>
         <td class="text-center">@if(usuari.enviat==true){Si}else{No}</td>
         
         <td  class="text-center">
                 <a href="@routes.Usuaris.detallUsuari(usuari)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_usuari")"></i>&nbsp</a>
-                        <a onclick="javascript:del('@routes.Usuaris.borrarUsuari(usuari)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a> 
+                        <a onclick="javascript:del('@routes.Usuaris.borrarUsuari(usuari)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_usuari")"></i>&nbsp</a> 
                         <a href="@routes.Usuaris.correuAlta(usuari)"><i class="glyphicon glyphicon-envelope" data-toggle="tooltip" data-placement="top" title="@Messages.get("enviar_email_alta")"></i>&nbsp</a>
                 
-                <a href="@routes.Usuaris.llistarElementsAssignats(usuari)"><i class="glyphicon glyphicon-tower" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
+                <a href="@routes.Usuaris.llistarElementsAssignats(usuari)"><i class="glyphicon glyphicon-tower" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_elements_assignats")"></i>&nbsp</a>
         </td>
      </tr>
       }

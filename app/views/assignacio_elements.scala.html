@@ -54,11 +54,11 @@
        <div class="radio" name="tipus" >
   <label>
     <input type="radio" name="tipus" id="Propietari" value="Propietari" checked>
-	@Messages.get("propietari")
+	@Messages.get("Propietari")
   </label>
   <label>
     <input type="radio" name="tipus" id="Llogater" value="Llogater" checked>
-	@Messages.get("llogater")
+	@Messages.get("Llogater")
   </label>
 </div>
        
@@ -78,11 +78,10 @@
 			 $("#element").find('option').remove();
 		 @for(element <- elements  ){
 			 if($("#comunitat").val()=="@element.comunitat"){
-				$("#element").append('<option value=@element.comunitat.nif"+"&"+"@element.codi>@element.codi</option>');
+				$("#element").append("<option value=@element.comunitat.nif&@element.codi>@element.codi</option>");
 }
 		 }
 		 $("#element").selectpicker('refresh');
-		 alert("");
 	  }) ; 
 	 }) ;
 </script>

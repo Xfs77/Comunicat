@@ -17,11 +17,15 @@ import models.CanviPassword;
 import models.Comunitat;
 import models.Element;
 import models.ElementVei;
+import models.EstatReunio;
 import models.Login;
 import models.Page;
 import models.PasswordGenerator;
+import models.Reunio;
+import models.ReunionsFiltre;
 import models.TipusVei;
 import models.Usuari;
+import models.UsuarisFiltre;
 import play.i18n.Messages;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerPlugin;
@@ -49,18 +53,50 @@ import play.libs.mailer.MailerPlugin;
 public class Usuaris extends Controller {
 
 	private static Form<Usuari> usuariForm = Form.form(Usuari.class);
+	private static Form<UsuarisFiltre> usuariFiltreForm = Form.form(UsuarisFiltre.class);
+
 
 	@Transactional(readOnly = true)
 	public static Result llistarUsuaris(int page) {
-		Page p = Usuari.llistarUsuaris(page);
-		List l = p.getList();
-		return ok(llista_usuaris.render(l, p));
+		Page p;
+		try {
+			p = Usuari.llistarUsuaris(page);
+			List l = p.getList();
+			//return ok(llista_usuaris.render(l, p));
+			return ok();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return notFound();
+		}
+	}
+	
+	@Transactional(readOnly = true)
+	public static Result llistarUsuarisFiltrats(int page) {
+		play.mvc.Http.Request request = request();
+		RequestBody body = request().body();
+		Form<UsuarisFiltre> boundForm = usuariFiltreForm.bindFromRequest();
+		if (boundForm.hasErrors()) {
+			 return badRequest();
+		} else {
+			UsuarisFiltre filtre = boundForm.get();
+			Page p = Usuari.llistarUsuarisFiltrats(1,filtre);
+			List<Usuari> l = p.getList();
+			List<Comunitat> lc=null;
+			try {
+				lc = Comunitat.accesComunitats();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return ok(llista_usuaris.render(l, p, boundForm, lc));
+		}
 	}
 
 	public static Result nouUsuari() {
 		Usuari usuari = new Usuari();
 		usuariForm.fill(usuari);
-		return ok(detalls_usuari.render(usuariForm));
+		return ok(detalls_usuari.render(usuariForm,true));
 	}
 
 	public static Result canviPassword () {
@@ -77,8 +113,13 @@ public class Usuaris extends Controller {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
-		return ok(assignacio_elements.render(usuari,lce,Element.obtenirElements()));
+		List<Element> le=null;
+		try{
+			le=Element.obtenirElements();
+		}
+		catch(Exception e){
+		}
+		return ok(assignacio_elements.render(usuari,lce,le));
 
 	}
 	
@@ -94,12 +135,25 @@ public class Usuaris extends Controller {
 		Comunitat c=null;
 		try {
 			c = (Comunitat.recercaPerNif(comunitat));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Element	e = null;
+		try {
+			e=(Element.recercaPerCodi(c,element));
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		Element	e = (Element.recercaPerCodi(c,element));
+		try{
 		Usuari.assignarElement(usuari, e, t);
+		flash("success", String.format(Messages.get("success.element_assignar"), e.codi));
+		}
+		catch(Exception e2){
+			flash("error", String.format(Messages.get("error.element_assignar")+" ("+e2.getCause().getCause().toString(), e.codi));
+
+		}
 
 		return redirect(
             routes.Usuaris.llistarElementsAssignats(usuari,1));
@@ -112,15 +166,18 @@ public class Usuaris extends Controller {
 		  } 
 		  else {
 			  CanviPassword canviPassword = canviPasswordForm.get();;
-			  Usuari usuari=Usuari.recercaPerDni(session().get("dni"));
-			  usuari.password=canviPassword.nou1;
+			  
 			  try {
-				Usuari.guardarUsuari(usuari);
+				  Usuari usuari=Usuari.recercaPerDni(session().get("dni"));
+				  usuari.password=canviPassword.nou1;
+				  Usuari.guardarUsuari(usuari,false);
+				  flash("success", Messages.get("ok_canvi_password"));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				flash("error", Messages.get("no_canvi_password"));
 			}
-			  flash("success", Messages.get("ok_canvi_password"));
+			  
 
 			  return redirect(
 		            routes.Application.index());
@@ -130,56 +187,65 @@ public class Usuaris extends Controller {
 	@Transactional(readOnly = true)
 	public static Result detallUsuari(Usuari usuari) {
 		Form<Usuari> filledForm = usuariForm.fill(usuari);
-		return ok(detalls_usuari.render(filledForm));
+		return ok(detalls_usuari.render(filledForm,false));
 	}
 
 	@Transactional
-	public static Result guardarUsuari() {
+	public static Result guardarUsuari(boolean nou) {
 		play.mvc.Http.Request request = request();
 		RequestBody body = request().body();
 		Form<Usuari> boundForm = usuariForm.bindFromRequest();
 		if (boundForm.hasErrors()) {
 			flash("error", Messages.get("constraint.formulari"));
-			return badRequest(detalls_usuari.render(boundForm));
+			return badRequest(detalls_usuari.render(boundForm,nou));
 		} else {
 			Usuari usuariForm = boundForm.get();
 		
 			try{
-				Usuari.guardarUsuari(usuariForm);
+				Usuari.guardarUsuari(usuariForm,nou);
 			}
 			catch (Exception e){
-				flash("error", Messages.get("error_enviament_email"));
-				return badRequest(detalls_usuari.render(boundForm));
+				flash("error", String.format(
+						 Messages.get("error.guardar_usuari")+" ("+e.getLocalizedMessage()+")", usuariForm.nom+" "+usuariForm.cognoms));
+				return badRequest(detalls_usuari.render(boundForm,nou));
 			}
 			
 			flash("success", String.format(
-					"L'usuari %s s'ha registrat correctament", usuariForm.dni));
+					 Messages.get("success.guardar_usuari"), usuariForm.nom+" "+usuariForm.cognoms));
 
-			return redirect(routes.Usuaris.llistarUsuaris(1));
+			return redirect(routes.Usuaris.llistarUsuarisFiltrats(1));
 		}
 	}
 	
 	@Transactional
-	public static Result borrarUsuari(Usuari usuari) throws Exception {
+	public static Result borrarUsuari(Usuari usuari) {
 		if (usuari == null) {
-			return notFound(String.format("L'usuari %s no existeix.",
-					usuari.nom+" "+usuari.cognoms));
+			return notFound();
 		}
-		Usuari.borrarUsuari(usuari);
-		flash("success", String.format(
-				String.format("L'usuari %s no existeix.",
-						usuari.nom+" "+usuari.cognoms)));
-		return redirect(routes.Usuaris.llistarUsuaris(1));
+		try {
+			Usuari.borrarUsuari(usuari);
+			flash("success", String.format(
+					String.format(Messages.get("success.borrar_usuari"),
+							usuari.nom+" "+usuari.cognoms)));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			flash("error", String.format(
+					String.format(Messages.get("error.borrar_usuari")+" ("+e.getCause().getCause().toString()+")",
+							usuari.nom+" "+usuari.cognoms)));
+			e.printStackTrace();
+		}
+		
+		return redirect(routes.Usuaris.llistarUsuarisFiltrats(1));
 	}
 	
 	@Transactional
 	public static Result borrarElementAssignat(Usuari usuari,Element element,TipusVei tipus ) throws Exception {
 		if (usuari==null || element== null) {
-			return notFound(String.format("El registre a eliminar no existeix."));
+			return notFound();
 		}
 		Usuari.borrarElementAssignat(usuari,element,tipus);
 		flash("success", String.format(
-				String.format("L'usuari %s s'ha desasignat de l'element %s de la comunitat %s.",
+				String.format(Messages.get("success.borrar_assignat"),
 						usuari.nom+" "+usuari.cognoms,element.codi,element.comunitat.nom)));
 
 		return redirect(routes.Usuaris.llistarElementsAssignats(usuari,1));
@@ -200,13 +266,16 @@ public class Usuaris extends Controller {
 		try {
 			
 			Usuari.correuAlta(usuari);
-			flash("success", Messages.get("ok_enviament_mail"));
-			return redirect(routes.Usuaris.llistarUsuaris(1));
+			flash("success", String.format(
+					String.format(Messages.get("ok_enviament_mail"),usuari.nom+" "+usuari.cognoms)));
+			return redirect(routes.Usuaris.llistarUsuarisFiltrats(1));
 		
 			
 		} catch (Exception e) {
-			flash("error", e.getCause().toString());
-			return redirect(routes.Usuaris.llistarUsuaris(1));
+			flash("error", String.format(
+					String.format(Messages.get("no_enviament_mail")+" ("+e.getLocalizedMessage().toString()+")",
+							usuari.nom+" "+usuari.cognoms)));
+			return redirect(routes.Usuaris.llistarUsuarisFiltrats(1));
 
 			
 			

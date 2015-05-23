@@ -1,4 +1,5 @@
-@(reunions:List[Reunio], page:Page, filtre:Form[ReunionsFiltre], comunitats:List[Comunitat], estats:List[EstatReunio]) @import play.i18n.Messages
+@(reunions:List[Reunio], page:Page, filtre:Form[ReunionsFiltre], comunitats:List[Comunitat], estats:List[EstatReunio])
+@import play.i18n.Messages
 @main(Messages.get("Reunions")) {
 
 <div id="maincontent">
@@ -35,7 +36,7 @@
 		 			<p class="sl"></p>
 		 
 		  <select class="selectpicker" id="comunitat"  name="comunitat"  >
-		       <option></option>
+	  	<option value="">@Messages.get("seleccioni_comunitat")</option>
 		
 		    @for( comunitat <- comunitats) {
 		 <option value=@comunitat.nif @if(filtre("comunitat").value()==comunitat.nif){selected}>@comunitat.nif - @comunitat.pare.nom @comunitat.nom</option>
@@ -48,7 +49,7 @@
         <td>
         
 		  <select class="selectpicker" id="estat" name="estat">
-		       <option></option>
+	  	<option value="">@Messages.get("seleccioni_estat")</option>
 		      
 		    @for( estat <- estats) {
 		
@@ -119,10 +120,10 @@
 				<td>@Messages.get(reunio.estat.descripcio)</td>
 				<td class="text-center">@if(reunio.notificada) {Si}else{No}</td>
 				<td class="text-center">
-				        <a href="@routes.Reunions.detallReunio(reunio)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a> 
-        <a onclick="javascript:del('@routes.Reunions.borrarReunio(reunio)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a> 
-        <a href="@routes.Reunions.llistarDocuments(reunio)"><i class="glyphicon glyphicon-file" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a> 
-        <a href="@routes.Reunions.notificarReunio(reunio)"><i class="glyphicon glyphicon-envelope" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a> 
+				        <a href="@routes.Reunions.detallReunio(reunio)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_reunio")"></i>&nbsp </a> 
+        <a onclick="javascript:del('@routes.Reunions.borrarReunio(reunio)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_reunio")"></i>&nbsp</a> 
+        <a href="@routes.Reunions.llistarDocuments(reunio)"><i class="glyphicon glyphicon-file" data-toggle="tooltip" data-placement="top" title="@Messages.get("detall_doc")"></i>&nbsp </a> 
+        <a href="@routes.Reunions.notificarReunio(reunio)"><i class="glyphicon glyphicon-envelope" data-toggle="tooltip" data-placement="top" title="@Messages.get("notificar_reunio")"></i>&nbsp </a> 
         
 
 					</td>

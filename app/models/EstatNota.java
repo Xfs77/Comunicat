@@ -60,9 +60,10 @@ public class EstatNota implements Serializable, PathBindable<EstatNota> {
 	
 	
 	
-	public static EstatNota recerca(String estat) {
+	public static EstatNota recerca(String estat) throws Exception{
 		EstatNota result = null;
 		Query query = JPA.em().createQuery("from EstatNota e");
+		try{
 		List<EstatNota> estatsNota = query.getResultList();
 
 		for (EstatNota candidate : estatsNota) {
@@ -72,17 +73,45 @@ public class EstatNota implements Serializable, PathBindable<EstatNota> {
 			}
 		}
 		return result;
+		}
+		catch(Exception e){
+			return null;
+		}
 	}
 		
 
-	public static List<EstatNota> obtenirEstatsNota() {
+	public static List<EstatNota> obtenirEstatsNota() throws Exception{
 		Query query = null;
 		query = JPA.em().createQuery("from EstatNota e");
+		try{
 		List list = query.getResultList();
 		return list;
-
+		}
+		catch(Exception e){
+			throw e;
+		}
 	}
-	
+
+
+	public static List<EstatNota> accesEstatsNota() throws Exception{
+		Query query = null;
+		Usuari usuari = Usuari.recercaPerDni(play.mvc.Controller.session().get(
+				"dni"));
+		if(usuari.administrador==true){
+			query = JPA.em().createQuery("from EstatNota e");
+		}
+		else{
+			query = JPA.em().createQuery("from EstatNota e where e.estat!=?1");
+			query.setParameter(1,"P");
+		}
+		try{
+		List list = query.getResultList();
+		return list;
+		}
+		catch(Exception e){
+			throw e;
+		}
+	}
 	public EstatNota(String estat) {
 		super();
 		this.estat = estat;

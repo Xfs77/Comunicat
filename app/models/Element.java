@@ -33,6 +33,10 @@ import controllers.Comunitats;
 import play.libs.F;
 import play.libs.F.Some;
 import play.mvc.QueryStringBindable;
+import play.data.validation.Constraints.Max;
+import play.data.validation.Constraints.MaxLength;
+import play.data.validation.Constraints.Min;
+import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
 import play.mvc.PathBindable;
 import play.db.jpa.Transactional;
@@ -79,10 +83,17 @@ public class Element implements Serializable,
 	@JoinColumn(name = "nif")
 	public Comunitat comunitat;
 	@Id
+	@Required
+	@MaxLength(50)
 	@Column(name = "codi")
 	public String codi;
+	@Required
+	@MaxLength(150)
 	@Column(name = "descripcio")
 	public String descripcio;
+	@Required
+	@Max(1)
+	@Min(0)
 	@Column(name = "coeficient")
 	public float coeficient;
 	@OneToMany(mappedBy="element")
@@ -118,40 +129,60 @@ public class Element implements Serializable,
 	}
 
 	
-	public static List<Element> obtenirElements() {
+	public static List<Element> obtenirElements() throws Exception{
 		Query query = null;
 		query = JPA.em().createQuery("from Element");
+		try{
 		List<Element> elements=query.getResultList();
 		return elements;
+		}
+		catch(Exception e){
+			throw e;
+		}
 	}
-	public static Page llistarElements(Comunitat comunitat,int page) {
+
+	public static Page llistarElements(Comunitat comunitat,int page) throws Exception {
 		Query query = null;
 		query = JPA.em().createQuery("from Element e where e.comunitat=?1");
 		query.setParameter(1, comunitat);
-		List list = query.getResultList();
+		try{
+		List<Element> list = query.getResultList();
 		Collections.sort(list, ElementComparator);
 		Page p = new Page(list, page);
 		return p;
+		}
+		catch (Exception e){
+		throw e;
+		}
 
 	}
 	
 
-	public static void guardarElement(Element element) {
+	public static void guardarElement(Element element,boolean nou) throws Exception {
 		Element refElement=obtenirRefElement(element);
-		if(refElement!=null) {
+		if(nou==false) {
 			refElement.descripcio=element.descripcio;
 			refElement.coeficient=element.coeficient;
-			
+			try{
 			JPA.em().merge(refElement);
+			}
+			catch(Exception e){
+				throw e;
+			}
 		}else{
 			element.comunitat=Comunitat.obtenirRefComunitat(element.comunitat); 
-			JPA.em().merge(element);
+			try{
+			JPA.em().persist(element);
+			}
+			catch(Exception e){
+				throw e;
+			}
 		}
 		
 
 	}
 
-	public static void borrarElement(Element element) {
+	public static void borrarElement(Element element) throws Exception {
 		// TODO Auto-generated method stub
 		EntityManager em = JPA.em();
 		ElementPK pk=new ElementPK();
@@ -160,25 +191,33 @@ public class Element implements Serializable,
 		Element actorToBeRemoved = em.find(Element.class,
 				pk);
 		
+		try{
 		em.remove(actorToBeRemoved);
-		
-		
+		}
+		catch(Exception e){
+			throw e;
+		}
 	}
 
-	public static Element recercaPerCodi(Comunitat comunitat, String codi) {
+	public static Element recercaPerCodi(Comunitat comunitat, String codi) throws Exception {
 		Element result = null;
 		Query query = JPA.em().createQuery("from Element e where e.comunitat=?1 and e.codi=?2");
 		query.setParameter(1,comunitat);
 		query.setParameter(2, codi);
 		
+		try{
 		List<Element> elements = query.getResultList();
-
 		for (Element candidate : elements) {
 			if (candidate.codi.toLowerCase().contains(codi.toLowerCase()) && candidate.comunitat.equals(comunitat)) {
 				result = candidate;
 			}
 		}
 		return result;
+		}
+		catch (Exception e){
+			throw e;
+		}
+		
 	}
 	
 	

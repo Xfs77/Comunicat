@@ -1,4 +1,4 @@
-@(notaForm: Form[Nota], usuari: Usuari, estats:List[EstatNota], comunitats:List[Comunitat], detall: String)
+@(notaForm: Form[Nota], usuari: Usuari, estats:List[EstatNota], comunitats:List[Comunitat], detall: String, nou:Boolean)
 @import helper._
 @import helper.twitterBootstrap._
 @import play.i18n.Messages
@@ -10,9 +10,9 @@
   
   <h2 class="titol">@Messages.get("formulari_notes")</h2>
   
-   @helper.form(action = routes.Notes.guardarNota(), 'enctype -> "multipart/form-data") {
+   @helper.form(action = routes.Notes.guardarNota(nou), 'enctype -> "multipart/form-data") {
   <fieldset>
-    @if(notaForm("codi").value!="0"){
+    @if(nou==false){
 	  @helper.inputText(notaForm("codi"),'_label -> Messages.get("codi"),   'readonly -> "readonly")
 }
     <label for="data">@Messages.get("autor")</label>  
@@ -37,9 +37,9 @@
 <strong>@Messages.get("estat")</strong>
 	<p class="sls"></p>
 
-  <select class="selectpicker"  id="estat"  name="estat" data-width="200px"  @if(notaForm("codi").value=="0"){disabled="true"} >
+  <select class="selectpicker"  id="estat"  name="estat" data-width="200px" disabled="true" >
     @for( estat <- estats) {
- <option value=@estat.estat @if(notaForm("estat").value=="Pendent Publicar"){Selected}>@estat.descripcio</option>
+ <option value=@estat.estat @if(notaForm("estat").value==estat.estat){Selected}>@Messages.get(estat.estat)</option>
       }
   </select>
  <br>
@@ -57,20 +57,21 @@
   <br>
 	<p class="sl"></p>
   @helper.inputText(notaForm("descripcio"),'_label -> Messages.get("descripcio"), 'size -> 98)
-    @if(notaForm("codi").value=="0"){
-
+@if(nou==true){
 <strong>@Messages.get("detall")</strong>
  <br>
 	<p class="sls"></p>
 }
-<textarea name="detall" id="detall" rows="4" cols="100" value="@detall"  @if(notaForm("codi").value!="0"){hidden}> </textarea> 
+<textarea name="detall" id="detall" rows="4" cols="100" value="@detall"  @if(nou==false){hidden} maxlength="250"> </textarea> 
 <br>
-   @if(notaForm("codi").value=="0"){	<p class="sl"></p>}
+   @if(nou==true){	
+  <p class="gris">@Messages.get("constraint.maxLength250")</p>
+   <p class="sl"></p>}
 
 
 
 <input type="submit" onclick="habilita()" class="btn btn-success" value=@Messages.get("Save")>
-  <a class="btn btn-danger" href="@routes.Notes.llistarNotes(1)">@Messages.get("Cancel")</a>
+  <a class="btn btn-danger" href="@routes.Notes.llistarNotesFiltrades(1)">@Messages.get("Cancel")</a>
    </fieldset>
     </div>
     

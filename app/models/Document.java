@@ -1,7 +1,17 @@
 package models;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,10 +34,17 @@ import javax.persistence.Query;
 import javax.persistence.RollbackException;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.Constraint;
+import javax.validation.ConstraintValidator;
+import javax.validation.Payload;
+
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import play.data.validation.Constraints;
+import play.data.validation.Constraints.MaxLength;
+import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
 import play.libs.F;
 import play.mvc.PathBindable;
@@ -40,6 +57,8 @@ import play.mvc.PathBindable;
 		@SequenceGenerator(name = "seq_document", sequenceName = "seq_document", allocationSize = 1, initialValue = 1)
 		@Column(name = "codi")
 		public int codi;
+		@Required
+		@MaxLength(150)
 		@Column(name = "descripcio")
 		public String descripcio;
 		@ManyToOne
@@ -94,10 +113,8 @@ import play.mvc.PathBindable;
 
 		public static Page llistarDocuments(Reunio reunio,int page) {
 			Query query = null;
-			query = JPA.em().createQuery("from Document");
 			query = JPA.em().createQuery("from Document d where d.reunio=?1");
 			query.setParameter(1,Reunio.obtenirRefReunio(reunio));
-		//	query = JPA.em().createQuery("select n from Nota n join n.comunitat c join c.accesComunitats a");
 			List list = query.getResultList();
 			Collections.sort(list, DocumentComparator);
 			Page p = new Page(list, page);
@@ -105,10 +122,10 @@ import play.mvc.PathBindable;
 
 		}
 		
-		public static void guardarDocument(Document formDocument) {
+		public static void guardarDocument(Document formDocument, boolean nou) {
 
 			Document refDocument= obtenirRefDocument(formDocument);
-			if (refDocument != null) {
+			if (nou ==false) {
 				refDocument.descripcio=formDocument.descripcio;
 				if(formDocument.document!=null) refDocument.document=formDocument.document;
 				JPA.em().merge(refDocument);

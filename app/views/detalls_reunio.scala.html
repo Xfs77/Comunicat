@@ -1,4 +1,4 @@
-@(reunioForm: Form[Reunio], comunitats:List[Comunitat], estats:List[EstatReunio])
+@(reunioForm: Form[Reunio], comunitats:List[Comunitat], estats:List[EstatReunio],nou:Boolean)
 @import helper._
 @import helper.twitterBootstrap._
 @import play.i18n.Messages
@@ -9,9 +9,9 @@
   <h2 class="titol">@Messages.get("formulari_reunions")</h2>
  
  
-  @helper.form(action = routes.Reunions.guardarReunio(),'enctype -> "multipart/form-data") {
+  @helper.form(action = routes.Reunions.guardarReunio(nou),'enctype -> "multipart/form-data") {
   <fieldset>
-  @if(reunioForm("codi").value()!="0"){
+  @if(nou==false){
   	@helper.inputText(reunioForm("codi"), '_label -> Messages.get("codi"),   'readonly -> "readonly")
   }
   	<p class="sl"></p>
@@ -42,7 +42,7 @@
  
   @helper.inputText(reunioForm("hora"),'_label -> Messages.get("hora"))
   
-  @helper.inputText(reunioForm("descripcio"),'_label -> Messages.get("descripcio"))
+  @helper.inputText(reunioForm("descripcio"),'_label -> Messages.get("descripcio"),  'size -> 98)
   @helper.inputText(reunioForm("lloc"),'_label -> Messages.get("lloc"))
     
   <p class="sl"></p>

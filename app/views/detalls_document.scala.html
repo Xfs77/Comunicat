@@ -1,18 +1,18 @@
-@(documentForm: Form[Document],reunio:Reunio)
+@(documentForm: Form[Document],reunio:Reunio, nou:Boolean)
 @import helper._
 @import helper.twitterBootstrap._
 @import play.i18n.Messages
 
 
-@main("formulari_documents") {
+@main(Messages.get("formulari_documents")) {
       <div id="maincontent">
   <h2 class="titol">@Messages.get("formulari_documents")</h2>
-  @helper.form(action = routes.Reunions.guardarDocument(reunio),'enctype -> "multipart/form-data") {
+  @helper.form(action = routes.Reunions.guardarDocument(reunio,nou),'enctype -> "multipart/form-data") {
   <fieldset>
-  @if(documentForm("codi").value()!="0"){
+  @if(nou==false){
   	@helper.inputText(documentForm("codi"), '_label -> Messages.get("codi"),   'readonly -> "readonly")
   	}
-  	@helper.inputText(documentForm("descripcio"), '_label -> Messages.get("descripcio"))
+  	@helper.inputText(documentForm("descripcio"), '_label -> Messages.get("descripcio"), 'size -> 98)
 	@helper.inputFile(documentForm("document"), '_label -> Messages.get("document"))
 	  	
   

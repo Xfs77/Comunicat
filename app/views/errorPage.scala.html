@@ -1,8 +1,9 @@
 @(throwable: Throwable)
+ @import play.i18n.Messages
 
-@main("onError Happened") {
+@main("Error") {
 
-  <h1>onError Happened xxxxxxxx</h1>	
+  <h1>@Messages.get("error.desconegut")</h1>	
   <p>@throwable.getMessage</p>    
 
 }

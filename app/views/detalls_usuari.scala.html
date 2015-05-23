@@ -1,4 +1,4 @@
-@(usuariForm: Form[Usuari])
+@(usuariForm: Form[Usuari],nou:Boolean)
 @import helper._
 @import helper.twitterBootstrap._
 @import play.i18n.Messages
@@ -9,9 +9,9 @@
   
   
   <h2 class="titol">@Messages.get("formulari_usuaris")</h2>
-  @helper.form(action = routes.Usuaris.guardarUsuari(),'enctype -> "multipart/form-data") {
+  @helper.form(action = routes.Usuaris.guardarUsuari(nou),'enctype -> "multipart/form-data") {
   <fieldset>
-  @if(usuariForm("dni").value==null){
+  @if(nou==true){
   	@helper.inputText(usuariForm("dni"), '_label -> Messages.get("dni"))
   } else {
   	@helper.inputText(usuariForm("dni"), '_label -> Messages.get("dni"),   'readonly -> "readonly")
@@ -23,19 +23,29 @@
   @helper.inputText(usuariForm("email"),'_label -> Messages.get("email"))
   @inputRadioGroup(
           usuariForm("tipus"),
-          options = options("Propietari"->Messages.get("propietari"),"Llogater"->Messages.get("llogater")),
+          options = options("Propietari"->Messages.get("Propietari"),"Llogater"->Messages.get("Llogater")),
           '_label->Messages.get("tipus_vei"))
-  @checkbox(field = usuariForm("administrador"))   
-  @checkbox(field = usuariForm("president"))
-  @checkbox(field = usuariForm("baixa"))
-  @checkbox(field = usuariForm("bloquejat"))
-  @checkbox(field = usuariForm("enviat"))
+ <div class="control-group">
+  <div class="controls">
   
+  @checkbox(field = usuariForm("enviat"),'_label -> Messages.get("notificar"))
+  </div>
+  </div>
+ <div class="row">
+  <div class="col-md-1">  @checkbox(field = usuariForm("administrador"))  </div>
+  <div class="col-md-1">  @checkbox(field = usuariForm("president"))</div>
   
-          
+</div>
+<div class="row">
+  <div class="col-md-1">    @checkbox(field = usuariForm("baixa"))  </div>
+  <div class="col-md-1">    @checkbox(field = usuariForm("bloquejat"))</div>
+  
+</div>
+
     </fieldset>
+    <p class="sl"></p>
   <input type="submit" class="btn btn-success" value=@Messages.get("Save")>
-  <a class="btn btn-danger" href="@routes.Usuaris.llistarUsuaris(1)">@Messages.get("Cancel")</a>
+  <a class="btn btn-danger" href="@routes.Usuaris.llistarUsuarisFiltrats(1)">@Messages.get("Cancel")</a>
     </div>
     
     }

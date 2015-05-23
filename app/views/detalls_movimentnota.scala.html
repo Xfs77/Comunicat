@@ -1,4 +1,4 @@
-@(movimentForm: Form[MovimentNota], nota:Nota, usuari: Usuari, estats:List[EstatNota])
+@(movimentForm: Form[MovimentNota], nota:Nota, usuari: Usuari, estats:List[EstatNota],nou:Boolean)
 @import helper._
 @import helper.twitterBootstrap._
 @import play.i18n.Messages
@@ -8,15 +8,16 @@
       <div id="maincontent">
   
   
-  
-  <h2 class="titol">@Messages.get("formulari_moviments")</h2>
+ <h4 class="titol">@Messages.get("comunitat")@nota.comunitat.pare.nom @nota.comunitat.nom (@nota.comunitat.nif)</h4>
+ <h2 class="titol">@Messages.get("formulari_moviments") @nota.codi - @nota.descripcio - (@Messages.get(nota.estat.estat)) </h2>
+    
   <strong>@Messages.get("autor")</strong>
 	<p class="sls"></p>
   
         <input type="text" readonly name="usuari" value="@usuari.nom @usuari.cognoms"  />
      
 	<p class="sl"></p>
-   @helper.form(action = routes.Notes.guardarMovimentNota(), 'enctype -> "multipart/form-data") {
+   @helper.form(action = routes.Notes.guardarMovimentNota(nou), 'enctype -> "multipart/form-data") {
   
   <fieldset>
    
@@ -35,9 +36,6 @@
  </div>
   	<p class="sl"></p>
   
-          @helper.textarea(movimentForm("detall"), '_label -> Messages.get("detall") )
-   
-   
    <div class="clearfix  " id="fecha">
     <label for="data">@Messages.get("data_previsio")</label>
 </div>
@@ -52,13 +50,22 @@
 <strong>@Messages.get("estat")</strong>
 	<p class="sls"></p>
 
-  <select class="selectpicker"  id="estat"  name="estat" data-width="200px"  >
+  <select class="selectpicker"  id="estat"  name="estat" data-width="200px" @if(false==false) {nou="true"} >
     @for( estat <- estats) {
- <option value=@estat.estat @if(movimentForm("estat").value==estat.estat){Selected}>@Messages.get(estat.estat)</option>
+ <option value=@estat.estat @if(movimentForm("estat").value==estat.estat){Selected} )>@Messages.get(estat.estat)</option>
       }
   </select>
  <br>
 	<p class="sl"></p>
+
+<strong>@Messages.get("detall")</strong>
+ <br>
+	<p class="sls"></p>
+
+<textarea name="detall" id="detall" rows="4" cols="100" value=@movimentForm("detall").value  maxlength="250"> </textarea> 
+<br>	
+  <p class="gris">@Messages.get("constraint.maxLength250")</p>
+   <p class="sl"></p>
 	
    <input type="text" readonly name="usuari" value="@usuari.dni" hidden />
    

@@ -42,15 +42,27 @@ public class Comunitats extends Controller {
 	public static Result novaComunitat(Comunitat pare) {
 		Comunitat comunitat = new Comunitat(pare);
 		comunitatForm.fill(comunitat);
-		List<Usuari> l = Usuari.obtenirUsuaris();
-		return ok(detalls_comunitat.render(comunitatForm, pare, l,true));
+		List<Usuari> lu=null;
+		try {
+			lu = Usuari.obtenirUsuaris();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ok(detalls_comunitat.render(comunitatForm, pare, lu,true));
 	}
 
 	@Transactional(readOnly = true)
 	public static Result detallComunitat(Comunitat comunitat) {
 		Form<Comunitat> filledForm = comunitatForm.fill(comunitat);
-		List<Usuari> l = Usuari.obtenirUsuaris();
-		return ok(detalls_comunitat.render(filledForm, comunitat.pare, l,false));
+		List<Usuari> lu = null;
+		try {
+			lu=Usuari.obtenirUsuaris();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ok(detalls_comunitat.render(filledForm, comunitat.pare, lu,false));
 	}
 
 	@Transactional(readOnly = true)
@@ -77,9 +89,9 @@ public class Comunitats extends Controller {
 			return ok(llista_comunitats.render(l, p, pare));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			flash("error",Messages.get("error.consulta_subcomunitats"));
+			return  redirect(routes.Comunitats.llistarSubComunitats(pare.pare, 1));
 		}
-		return notFound();
 
 	}
 
@@ -92,17 +104,9 @@ public class Comunitats extends Controller {
 			return ok(llista_contactes.render(l, p, comunitat));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			try {
-				p=Comunitat.llistarSubComunitats(comunitat.pare, 1);
-				List l=p.getList();
 				flash("error",Messages.get("no_contactes"));
 				return redirect(routes.Comunitats.llistarSubComunitats(comunitat.pare, 1));
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		return badRequest();
+			
 		}
 		
 
@@ -113,10 +117,10 @@ public class Comunitats extends Controller {
 		
 		try{
 		Comunitat.borrarComunitat(comunitat);
-		flash("success", String.format(Messages.get("success.comuunitat_borrar"), comunitat.nom));
+		flash("success", String.format(Messages.get("success.comunitat_borrar"), comunitat.nom));
 		}
 		catch(Exception e){
-			flash("error", String.format(Messages.get("error.comuunitat_borrar"), comunitat.nom)+" (" +e.getCause().getCause().toString()+")");
+			flash("error", String.format(Messages.get("error.comunitat_borrar"), comunitat.nom)+" (" +e.getCause().getCause().toString()+")");
 		}
 		return redirect(routes.Comunitats.llistarSubComunitats(comunitat.pare, 1));
 	}
@@ -128,16 +132,23 @@ public class Comunitats extends Controller {
 		Form<Comunitat> boundForm = comunitatForm.bindFromRequest();
 		if (boundForm.hasErrors()) {
 			flash("error", Messages.get("constraint.formulari"));
-			return badRequest(detalls_comunitat.render(boundForm, pare, Usuari.obtenirUsuaris(),nou));
+			List<Usuari> lu=null;
+			try {
+				lu=Usuari.obtenirUsuaris();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+			return badRequest(detalls_comunitat.render(boundForm, pare, lu,nou));
 		} else {
 			Comunitat comunitatForm = boundForm.get();
 			try {
 				Comunitat.guardarComunitat(comunitatForm, pare,nou);
-				flash("success", String.format(Messages.get("success.comuunitat_guardar"), comunitatForm.nom));
+				flash("success", String.format(Messages.get("success.comunitat_guardar"), comunitatForm.nom));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				flash("error", String.format(Messages.get("error.comuunitat_guardar"), comunitatForm.nom+" ("+e.getLocalizedMessage()+")"));
+				flash("error", String.format(Messages.get("error.comunitat_guardar"), comunitatForm.nom+" ("+e.getLocalizedMessage()+")"));
 			}
 		
 
@@ -148,14 +159,21 @@ public class Comunitats extends Controller {
 	public static Result nouElement(Comunitat comunitat) {
 		Element element = new Element(comunitat);
 		elementForm.fill(element);
-		return ok(detalls_element.render(elementForm, comunitat));
+		return ok(detalls_element.render(elementForm, comunitat,true));
 	}
 
 	@Transactional(readOnly = true)
 	public static Result llistarElements(Comunitat comunitat, int page) {
-		Page p = Element.llistarElements(comunitat, page);
-		List l = p.getList();
-		return ok(llista_elements.render(l, p, comunitat));
+		Page p;
+		try {
+			p = Element.llistarElements(comunitat, page);
+			List<Element> l = p.getList();
+			return ok(llista_elements.render(l, p, comunitat));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			flash("error",Messages.get("error.consulta_elements"));
+			return redirect(routes.Comunitats.llistarSubComunitats(comunitat.pare, 1));		}
+		
 	}
 
 	@Transactional
@@ -164,30 +182,45 @@ public class Comunitats extends Controller {
 			return notFound(String.format("L'element %s no existeix.", element.codi));
 		}
 
-		Element.borrarElement(element);
+		try {
+			Element.borrarElement(element);
+			flash("success", String.format(Messages.get("success.element_borrar"), element.codi));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			flash("error", String.format(Messages.get("error.element_borrar"), element.codi));
+
+		}
 		return redirect(routes.Comunitats.llistarComunitats(1));
 	}
 
 	@Transactional(readOnly = true)
 	public static Result detallElement(Element element) {
 		Form<Element> filledForm = elementForm.fill(element);
-		return ok(detalls_element.render(filledForm, element.comunitat));
+		return ok(detalls_element.render(filledForm, element.comunitat,false));
 	}
 
 	@Transactional
-	public static Result guardarElement(Comunitat comunitat) {
+	public static Result guardarElement(Comunitat comunitat,boolean nou) {
 		play.mvc.Http.Request request = request();
 		RequestBody body = request().body();
 		Form<Element> boundForm = elementForm.bindFromRequest();
 		if (boundForm.hasErrors()) {
 			flash("error", Messages.get("constraint.formulari"));
-			return badRequest(detalls_element.render(boundForm, comunitat));
+			return badRequest(detalls_element.render(boundForm, comunitat,nou));
 		} else {
 			Element element = boundForm.get();
 			element.comunitat = comunitat;
-			Element.guardarElement(element);
-			Element e = element;
-			flash("success", String.format("L'element %s s'ha registrat correctament", element.codi));
+			try {
+				Element.guardarElement(element,nou);
+				flash("success", String.format(Messages.get("success.element_guardar"), element.codi));
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				flash("error", String.format(Messages.get("error.element_guardar"), element.codi));
+
+			}
 
 			return redirect(routes.Comunitats.llistarElements(comunitat, 1));
 		}

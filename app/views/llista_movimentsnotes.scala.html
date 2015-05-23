@@ -4,9 +4,10 @@
 
  <div id="maincontent" >
 
-<h2 class="titol">@Messages.get("moviments")</h2>
-
-
+ <h4 class="titol">@Messages.get("comunitat")@nota.comunitat.pare.nom @nota.comunitat.nom (@nota.comunitat.nif)</h4>
+ <h2 class="titol">@Messages.get("moviments_nota") @nota.codi - @nota.descripcio - (@Messages.get(nota.estat.estat)) </h2>
+    
+<br>
 <style>
 </style>
 
@@ -40,9 +41,9 @@
 		<td class="text-center">@if(moviment.notificada==true){Si}else{No} </td>
 		
         <td  class="text-center">
-             <a href="@routes.Notes.detallMovimentNota(moviment)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a> 
+             <a href="@routes.Notes.detallMovimentNota(moviment)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_movnota")"></i>&nbsp </a> 
         
-               <a onclick="javascript:del('@routes.Notes.borrarMovimentNota(moviment)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a> 
+               <a onclick="javascript:del('@routes.Notes.borrarMovimentNota(moviment)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_movnota")"></i>&nbsp</a> 
        
         </td>
      </tr>
