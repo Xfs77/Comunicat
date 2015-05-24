@@ -31,6 +31,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
+import play.i18n.Messages;
 import play.libs.F;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerPlugin;
@@ -179,6 +180,9 @@ import play.mvc.PathBindable;
 		public static Page llistarReunionsFiltrades(int page, ReunionsFiltre reunioFiltreForm) throws Exception{
 			// TODO Auto-generated method stub
 			Query query = null;
+			Usuari usuari = Usuari.recercaPerDni(play.mvc.Controller.session().get(
+					"dni"));
+			if(usuari.administrador==true){
 			String exp="from Reunio r where r.fecha >=?1 and r.fecha<=?2";
 			query = JPA.em().createQuery(exp);
 			query.setParameter(1, reunioFiltreForm.fechaIni);
@@ -204,6 +208,35 @@ import play.mvc.PathBindable;
 				}
 
 			}
+			}
+			else{
+				String exp="from Reunio r where r.fecha >=?1 and r.fecha<=?2 and exists(from AccesComunitat a where a.vei=?5 and a.comunitat=n.comunitat)";;
+				query = JPA.em().createQuery(exp);
+				query.setParameter(1, reunioFiltreForm.fechaIni);
+				query.setParameter(2,reunioFiltreForm.fechaFi);
+				query.setParameter(5,usuari);
+
+				if(reunioFiltreForm.comunitat!=null){
+					exp=exp+" and r.comunitat=?3";
+					query = JPA.em().createQuery(exp);
+					query.setParameter(1, reunioFiltreForm.fechaIni);
+					query.setParameter(2,reunioFiltreForm.fechaFi);
+					query.setParameter(3,Comunitat.obtenirRefComunitat(reunioFiltreForm.comunitat));
+				}
+				if(reunioFiltreForm.estat!=null){
+					exp=exp+" and r.estat=?4";
+					query = JPA.em().createQuery(exp);
+					query.setParameter(1, reunioFiltreForm.fechaIni);
+					query.setParameter(2,reunioFiltreForm.fechaFi);
+					query.setParameter(4,EstatReunio.obtenirRefEstatReunio(reunioFiltreForm.estat));
+
+					if (exp.contains("?3")){
+						query.setParameter(3,Comunitat.obtenirRefComunitat(reunioFiltreForm.comunitat));
+					}
+
+				}
+				}
+			
 			try{
 			List list = query.getResultList();
 			Collections.sort(list, ReunioComparator);
@@ -242,7 +275,7 @@ import play.mvc.PathBindable;
 				}
 		}
 		
-		public static void notificarReunio(Reunio reunio) {
+		public static void notificarReunio(Reunio reunio) throws Exception {
 			Query query = null;
 			query = JPA.em().createQuery("select a from Reunio r join r.comunitat c join c.accesComunitats a where r=?1");
 			query.setParameter(1, Reunio.obtenirRefReunio(reunio));
@@ -251,7 +284,12 @@ import play.mvc.PathBindable;
 			Iterator<Usuari> iterator = lu.iterator();
 			while (iterator.hasNext()) {
 				Usuari u=iterator.next();
-				Reunio.correuReunio(u, reunio);
+				try {
+					Reunio.correuReunio(u, reunio);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			Reunio refReunio= Reunio.obtenirRefReunio(reunio);
@@ -259,20 +297,23 @@ import play.mvc.PathBindable;
 			JPA.em().merge(refReunio);
 		}
 		
-		public static void correuReunio(Usuari usuari, Reunio reunio) {
+		public static void correuReunio(Usuari usuari, Reunio reunio) throws Exception {
 			
 		
 			Email email = new Email();
 		
-			email.setSubject("Correu Reunio a www.ComunicatComunitat");
+			email.setSubject(Messages.get("notificacio.cap_reunio"));
 			email.setFrom("comunicatcomunitat@gmail.com");
 			email.addTo(usuari.email);
-			email.setBodyText("A text message");
-		
-			
-			
+			email.setBodyText(String.format(
+					 Messages.get("notificacio.detall.reunio"), reunio.fecha.toString(),reunio.lloc, reunio.hora,reunio.descripcio));		
+	
+			try{
 			MailerPlugin.send(email);
-		
+			}
+			catch(Exception e){
+				throw e;
+			}
 			
 		}
 		

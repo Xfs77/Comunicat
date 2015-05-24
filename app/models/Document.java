@@ -79,11 +79,12 @@ import play.mvc.PathBindable;
 			this.document = document;
 		}
 
-		public static Document recercaPerCodi(int codi) {
+		public static Document recercaPerCodi(int codi) throws Exception {
 			Document result = null;
 			Query query = JPA.em().createQuery("from Document d");
+			try{
 			List<Document> documents = query.getResultList();
-
+			
 			for (Document candidate : documents) {
 				if (candidate.codi==codi) {
 					result = candidate;
@@ -91,14 +92,22 @@ import play.mvc.PathBindable;
 				}
 			}
 			return result;
+			}catch(Exception e){
+				throw e;
+			}
 		}
 		
-		public static void borrarDocument(Document document)  {
+		public static void borrarDocument(Document document) throws Exception {
 			// TODO Auto-generated method stub
 			EntityManager em = JPA.em();
 			Document refDocument = obtenirRefDocument(document);
-				em.remove(refDocument);
-				em.flush();
+			try{
+			em.remove(refDocument);
+			em.flush();
+			}catch (Exception e){
+				throw e;
+			
+			}
 			
 		}
 		
@@ -111,30 +120,44 @@ import play.mvc.PathBindable;
 		
 
 
-		public static Page llistarDocuments(Reunio reunio,int page) {
+		public static Page llistarDocuments(Reunio reunio,int page) throws Exception {
 			Query query = null;
 			query = JPA.em().createQuery("from Document d where d.reunio=?1");
 			query.setParameter(1,Reunio.obtenirRefReunio(reunio));
+			try{
 			List list = query.getResultList();
 			Collections.sort(list, DocumentComparator);
 			Page p = new Page(list, page);
 			return p;
+			}
+			catch (Exception e){
+				throw  e;
+			}
 
 		}
 		
-		public static void guardarDocument(Document formDocument, boolean nou) {
+		public static void guardarDocument(Document formDocument, boolean nou) throws Exception{
 
 			Document refDocument= obtenirRefDocument(formDocument);
 			if (nou ==false) {
 				refDocument.descripcio=formDocument.descripcio;
 				if(formDocument.document!=null) refDocument.document=formDocument.document;
+				try{
 				JPA.em().merge(refDocument);
+				}
+				catch(Exception e){
+					throw e;
+				}
 
 			} else {
 				Reunio refReunio=Reunio.obtenirRefReunio(formDocument.reunio);
 				refReunio.documents.add(formDocument);
+				try{
 				JPA.em().persist(formDocument);
-					}
+				}catch(Exception e){
+					throw e;
+				}
+				}
 		}
 		
 

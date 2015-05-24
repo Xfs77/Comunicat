@@ -266,10 +266,11 @@ public class Usuari implements Serializable, PathBindable<Usuari> {
 						+ PasswordGenerator.NUMEROS, 6);
 		Email email = new Email();
 
-		email.setSubject("Correu Alta a www.ComunicatComunitat");
+		email.setSubject(Messages.get("notificacio.cap.alta_usuari"));
 		email.setFrom("comunicatcomunitat@gmail.com");
 		email.addTo(usuari.email);
-		email.setBodyText("A text message");
+		email.setBodyText(String.format(
+				 Messages.get("notificacio.detall.alta_usuari"), usuari.dni,usuari.password));
 		try {
 			MailerPlugin.send(email);
 		} catch (Exception e) {
@@ -357,10 +358,10 @@ public class Usuari implements Serializable, PathBindable<Usuari> {
 		ElementVei elementVei = ElementVei.recerca(refUsuari, element, tipus);
 		EntityManager em = JPA.em();
 		ElementVei evr = elementVei;
+		try{
 		refUsuari.elementsVei.remove(evr);
 		em.remove(evr);
 		em.flush();
-
 		refUsuari.accesComunitats.clear();
 		
 		for (Integer i = 0; i < refUsuari.elementsVei.size(); i = i + 1) {
@@ -373,6 +374,10 @@ public class Usuari implements Serializable, PathBindable<Usuari> {
 				c = (c.pare);
 			}
 		}
+		}catch(Exception e){
+			throw e;
+		}
 	}
+		
 
 }

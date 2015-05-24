@@ -239,15 +239,24 @@ public class Usuaris extends Controller {
 	}
 	
 	@Transactional
-	public static Result borrarElementAssignat(Usuari usuari,Element element,TipusVei tipus ) throws Exception {
+	public static Result borrarElementAssignat(Usuari usuari,Element element,TipusVei tipus ) {
 		if (usuari==null || element== null) {
 			return notFound();
 		}
-		Usuari.borrarElementAssignat(usuari,element,tipus);
-		flash("success", String.format(
-				String.format(Messages.get("success.borrar_assignat"),
-						usuari.nom+" "+usuari.cognoms,element.codi,element.comunitat.nom)));
+		try {
+			Usuari.borrarElementAssignat(usuari,element,tipus);
+			flash("success", String.format(
+					String.format(Messages.get("success.borrar_assignat"),
+							usuari.nom+" "+usuari.cognoms,element.codi,element.comunitat.nom)));
 
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			flash("error", String.format(
+					String.format(Messages.get("error.borrar_assignat")+" ("+e.getCause().getCause().toString()+")",
+							usuari.nom+" "+usuari.cognoms,element.codi,element.comunitat.nom)));
+			e.printStackTrace();
+		}
+	
 		return redirect(routes.Usuaris.llistarElementsAssignats(usuari,1));
 	}
 	
