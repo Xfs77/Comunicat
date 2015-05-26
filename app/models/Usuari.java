@@ -1,6 +1,11 @@
 package models;
 
 import java.io.Serializable;
+
+import be.objectify.deadbolt.core.models.Permission;
+import be.objectify.deadbolt.core.models.Role;
+import be.objectify.deadbolt.core.models.Subject;
+
 import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -53,7 +58,7 @@ import play.db.jpa.Transactional;
 
 @Entity
 @Table(name = "comunicat.Usuari")
-public class Usuari implements Serializable, PathBindable<Usuari> {
+public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 
 	@Override
 	public Usuari bind(String arg0, final String arg1) {

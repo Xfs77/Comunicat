@@ -142,7 +142,13 @@ import play.mvc.PathBindable;
 			// TODO Auto-generated method stub
 			EntityManager em = JPA.em();
 			Reunio refReunio = obtenirRefReunio(reunio);
+			
 			try{
+				List<Document> ld=refReunio.documents;
+				for (Iterator<Document> it =ld.iterator();it.hasNext();){
+					Document d=it.next();
+					em.remove(d);
+				}
 				em.remove(refReunio);
 				em.flush();
 			}catch (Exception e){
@@ -159,7 +165,7 @@ import play.mvc.PathBindable;
 		
 
 		
-
+/*
 		public static Page llistarReunions(int page) throws Exception{
 			Query query = null;
 			query = JPA.em().createQuery("from Reunio");
@@ -174,8 +180,7 @@ import play.mvc.PathBindable;
 			}
 
 		}
-
-
+*/
 
 		public static Page llistarReunionsFiltrades(int page, ReunionsFiltre reunioFiltreForm) throws Exception{
 			// TODO Auto-generated method stub
@@ -279,32 +284,44 @@ import play.mvc.PathBindable;
 			Query query = null;
 			query = JPA.em().createQuery("select a from Reunio r join r.comunitat c join c.accesComunitats a where r=?1");
 			query.setParameter(1, Reunio.obtenirRefReunio(reunio));
-			List <Usuari>lu=query.getResultList();
 			
+			List <Usuari> lu =null;
+			
+			try{
+			lu=query.getResultList();
+			List<Usuari> luf=new ArrayList<Usuari>();
 			Iterator<Usuari> iterator = lu.iterator();
 			while (iterator.hasNext()) {
 				Usuari u=iterator.next();
-				try {
-					Reunio.correuReunio(u, reunio);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if(u.enviat==true) {
+					luf.add(u);
 				}
 			}
-			
+			Reunio.correuReunio(luf, reunio);
 			Reunio refReunio= Reunio.obtenirRefReunio(reunio);
 			refReunio.notificada=true;
 			JPA.em().merge(refReunio);
+			}
+			catch(Exception e){
+				throw e;
+			}
 		}
 		
-		public static void correuReunio(Usuari usuari, Reunio reunio) throws Exception {
+		public static void correuReunio(List<Usuari> lu, Reunio reunio) throws Exception {
 			
 		
 			Email email = new Email();
 		
 			email.setSubject(Messages.get("notificacio.cap_reunio"));
 			email.setFrom("comunicatcomunitat@gmail.com");
-			email.addTo(usuari.email);
+			email.addTo("comunicatcomunitat@gmail.com");
+			
+			Iterator<Usuari> iterator = lu.iterator();
+			while (iterator.hasNext()) {
+				Usuari u = iterator.next();
+				email.addBcc(u.email);
+			}
+			
 			email.setBodyText(String.format(
 					 Messages.get("notificacio.detall.reunio"), reunio.fecha.toString(),reunio.lloc, reunio.hora,reunio.descripcio));		
 	

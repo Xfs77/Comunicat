@@ -70,7 +70,7 @@ public class Reunions extends Controller {
 		return ok(detalls_reunio.render(filledForm, lc, EstatReunio.obtenirEstatsReunio(), true));
 	}
 
-	@Transactional(readOnly = true)
+	/*@Transactional(readOnly = true)
 	public static Result llistarReunions(int page) {
 		Page p;
 		try {
@@ -91,7 +91,7 @@ public class Reunions extends Controller {
 		}
 
 	}
-
+*/
 	@Transactional(readOnly = true)
 	public static Result llistarReunionsFiltrades(int page) {
 		play.mvc.Http.Request request = request();
@@ -105,9 +105,15 @@ public class Reunions extends Controller {
 			List<Reunio> l=null;
 			List<Comunitat> lc = null;
 			try {
+				lc = Comunitat.accesComunitats();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			try {
 				p = Reunio.llistarReunionsFiltrades(1, filtre);
 				l = p.getList();
-				lc = Comunitat.accesComunitats();
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -178,7 +184,7 @@ public class Reunions extends Controller {
 				Reunio.guardarReunio(reunioForm, nou);
 				flash("success", String.format(Messages.get("success.guardar_reunio"), reunioForm.codi));
 
-				return redirect(routes.Reunions.llistarReunions(1));
+				return redirect(routes.Reunions.llistarReunionsFiltrades(1));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				flash("error", String.format(Messages.get("error.guardar_reunio"), reunioForm.codi));
@@ -201,7 +207,7 @@ public class Reunions extends Controller {
 			flash("error", String.format(Messages.get("error.borrar_reunio") + " ("
 					+ e.getCause().getCause().toString() + ")", reunio.codi));
 		}
-		return redirect(routes.Reunions.llistarReunions(1));
+		return redirect(routes.Reunions.llistarReunionsFiltrades(1));
 	}
 
 	@Transactional(readOnly = true)
@@ -306,7 +312,7 @@ public class Reunions extends Controller {
 					String.format(Messages.get("no_enviament_reunio"),reunio.descripcio)));
 			e.printStackTrace();
 		}
-		return redirect(routes.Reunions.llistarReunions(1));
+		return redirect(routes.Reunions.llistarReunionsFiltrades(1));
 
 	}
 

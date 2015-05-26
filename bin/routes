@@ -70,7 +70,7 @@ POST /authenticate controllers.Application.authenticate()
 
 
 GET  /reunions/nova/	controllers.Reunions.novaReunio()
-GET  /reunions/	controllers.Reunions.llistarReunions(page: Int ?=1 )
+# GET  /reunions/	controllers.Reunions.llistarReunions(page: Int ?=1 )
 GET  /reunions/llistarFiltrades	controllers.Reunions.llistarReunionsFiltrades(page: Int ?=1 )
 
 GET  /reunions/detall/:reunio	controllers.Reunions.detallReunio(reunio:models.Reunio)

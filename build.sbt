@@ -14,7 +14,9 @@ libraryDependencies ++= Seq(
   "org.postgresql" % "postgresql" % "9.3-1103-jdbc4",
   "org.hibernate" % "hibernate-core" % "4.2.3.Final",
   "org.hibernate" % "hibernate-entitymanager" % "4.2.3.Final",
-  "com.typesafe.play" %% "play-mailer" % "2.4.0")
+  "com.typesafe.play" %% "play-mailer" % "2.4.0",
+  "be.objectify" %% "deadbolt-java" % "2.3.3"
+  )
 
   javacOptions ++= Seq("-source", "1.6", "-target", "1.6")
   

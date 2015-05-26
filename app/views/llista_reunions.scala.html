@@ -5,11 +5,6 @@
 <div id="maincontent">
 
 	<h2 class="titol">@Messages.get("reunions")</h2>
-  	<p class="sls">&nbsp</p>
-  	
-  	
-	<h4>@Messages.get("filtre_seleccio")</h4>
-
 
   @helper.form(action = routes.Reunions.llistarReunionsFiltrades(1),'enctype -> "multipart/form-data") {
   <fieldset>
@@ -93,7 +88,6 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
-							<th>@Messages.get("codi")</th>
 							<th>@Messages.get("comunitat")</th>
 				<th class="text-center">@Messages.get("data")</th>
 				<th>@Messages.get("hora")</th>
@@ -106,12 +100,11 @@
 				<th></th>
 			</tr>
 		</thead>
+@if(page!=null){
 		<tbody>
-
 			@for( reunio <- reunions) {
 
 			<tr>
-							<td>@reunio.codi</td>
 							<td>@if(reunio.comunitat.pare!="ARREL") {@reunio.comunitat.pare.nom }@reunio.comunitat.nom</td>
 				<td class="text-center">@reunio.fecha.format("dd/MM/yyyy")</td>
 				<td>@reunio.hora</td>
@@ -130,7 +123,7 @@
 			</tr>
 			}
 		</tbody>
-
+}
 	</table>
 
 	<a class="btn btn-primary" href="@routes.Reunions.novaReunio()"><span

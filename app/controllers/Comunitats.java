@@ -32,7 +32,7 @@ import views.html.*;
 import org.hibernate.JDBCException;
 import org.hibernate.exception.SQLGrammarException;
 
-@Security.Authenticated(Secured.class)
+//@Security.Authenticated(Secured.class)
 public class Comunitats extends Controller {
 
 	private static Form<Comunitat> comunitatForm = Form.form(Comunitat.class);
@@ -64,7 +64,7 @@ public class Comunitats extends Controller {
 		}
 		return ok(detalls_comunitat.render(filledForm, comunitat.pare, lu,false));
 	}
-
+	@Security.Authenticated(SecuredLlogater.class)
 	@Transactional(readOnly = true)
 	public static Result llistarComunitats(int page) {
 		Comunitat pare;

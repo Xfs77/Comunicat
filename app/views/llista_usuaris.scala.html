@@ -57,6 +57,7 @@
       </tr>
     </thead>
     <tbody>
+    @if(page!=null){
     
     @for( usuari <- usuaris) {
 
@@ -82,6 +83,7 @@
                 <a href="@routes.Usuaris.llistarElementsAssignats(usuari)"><i class="glyphicon glyphicon-tower" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_elements_assignats")"></i>&nbsp</a>
         </td>
      </tr>
+      }
       }
     </tbody>
           

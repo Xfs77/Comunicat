@@ -23,6 +23,7 @@
       </tr>
     </thead>
     <tbody>
+    @if(page!=null){
     
     @for( element <- elements) {
 
@@ -39,6 +40,7 @@
          <a onclick="javascript:del('@routes.Usuaris.borrarElementAssignat(usuari,element.element,element.tipus)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("desassignar_element")"></i>&nbsp</a> 
                 </td>
      </tr>
+      }
       }
     </tbody>
           

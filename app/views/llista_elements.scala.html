@@ -19,6 +19,7 @@
       </tr>
     </thead>
     <tbody>
+    @if(page!=null){
     
     @for( element <- elements) {
 
@@ -31,6 +32,7 @@
         <a onclick="javascript:del('@routes.Comunitats.borrarElement(element)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_element")"></i>&nbsp</a> 
         </td>
      </tr>
+      }
       }
     </tbody>
           

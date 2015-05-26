@@ -25,8 +25,9 @@
           <ul class="dropdown-menu" role="menu">
             <li><a href="@routes.Comunitats.llistarComunitats(1)">@Messages.get("llista_comunitats")</a></li>
                     </ul>
-                   
         </li>
+        @if(play.mvc.Controller.session().get(
+				"tipus").contains("A")){
           <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">@Messages.get("usuaris") <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
@@ -35,6 +36,7 @@
                     </ul>
                    
         </li>
+        }
          <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">@Messages.get("notes") <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">

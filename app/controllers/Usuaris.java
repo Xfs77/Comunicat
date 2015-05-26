@@ -49,7 +49,7 @@ import org.postgresql.util.PSQLException;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerPlugin;
 
-//@Security.Authenticated(Secured.class)
+@Security.Authenticated(Secured.class)
 public class Usuaris extends Controller {
 
 	private static Form<Usuari> usuariForm = Form.form(Usuari.class);

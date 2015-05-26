@@ -27,6 +27,7 @@
       </tr>
     </thead>
     <tbody>
+    @if(page!=null){
     
     @for( comunitat <- comunitats) {
 	@if(comunitat.nif!="arrel"){
@@ -45,6 +46,7 @@
         <a href="@routes.Comunitats.llistarContactes(comunitat,1)"><i class="glyphicon glyphicon-earphone" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_contactes_comunitat")"></i>&nbsp</a> 
         </td>
      </tr>
+      }
       }
       }
     </tbody>

@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Login;
+import models.Usuari;
 import play.*;
 import play.data.Form;
 import play.db.jpa.Transactional;
@@ -50,6 +51,18 @@ public static Result authenticate() {
 	  else {
 	        session().clear();
 	        session("dni", loginForm.get().dni);
+	        String tipus="";
+	        try {
+				Usuari usuari=Usuari.recercaPerDni(loginForm.get().dni);
+				if(usuari.administrador){
+					tipus = "A";
+				}
+		        session("tipus", tipus);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
 	        return redirect(
 	            routes.Application.index());
 	    }
