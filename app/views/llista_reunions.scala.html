@@ -1,3 +1,5 @@
+@import be.objectify.deadbolt.java.views.html._
+@import be.objectify.deadbolt.core.utils.TemplateUtils._
 @(reunions:List[Reunio], page:Page, filtre:Form[ReunionsFiltre], comunitats:List[Comunitat], estats:List[EstatReunio])
 @import play.i18n.Messages
 @main(Messages.get("Reunions")) {
@@ -113,10 +115,14 @@
 				<td>@Messages.get(reunio.estat.descripcio)</td>
 				<td class="text-center">@if(reunio.notificada) {Si}else{No}</td>
 				<td class="text-center">
-				        <a href="@routes.Reunions.detallReunio(reunio)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_reunio")"></i>&nbsp </a> 
-        <a onclick="javascript:del('@routes.Reunions.borrarReunio(reunio)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_reunio")"></i>&nbsp</a> 
-        <a href="@routes.Reunions.llistarDocuments(reunio)"><i class="glyphicon glyphicon-file" data-toggle="tooltip" data-placement="top" title="@Messages.get("detall_doc")"></i>&nbsp </a> 
-        <a href="@routes.Reunions.notificarReunio(reunio)"><i class="glyphicon glyphicon-envelope" data-toggle="tooltip" data-placement="top" title="@Messages.get("notificar_reunio")"></i>&nbsp </a> 
+		     @restrict(la(as("P"),as("A"))) {
+				        <a href="@routes.Reunions.detallReunio(reunio)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_reunio")"></i>&nbsp </a>} 
+             @restrict(la(as("A"),as("P"))) {
+        <a onclick="javascript:del('@routes.Reunions.borrarReunio(reunio)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_reunio")"></i>&nbsp</a>}
+             @restrict(la(as("O"),as("A"))) { 
+        <a href="@routes.Reunions.llistarDocuments(reunio)"><i class="glyphicon glyphicon-file" data-toggle="tooltip" data-placement="top" title="@Messages.get("detall_doc")"></i>&nbsp </a>} 
+             @restrict(la(as("A"),as("P"))) {
+        <a href="@routes.Reunions.notificarReunio(reunio)"><i class="glyphicon glyphicon-envelope" data-toggle="tooltip" data-placement="top" title="@Messages.get("notificar_reunio")"></i>&nbsp </a>} 
         
 
 					</td>
@@ -126,10 +132,11 @@
 }
 	</table>
 
+             @restrict(la(as("A"),as("P"))) {
 	<a class="btn btn-primary" href="@routes.Reunions.novaReunio()"><span
 		class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 		@Messages.get("registre")</a> <br> &nbsp <br>
-
+}
 
 
 

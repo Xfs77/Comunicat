@@ -1,60 +1,38 @@
 package models;
 
 import java.io.Serializable;
-
-import be.objectify.deadbolt.core.models.Permission;
-import be.objectify.deadbolt.core.models.Role;
-import be.objectify.deadbolt.core.models.Subject;
-
-import java.sql.Array;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NoResultException;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PersistenceException;
 import javax.persistence.Query;
-import javax.persistence.RollbackException;
 import javax.persistence.Table;
 
-import org.hibernate.JDBCException;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.postgresql.util.PSQLException;
 
-import controllers.Comunitats;
-import controllers.Usuaris;
+import play.data.validation.Constraints.MaxLength;
+import play.data.validation.Constraints.Required;
+import play.db.jpa.JPA;
 import play.i18n.Messages;
 import play.libs.F;
-import play.libs.F.Some;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerPlugin;
-import play.mvc.QueryStringBindable;
-import play.mvc.Result;
-import play.data.validation.Constraints.*;
-import play.db.jpa.JPA;
 import play.mvc.PathBindable;
-import play.db.jpa.Transactional;
+import controllers.Usuaris;
+import be.objectify.deadbolt.core.models.Permission;
+import be.objectify.deadbolt.core.models.Role;
+import be.objectify.deadbolt.core.models.Subject;
 
 @Entity
 @Table(name = "comunicat.Usuari")
@@ -128,7 +106,7 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 	@JoinColumn(name = "tipus")
 	@Required
 	public TipusVei tipus;
-//	@OneToMany(mappedBy = "usuari", cascade = CascadeType.ALL)
+	// @OneToMany(mappedBy = "usuari", cascade = CascadeType.ALL)
 	@OneToMany(mappedBy = "usuari")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	public List<ElementVei> elementsVei = new ArrayList<ElementVei>();
@@ -166,8 +144,8 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 
 	public static Usuari recercaPerDni(String dni) throws Exception {
 		Usuari result = null;
-		Query query = JPA.em().createQuery("from Usuari u where u.dni=?1");
-		query.setParameter(1, dni);
+		Query query = JPA.em().createQuery("from Usuari u where lower(u.dni)=?1");
+		query.setParameter(1, dni.toLowerCase());
 		try {
 			Usuari usuari = (Usuari) query.getSingleResult();
 			return usuari;
@@ -189,27 +167,27 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 		}
 	}
 
-	public static Page llistarUsuarisFiltrats(int page, UsuarisFiltre usuariFiltreForm) {
+	public static Page llistarUsuarisFiltrats(int page,
+			UsuarisFiltre usuariFiltreForm) {
 		// TODO Auto-generated method stub
 		Query query = null;
-		UsuarisFiltre u=usuariFiltreForm;
-		String exp="select u from Usuari u";
-		if(usuariFiltreForm.comunitat!=null){
-			exp="select (a.vei) from AccesComunitat a join a.vei where a.comunitat=?1 order by a.vei asc ";
+		UsuarisFiltre u = usuariFiltreForm;
+		String exp = "select u from Usuari u";
+		if (usuariFiltreForm.comunitat != null) {
+			exp = "select (a.vei) from AccesComunitat a join a.vei where a.comunitat=?1 order by a.vei asc ";
 			query = JPA.em().createQuery(exp);
 			query.setParameter(1, usuariFiltreForm.comunitat);
-		}
-		else{
+		} else {
 			query = JPA.em().createQuery(exp);
 		}
-		
+
 		List list = query.getResultList();
-		
+
 		Collections.sort(list, UsuariComparator);
 		Page p = new Page(list, page);
-		return p;		
-		}
-	
+		return p;
+	}
+
 	public static List<Usuari> obtenirUsuaris() throws Exception {
 		Query query = null;
 		try {
@@ -275,7 +253,8 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 		email.setFrom("comunicatcomunitat@gmail.com");
 		email.addTo(usuari.email);
 		email.setBodyText(String.format(
-				 Messages.get("notificacio.detall.alta_usuari"), usuari.dni,usuari.password));
+				Messages.get("notificacio.detall.alta_usuari"), usuari.nom+" "+usuari.cognoms,usuari.dni,
+				usuari.password));
 		try {
 			MailerPlugin.send(email);
 		} catch (Exception e) {
@@ -295,8 +274,8 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 		query.setParameter(1, dni.toLowerCase());
 		try {
 			Usuari usuari = (Usuari) query.getSingleResult();
-			if (usuari.password.equalsIgnoreCase(password) && usuari.baixa == false
-					&& usuari.bloquejat == false) {
+			if (usuari.password.equalsIgnoreCase(password)
+					&& usuari.baixa == false && usuari.bloquejat == false) {
 				return usuari;
 			} else {
 				return null;
@@ -325,12 +304,11 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 		Element refElement = Element.obtenirRefElement(element);
 		ElementVei elementVei = new ElementVei(refUsuari, refElement,
 				TipusVei.recerca(t.tipus));
-		try{
-		refUsuari.elementsVei.add(elementVei);
-		JPA.em().persist(elementVei);
-		JPA.em().flush();
-		}
-		catch(Exception e){
+		try {
+			refUsuari.elementsVei.add(elementVei);
+			JPA.em().persist(elementVei);
+			JPA.em().flush();
+		} catch (Exception e) {
 			throw e;
 		}
 		Comunitat c = (refElement.comunitat);
@@ -363,26 +341,91 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 		ElementVei elementVei = ElementVei.recerca(refUsuari, element, tipus);
 		EntityManager em = JPA.em();
 		ElementVei evr = elementVei;
-		try{
-		refUsuari.elementsVei.remove(evr);
-		em.remove(evr);
-		em.flush();
-		refUsuari.accesComunitats.clear();
-		
-		for (Integer i = 0; i < refUsuari.elementsVei.size(); i = i + 1) {
-			Comunitat c = refUsuari.elementsVei.get(i).element.comunitat;
+		try {
+			refUsuari.elementsVei.remove(evr);
+			em.remove(evr);
+			em.flush();
+			refUsuari.accesComunitats.clear();
 
-			while (!c.nif.equals("arrel")) {
-				if (refUsuari.accesComunitats.contains(c) == false) {
-					refUsuari.accesComunitats.add(c);
+			for (Integer i = 0; i < refUsuari.elementsVei.size(); i = i + 1) {
+				Comunitat c = refUsuari.elementsVei.get(i).element.comunitat;
+
+				while (!c.nif.equals("arrel")) {
+					if (refUsuari.accesComunitats.contains(c) == false) {
+						refUsuari.accesComunitats.add(c);
+					}
+					c = (c.pare);
 				}
-				c = (c.pare);
 			}
-		}
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw e;
 		}
 	}
+
+	@Override
+	public String getIdentifier() {
+		// TODO Auto-generated method stub
+	return dni;
+	}
+
+	@Override
+	public List<? extends Permission> getPermissions() {
+		// TODO Auto-generated method stub
+
+		return null;
+	}
+
+	@Override
+	public List<? extends Role> getRoles() {
+		// TODO Auto-generated method stub
+		List l = new ArrayList();
+
+		if (this.administrador == true) {
+			SecurityRole r=new SecurityRole("A");
+			l.add(r);
+		}
+
+		if (this.president == true) {
+			SecurityRole r=new SecurityRole("P");
+			l.add(r);
+		}
+
+		if (this.tipus.tipus.equals("Propietari")) {
+			SecurityRole r=new SecurityRole("O");
+			l.add(r);
+		}
+		else{
+			SecurityRole r=new SecurityRole("L");
+			l.add(r);
 		
+		}
+	
+		return l;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((dni == null) ? 0 : dni.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuari other = (Usuari) obj;
+		if (dni == null) {
+			if (other.dni != null)
+				return false;
+		} else if (!dni.equals(other.dni))
+			return false;
+		return true;
+	}
 
 }

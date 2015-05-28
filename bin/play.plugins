@@ -1,1 +1,2 @@
 1500:play.api.libs.mailer.CommonsMailerPlugin
+10000:be.objectify.deadbolt.java.DeadboltPlugin

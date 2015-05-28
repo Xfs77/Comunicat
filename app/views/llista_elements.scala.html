@@ -1,5 +1,7 @@
 @(elements:List[Element], page:Page, comunitat:models.Comunitat)
 @import play.i18n.Messages
+@import be.objectify.deadbolt.java.views.html._
+@import be.objectify.deadbolt.core.utils.TemplateUtils._
 @main(Messages.get("elements")) {
 
  <div id="maincontent" >
@@ -15,7 +17,7 @@
       	<th>@Messages.get("codi")</th>
         <th>@Messages.get("descripcio")</th>
         <th class="text-right">@Messages.get("coeficient")</th>
-        <th  class="text-center">@Messages.get("opcions")</th>
+        @restrict(la(as("A"))){ <th  class="text-center">@Messages.get("opcions")</th>}
       </tr>
     </thead>
     <tbody>
@@ -28,16 +30,18 @@
         <td>@element.descripcio</td>
         <td  class="text-right">@element.coeficient</td>
         <td  class="text-center">
-        <a href="@routes.Comunitats.detallElement(element)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_element")"></i>&nbsp</a>
-        <a onclick="javascript:del('@routes.Comunitats.borrarElement(element)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_element")"></i>&nbsp</a> 
-        </td>
+                     <a href="@routes.Comunitats.llistarUsuarisAssignats(element)"><i class="glyphicon glyphicon-user" data-toggle="tooltip" data-placement="top" title="@Messages.get("consultar_veins")"></i>&nbsp</a>
+    
+       @restrict(la(as("A"))){  <a href="@routes.Comunitats.detallElement(element)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_element")"></i>&nbsp</a>}
+       @restrict(la(as("A"))){  <a onclick="javascript:del('@routes.Comunitats.borrarElement(element)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_element")"></i>&nbsp</a>} 
+       </td>
      </tr>
       }
       }
     </tbody>
           
    </table>
-    <a class="btn btn-primary" href="@routes.Comunitats.nouElement(comunitat)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
+   @restrict(la(as("A"))){  <a class="btn btn-primary" href="@routes.Comunitats.nouElement(comunitat)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>}
   
    
   }

@@ -1,5 +1,7 @@
 @(comunitats:List[Comunitat], page:Page, pare:models.Comunitat)
 @import play.i18n.Messages
+@import be.objectify.deadbolt.java.views.html._
+@import be.objectify.deadbolt.core.utils.TemplateUtils._
 @main(Messages.get("Comunitats")) {
 
  <div id="maincontent" >
@@ -40,9 +42,9 @@
         <td  class="text-right">@comunitat.coeficient</td>
         <td  class="text-center">
         <a href="@routes.Comunitats.llistarSubComunitats(comunitat,1)"><i class="glyphicon glyphicon-search" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_detall_comunitats")"></i>&nbsp</a>
-        <a href="@routes.Comunitats.detallComunitat(comunitat)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a> 
-        <a onclick="javascript:del('@routes.Comunitats.borrarComunitat(comunitat)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a> 
-        <a href="@routes.Comunitats.llistarElements(comunitat)"><i class="glyphicon glyphicon-tower" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_elements_comunitat")"></i>&nbsp</a> 
+        @restrict(la(as("A"))){ <a href="@routes.Comunitats.detallComunitat(comunitat)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a>} 
+         @restrict(la(as("A"))){<a onclick="javascript:del('@routes.Comunitats.borrarComunitat(comunitat)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a>} 
+           @restrict(la(as("P"),as("A"))) { <a href="@routes.Comunitats.llistarElements(comunitat)"><i class="glyphicon glyphicon-tower" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_elements_comunitat")"></i>&nbsp</a>} 
         <a href="@routes.Comunitats.llistarContactes(comunitat,1)"><i class="glyphicon glyphicon-earphone" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_contactes_comunitat")"></i>&nbsp</a> 
         </td>
      </tr>
@@ -50,18 +52,19 @@
       }
       }
     </tbody>
-          
-   </table>
-  
+                </table>
+  	@if(pare.nif!="arrel"){
+   <div id="page-selection" text-align="left">
+   </div>
+ }
    @if((comunitats.isEmpty && pare.nif=="arrel" )|| (pare.nif!="arrel")){
-  <a class="btn btn-primary" href="@routes.Comunitats.novaComunitat(pare)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
-  }
-  <br>
-  &nbsp
-  <br>
-    </div>
- 
- 
+  @restrict(la(as("A"))){
+  &nbsp&nbsp<a class="btn btn-primary" href="@routes.Comunitats.novaComunitat(pare)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
+  }}
+
+  
+
+    
  <script>
         // init bootpag
         $('#page-selection').bootpag({
@@ -76,5 +79,6 @@
         }).on("page", function(event, /* page number here */ num){
         });
     </script>
+ 
  
 }

@@ -215,31 +215,29 @@ import play.mvc.PathBindable;
 			}
 			}
 			else{
-				String exp="from Reunio r where r.fecha >=?1 and r.fecha<=?2 and exists(from AccesComunitat a where a.vei=?5 and a.comunitat=n.comunitat)";;
+				String exp="from Reunio r where r.fecha >=?1 and r.fecha<=?2 and exists(from AccesComunitat a where a.vei=?5 and a.comunitat=r.comunitat)";;
 				query = JPA.em().createQuery(exp);
-				query.setParameter(1, reunioFiltreForm.fechaIni);
-				query.setParameter(2,reunioFiltreForm.fechaFi);
-				query.setParameter(5,usuari);
-
+				
 				if(reunioFiltreForm.comunitat!=null){
 					exp=exp+" and r.comunitat=?3";
 					query = JPA.em().createQuery(exp);
-					query.setParameter(1, reunioFiltreForm.fechaIni);
-					query.setParameter(2,reunioFiltreForm.fechaFi);
-					query.setParameter(3,Comunitat.obtenirRefComunitat(reunioFiltreForm.comunitat));
+					
 				}
 				if(reunioFiltreForm.estat!=null){
 					exp=exp+" and r.estat=?4";
 					query = JPA.em().createQuery(exp);
-					query.setParameter(1, reunioFiltreForm.fechaIni);
-					query.setParameter(2,reunioFiltreForm.fechaFi);
 					query.setParameter(4,EstatReunio.obtenirRefEstatReunio(reunioFiltreForm.estat));
+				}
 
-					if (exp.contains("?3")){
+				if (exp.contains("?3")){
 						query.setParameter(3,Comunitat.obtenirRefComunitat(reunioFiltreForm.comunitat));
 					}
 
-				}
+				
+				query.setParameter(1, reunioFiltreForm.fechaIni);
+				query.setParameter(2,reunioFiltreForm.fechaFi);
+				query.setParameter(5,usuari);
+
 				}
 			
 			try{

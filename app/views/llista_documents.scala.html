@@ -1,3 +1,5 @@
+@import be.objectify.deadbolt.java.views.html._
+@import be.objectify.deadbolt.core.utils.TemplateUtils._
 @(documents:List[Document], page:Page, reunio:Reunio) @import play.i18n.Messages
 @main(Messages.get("Documents")) {
 
@@ -24,8 +26,9 @@
 							<td>@document.codi</td>
 							<td>@document.descripcio</td>
 				<td class="text-center">
+           @restrict(la(as("P"),as("A"))) {
 				        <a href="@routes.Reunions.detallDocument(document)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a> 
-        <a onclick="javascript:del('@routes.Reunions.borrarDocument(document)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a> 
+        <a onclick="javascript:del('@routes.Reunions.borrarDocument(document)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a>} 
           <a onclick="javascript:pdf('@document.codi')"><i class="glyphicon glyphicon-eye-open"></i></a> 
 
 					</td>
@@ -36,10 +39,12 @@
 
 	</table>
 
+           @restrict(la(as("P"),as("A"))) {
+
 	<a class="btn btn-primary" href="@routes.Reunions.nouDocument(reunio)"><span
 		class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 		@Messages.get("registre")</a> <br> &nbsp <br>
-
+}
 
 
 

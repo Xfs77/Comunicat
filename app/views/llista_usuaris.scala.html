@@ -16,7 +16,7 @@
   <div class="row">
    	<div class="col-md-2">
 <br>   	
-  <select class="selectpicker"  id="comunitat"  name="comunitat" data-width="300px" >
+  <select class="selectpicker"  id="comunitat"  name="comunitat">
   <option value="">@Messages.get("seleccioni_comunitat")</option>
     @for( comunitat <- comunitats) {
  <option value=@comunitat.nif @if(filtre("comunitat").value()==comunitat.nif){selected}>@comunitat.nif - @comunitat.pare.nom @comunitat.nom</option>

@@ -1,3 +1,5 @@
+@import be.objectify.deadbolt.java.views.html._
+@import be.objectify.deadbolt.core.utils.TemplateUtils._
 @(notes:List[Nota], page:Page,filtre:Form[NotesFiltre], comunitats:List[Comunitat], estats:List[EstatNota]) @import play.i18n.Messages
 @main(Messages.get("notes")) {
 
@@ -79,18 +81,19 @@
 				<td>@nota.comunitat.pare.nom @nota.comunitat.nom</td>
 				<td>@nota.usuari.nom @nota.usuari.cognoms</td>
 				<td class="text-center"><a
+				                @restrict(la(as("A"))) {
 					href="@routes.Notes.detallNota(nota)"><i
 						class="glyphicon glyphicon-pencil" data-toggle="tooltip"
-						data-placement="top" title="@Messages.get("editar_nota")"></i>&nbsp
-					<a onclick="javascript:del('@routes.Notes.borrarNota(nota)')"><i
+						data-placement="top" title="@Messages.get("editar_nota")"></i>&nbsp}
+				        @restrict(la(as("A"))) {<a onclick="javascript:del('@routes.Notes.borrarNota(nota)')"><i
 						class="glyphicon glyphicon-trash" data-toggle="tooltip"
-						data-placement="top" title="@Messages.get("eliminar_nota")"></i>&nbsp</a>
+						data-placement="top" title="@Messages.get("eliminar_nota")"></i>&nbsp</a>}
 					<a href="@routes.Notes.llistarMoviments(nota,1)"><i
 						class="glyphicon glyphicon-search" data-toggle="tooltip"
 						data-placement="top" title="@Messages.get("detall_nota")"></i>&nbsp</a>
-<a href="@routes.Notes.notificarNota(nota)"><i
+					@restrict(la(as("A"))) {<a href="@routes.Notes.notificarNota(nota)"><i
 						class="glyphicon glyphicon-envelope" data-toggle="tooltip"
-						data-placement="top" title="@Messages.get("notificar_nota")"></i>&nbsp</a>
+						data-placement="top" title="@Messages.get("notificar_nota")"></i>&nbsp</a>}
 
 					</td>
 			</tr>
@@ -100,10 +103,11 @@
 
 	</table>
 
+     @restrict(la(as("O"),as("A"))) {
 	<a class="btn btn-primary" href="@routes.Notes.novaNota()"><span
 		class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 		@Messages.get("registre")</a> <br> &nbsp <br>
-
+}
 
 
 

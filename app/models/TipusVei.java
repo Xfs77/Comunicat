@@ -70,5 +70,30 @@ public class TipusVei implements Serializable, PathBindable<TipusVei> {
 		return this.tipus;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((tipus == null) ? 0 : tipus.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TipusVei other = (TipusVei) obj;
+		if (tipus == null) {
+			if (other.tipus != null)
+				return false;
+		} else if (!tipus.equals(other.tipus))
+			return false;
+		return true;
+	}
+
 	
 }

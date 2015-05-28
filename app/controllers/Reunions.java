@@ -10,6 +10,9 @@ import java.util.Map;
 
 import javax.persistence.PersistenceException;
 
+import be.objectify.deadbolt.java.actions.Group;
+import be.objectify.deadbolt.java.actions.Restrict;
+
 import com.google.common.io.Files;
 
 import models.Comunitat;
@@ -42,6 +45,7 @@ public class Reunions extends Controller {
 	private static Form<ReunionsFiltre> reunioFiltreForm = Form.form(ReunionsFiltre.class);
 	private static Form<Document> documentForm = Form.form(Document.class);
 
+	@Restrict({@Group("A"),@Group("P")})
 	@Transactional(readOnly = true)
 	public static Result novaReunio() {
 		Reunio reunio = new Reunio();
@@ -92,6 +96,7 @@ public class Reunions extends Controller {
 
 	}
 */
+	@Restrict({@Group("A"),@Group("O")})
 	@Transactional(readOnly = true)
 	public static Result llistarReunionsFiltrades(int page) {
 		play.mvc.Http.Request request = request();
@@ -123,7 +128,7 @@ public class Reunions extends Controller {
 
 		}
 	}
-
+	@Restrict({@Group("A"),@Group("P")})
 	@Transactional(readOnly = true)
 	public static Result detallReunio(Reunio reunio) {
 		Form<Reunio> filledForm = reunioForm.fill(reunio);
@@ -150,6 +155,7 @@ public class Reunions extends Controller {
 		return ok(detalls_reunio.render(filledForm, lc, ler, false));
 	}
 
+	@Restrict({@Group("A"),@Group("P")})
 	@Transactional
 	public static Result guardarReunio(boolean nou) {
 		play.mvc.Http.Request request = request();
@@ -193,7 +199,7 @@ public class Reunions extends Controller {
 			}
 		}
 	}
-
+	@Restrict({@Group("A"),@Group("P")})
 	@Transactional
 	public static Result borrarReunio(Reunio reunio) {
 		if (reunio == null) {
@@ -209,7 +215,7 @@ public class Reunions extends Controller {
 		}
 		return redirect(routes.Reunions.llistarReunionsFiltrades(1));
 	}
-
+	@Restrict({@Group("A"),@Group("P")})
 	@Transactional(readOnly = true)
 	public static Result nouDocument(Reunio reunio) {
 		Document document = new Document();
@@ -217,7 +223,7 @@ public class Reunions extends Controller {
 		Form<Document> filledForm = documentForm.fill(document);
 		return ok(detalls_document.render(filledForm, document.reunio, true));
 	}
-
+	@Restrict({@Group("A"),@Group("O")})
 	@Transactional(readOnly = true)
 	public static Result llistarDocuments(Reunio reunio, int page) {
 		Page p = null;
@@ -230,13 +236,13 @@ public class Reunions extends Controller {
 		List<Document> l = p.getList();
 		return ok(llista_documents.render(l, p, reunio));
 	}
-
+	@Restrict({@Group("A"),@Group("P")})
 	@Transactional(readOnly = true)
 	public static Result detallDocument(Document document) {
 		Form<Document> filledForm = documentForm.fill(document);
 		return ok(detalls_document.render(filledForm, document.reunio, false));
 	}
-
+	@Restrict({@Group("A"),@Group("P")})
 	@Transactional
 	public static Result guardarDocument(Reunio reunio, boolean nou) {
 		play.mvc.Http.Request request = request();
@@ -278,7 +284,7 @@ public class Reunions extends Controller {
 			return redirect(routes.Reunions.llistarDocuments(reunio, 1));
 		}
 	}
-
+	@Restrict({@Group("A"),@Group("P")})
 	@Transactional
 	public static Result borrarDocument(Document document) {
 		if (document == null) {
@@ -298,7 +304,7 @@ public class Reunions extends Controller {
 
 		return redirect(routes.Reunions.llistarDocuments(document.reunio, 1));
 	}
-
+	@Restrict({@Group("A"),@Group("P")})
 	@Transactional
 	public static Result notificarReunio(Reunio reunio) {
 
@@ -315,7 +321,7 @@ public class Reunions extends Controller {
 		return redirect(routes.Reunions.llistarReunionsFiltrades(1));
 
 	}
-
+	@Restrict({@Group("A"),@Group("O")})
 	@Transactional(readOnly = true)
 	public static Result readFile(String codi) throws IOException {
 		Document.borrarArchiuDirectori();

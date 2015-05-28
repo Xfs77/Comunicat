@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.File;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,6 +36,8 @@ import play.data.format.Formatters;
 import play.mvc.Http.RequestBody;
 import play.mvc.Result;
 import play.mvc.Controller;
+import be.objectify.deadbolt.java.actions.Group;
+import be.objectify.deadbolt.java.actions.Restrict;
 
 import com.google.common.io.Files;
 
@@ -55,7 +58,7 @@ public class Usuaris extends Controller {
 	private static Form<Usuari> usuariForm = Form.form(Usuari.class);
 	private static Form<UsuarisFiltre> usuariFiltreForm = Form.form(UsuarisFiltre.class);
 
-
+	
 	@Transactional(readOnly = true)
 	public static Result llistarUsuaris(int page) {
 		Page p;
@@ -70,7 +73,7 @@ public class Usuaris extends Controller {
 			return notFound();
 		}
 	}
-	
+	@Restrict({@Group("A")})
 	@Transactional(readOnly = true)
 	public static Result llistarUsuarisFiltrats(int page) {
 		play.mvc.Http.Request request = request();
@@ -92,7 +95,7 @@ public class Usuaris extends Controller {
 			return ok(llista_usuaris.render(l, p, boundForm, lc));
 		}
 	}
-
+	@Restrict({@Group("A")})
 	public static Result nouUsuari() {
 		Usuari usuari = new Usuari();
 		usuariForm.fill(usuari);
@@ -102,7 +105,7 @@ public class Usuaris extends Controller {
 	public static Result canviPassword () {
 		return ok(canvi_password.render(Form.form(CanviPassword.class)));
 	}
-	
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result assignarElements(Usuari usuari) {
 		
@@ -122,7 +125,7 @@ public class Usuaris extends Controller {
 		return ok(assignacio_elements.render(usuari,lce,le));
 
 	}
-	
+	@Restrict({@Group("A")})	
 	@Transactional
 	public static Result realitzarAssignacioElements(Usuari usuari)  {
 	    final MultipartFormData values = request().body().asMultipartFormData();
@@ -184,12 +187,13 @@ public class Usuaris extends Controller {
 		    }
 		    
 	}
+	@Restrict({@Group("A")})
 	@Transactional(readOnly = true)
 	public static Result detallUsuari(Usuari usuari) {
 		Form<Usuari> filledForm = usuariForm.fill(usuari);
 		return ok(detalls_usuari.render(filledForm,false));
 	}
-
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result guardarUsuari(boolean nou) {
 		play.mvc.Http.Request request = request();
@@ -216,7 +220,7 @@ public class Usuaris extends Controller {
 			return redirect(routes.Usuaris.llistarUsuarisFiltrats(1));
 		}
 	}
-	
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result borrarUsuari(Usuari usuari) {
 		if (usuari == null) {
@@ -237,7 +241,7 @@ public class Usuaris extends Controller {
 		
 		return redirect(routes.Usuaris.llistarUsuarisFiltrats(1));
 	}
-	
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result borrarElementAssignat(Usuari usuari,Element element,TipusVei tipus ) {
 		if (usuari==null || element== null) {
@@ -259,7 +263,7 @@ public class Usuaris extends Controller {
 	
 		return redirect(routes.Usuaris.llistarElementsAssignats(usuari,1));
 	}
-	
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result llistarElementsAssignats(Usuari usuari, int page) {
 		List<ElementVei> e=usuari.elementsVei;
@@ -267,8 +271,17 @@ public class Usuaris extends Controller {
 		Page p=new Page(usuari.elementsVei,page);
 		return ok(llista_elements_assignats.render(usuari.elementsVei,usuari,p));
 	}
-		
-
+	
+	@Restrict({@Group("A")})
+	@Transactional
+	public static Result llistarUsuarisAssignats(Element element, int page) {
+		List<ElementVei> e=element.elementsVei;
+		//Collections.sort(e,Element.ElementComparator);
+		Page p=new Page(element.elementsVei,page);
+		return ok(llista_usuaris_assignats.render(element.elementsVei,element,p));
+	}
+	
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result correuAlta(Usuari usuari)  {
 		

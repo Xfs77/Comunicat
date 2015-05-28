@@ -15,8 +15,11 @@ libraryDependencies ++= Seq(
   "org.hibernate" % "hibernate-core" % "4.2.3.Final",
   "org.hibernate" % "hibernate-entitymanager" % "4.2.3.Final",
   "com.typesafe.play" %% "play-mailer" % "2.4.0",
-  "be.objectify" %% "deadbolt-java" % "2.3.3"
+  "be.objectify" %% "deadbolt-java" % "2.3.3",
+  "be.objectify" %% "async-transactions" % "1.0-SNAPSHOT" 
   )
-
-  javacOptions ++= Seq("-source", "1.6", "-target", "1.6")
+  
+resolvers += Resolver.sonatypeRepo("snapshots")
+  
+javacOptions ++= Seq("-source", "1.6", "-target", "1.6")
   

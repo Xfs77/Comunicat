@@ -44,6 +44,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 import org.postgresql.util.PSQLException;
 
+import be.objectify.as.AsyncTransactional;
 import controllers.Comunitats;
 import play.libs.F;
 import play.libs.F.Some;
@@ -183,7 +184,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 		this.elements = elements;
 		this.accesComunitats = accesComunitats;
 	}
-
+	
 	public static Page llistarComunitats(int page) throws Exception {
 		Query query = null;
 		query = JPA.em().createQuery("from Comunitat");
@@ -230,7 +231,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 		query = JPA.em().createQuery("select c from Comunitat c where c.pare=?1 ");
 		}
 		else{
-		query= JPA.em().createQuery("select c from Comunitat c join c.accesComunitats where c.pare=?1 ");
+		query= JPA.em().createQuery("select distinct(c) from Comunitat c join c.accesComunitats  where c.pare=?1 ORDER BY c ASC ");
 		}
 		query.setParameter(1, pare);
 		try {
@@ -287,7 +288,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 		Comunitat RefComunitat = em.find(Comunitat.class, comunitat.nif);
 		return RefComunitat;
 	}
-
+	
 	public static Comunitat recercaPerNif(String id) throws Exception{
 		Comunitat result = null;
 		Query query = JPA.em().createQuery("from Comunitat c");

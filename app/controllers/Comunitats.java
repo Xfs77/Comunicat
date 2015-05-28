@@ -14,6 +14,7 @@ import javax.persistence.PersistenceException;
 
 import models.Comunitat;
 import models.Element;
+import models.ElementVei;
 import models.Page;
 import models.Usuari;
 import play.i18n.Messages;
@@ -22,6 +23,9 @@ import play.data.Form;
 import play.mvc.Http.RequestBody;
 import play.mvc.Result;
 import play.mvc.Controller;
+import be.objectify.as.AsyncTransactional;
+import be.objectify.deadbolt.java.actions.Group;
+import be.objectify.deadbolt.java.actions.Restrict;
 
 import com.google.common.io.Files;
 
@@ -32,12 +36,13 @@ import views.html.*;
 import org.hibernate.JDBCException;
 import org.hibernate.exception.SQLGrammarException;
 
-//@Security.Authenticated(Secured.class)
+@Security.Authenticated(Secured.class)
 public class Comunitats extends Controller {
 
 	private static Form<Comunitat> comunitatForm = Form.form(Comunitat.class);
 	private static Form<Element> elementForm = Form.form(Element.class);
 
+	@Restrict({@Group("A")})
 	@Transactional(readOnly = true)
 	public static Result novaComunitat(Comunitat pare) {
 		Comunitat comunitat = new Comunitat(pare);
@@ -51,7 +56,7 @@ public class Comunitats extends Controller {
 		}
 		return ok(detalls_comunitat.render(comunitatForm, pare, lu,true));
 	}
-
+	@Restrict({@Group("A")})
 	@Transactional(readOnly = true)
 	public static Result detallComunitat(Comunitat comunitat) {
 		Form<Comunitat> filledForm = comunitatForm.fill(comunitat);
@@ -64,10 +69,11 @@ public class Comunitats extends Controller {
 		}
 		return ok(detalls_comunitat.render(filledForm, comunitat.pare, lu,false));
 	}
-	@Security.Authenticated(SecuredLlogater.class)
-	@Transactional(readOnly = true)
+	@Restrict({@Group("A"),@Group("O")})
+	@AsyncTransactional
 	public static Result llistarComunitats(int page) {
 		Comunitat pare;
+		String s="";
 		try {
 			pare = Comunitat.recercaPerNif("ARREL");
 			Page p = Comunitat.llistarSubComunitats(pare, page);
@@ -79,7 +85,7 @@ public class Comunitats extends Controller {
 		}
 		return notFound();
 	}
-
+	@Restrict({@Group("A"),@Group("O")})
 	@Transactional(readOnly = true)
 	public static Result llistarSubComunitats(Comunitat pare, int page) {
 		Page p;
@@ -94,7 +100,7 @@ public class Comunitats extends Controller {
 		}
 
 	}
-
+	@Restrict({@Group("A"),@Group("O")})
 	@Transactional(readOnly = true)
 	public static Result llistarContactes(Comunitat comunitat, int page) {
 		Page p;
@@ -111,7 +117,19 @@ public class Comunitats extends Controller {
 		
 
 	}
-
+	
+	
+	@Restrict({@Group("A"),@Group("P")})
+	@Transactional
+	public static Result llistarUsuarisAssignats(Element element, int page) {
+		List<ElementVei> e=element.elementsVei;
+		//Collections.sort(e,Element.ElementComparator);
+		Page p=new Page(element.elementsVei,page);
+		return ok(llista_usuaris_assignats.render(element.elementsVei,element,p));
+	}
+	
+	
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result borrarComunitat(Comunitat comunitat) {
 		
@@ -124,7 +142,7 @@ public class Comunitats extends Controller {
 		}
 		return redirect(routes.Comunitats.llistarSubComunitats(comunitat.pare, 1));
 	}
-
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result guardarComunitat(Comunitat pare,boolean nou) {
 		play.mvc.Http.Request request = request();
@@ -155,13 +173,13 @@ public class Comunitats extends Controller {
 			return redirect(routes.Comunitats.llistarSubComunitats(pare, 1));
 		}
 	}
-
+	@Restrict({@Group("A")})
 	public static Result nouElement(Comunitat comunitat) {
 		Element element = new Element(comunitat);
 		elementForm.fill(element);
 		return ok(detalls_element.render(elementForm, comunitat,true));
 	}
-
+	@Restrict({@Group("A"),@Group("P")})
 	@Transactional(readOnly = true)
 	public static Result llistarElements(Comunitat comunitat, int page) {
 		Page p;
@@ -175,7 +193,7 @@ public class Comunitats extends Controller {
 			return redirect(routes.Comunitats.llistarSubComunitats(comunitat.pare, 1));		}
 		
 	}
-
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result borrarElement(Element element) {
 		if (element == null) {
@@ -193,13 +211,13 @@ public class Comunitats extends Controller {
 		}
 		return redirect(routes.Comunitats.llistarComunitats(1));
 	}
-
+	@Restrict({@Group("A")})
 	@Transactional(readOnly = true)
 	public static Result detallElement(Element element) {
 		Form<Element> filledForm = elementForm.fill(element);
 		return ok(detalls_element.render(filledForm, element.comunitat,false));
 	}
-
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result guardarElement(Comunitat comunitat,boolean nou) {
 		play.mvc.Http.Request request = request();

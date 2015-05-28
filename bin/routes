@@ -28,6 +28,7 @@ GET  /elements/nou/:comunitat	controllers.Comunitats.nouElement(comunitat:models
 GET	/detall_elements/:element  	controllers.Comunitats.detallElement(element: models.Element)
 POST /elements/:comunitat    	controllers.Comunitats.guardarElement(comunitat:models.Comunitat,nou:Boolean)
 DELETE	/elements/borrar/:element           controllers.Comunitats.borrarElement(element: models.Element)
+GET	/elements/veins/:element  	controllers.Comunitats.llistarUsuarisAssignats(element: models.Element, page:Int ?=1)
 
 GET  /usuaris/	controllers.Usuaris.llistarUsuaris(page: Int ?=1 )
 GET  /usuaris/llistarFiltrats	controllers.Usuaris.llistarUsuarisFiltrats(page: Int ?=1 )

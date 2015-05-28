@@ -1,0 +1,50 @@
+@(veins:List[ElementVei],  element:Element, page:Page)
+@import play.i18n.Messages
+@main(Messages.get("veins")) {
+
+ <div id="maincontent" >
+<h2 class="titol">@Messages.get("veins_assignats") @element.codi  </h2>
+
+
+
+
+
+   <table class="table table-striped">
+    <thead>
+      <tr>
+	
+            <th>@Messages.get("nom")</th>
+        <th>@Messages.get("cognoms")</th>
+        <th>@Messages.get("tel1")</th>
+        <th>@Messages.get("tel2")</th>
+        <th>@Messages.get("email")</th>
+                <th class="text-center">@Messages.get("tipus")</th>
+        
+
+      </tr>
+    </thead>
+    <tbody>
+    @if(page!=null){
+    
+    @for( vei <- veins) {
+
+      <tr>
+              <td>@vei.usuari.nom</td>
+              <td>@vei.usuari.cognoms</td>
+        <td>@vei.usuari.tel1</td>
+        <td>@vei.usuari.tel2</td>
+           <td>@vei.usuari.email</td>
+              <td class="text-center">@Messages.get(vei.tipus.tipus)</td>
+        
+      
+     </tr>
+      }
+      }
+    </tbody>
+          
+   </table>
+  
+   
+  }
+   
+   

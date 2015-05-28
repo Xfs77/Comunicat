@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.persistence.PersistenceException;
 
+import be.objectify.deadbolt.java.actions.Group;
+import be.objectify.deadbolt.java.actions.Restrict;
 import models.Comunitat;
 import models.Nota;
 import models.EstatNota;
@@ -41,7 +43,6 @@ public class Notes extends Controller {
 	 * { // TODO Auto-generated catch block e.printStackTrace(); } List<Nota> l
 	 * = p.getList(); return ok(); }
 	 */
-
 	@Transactional(readOnly = true)
 	public static Result llistarNotesFiltrades(int page) {
 		play.mvc.Http.Request request = request();
@@ -81,7 +82,7 @@ public class Notes extends Controller {
 			return ok(llista_notes.render(l, p, boundForm, lc, le));
 		}
 	}
-
+	@Restrict({@Group("A"),@Group("O")})
 	@Transactional(readOnly = true)
 	public static Result novaNota() {
 		String dni = session("dni");
@@ -123,7 +124,7 @@ public class Notes extends Controller {
 		}
 		return ok(detalls_nota.render(filledForm, usuari, len, lc, "", true));
 	}
-
+	@Restrict({@Group("A"),@Group("O")})
 	@Transactional(readOnly = true)
 	public static Result nouMovimentNota(Nota nota) {
 		String dni = session("dni");
@@ -151,7 +152,7 @@ public class Notes extends Controller {
 		return ok(detalls_movimentnota.render(filledForm, nota, usuari, len,
 				true));
 	}
-
+	@Restrict({@Group("A")})
 	@Transactional(readOnly = true)
 	public static Result detallNota(Nota nota) {
 		Form<Nota> filledForm = notaForm.fill(nota);
@@ -186,6 +187,7 @@ public class Notes extends Controller {
 		return ok(detalls_nota.render(filledForm, usuari, len, lc, "", false));
 	}
 
+	@Restrict({@Group("A")})
 	@Transactional(readOnly = true)
 	public static Result detallMovimentNota(MovimentNota moviment) {
 		Form<MovimentNota> filledForm = movimentForm.fill(moviment);
@@ -215,7 +217,7 @@ public class Notes extends Controller {
 		}
 		return ok(llista_movimentsnotes.render(l, nota, p));
 	}
-
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result borrarNota(Nota nota) {
 		if (nota == null) {
@@ -234,7 +236,7 @@ public class Notes extends Controller {
 			return redirect(routes.Notes.llistarNotesFiltrades(1));
 		}
 	}
-
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result borrarMovimentNota(MovimentNota moviment) {
 		if (moviment == null) {
@@ -255,7 +257,7 @@ public class Notes extends Controller {
 
 		return redirect(routes.Notes.llistarNotesFiltrades(1));
 	}
-
+	@Restrict({@Group("A"),@Group("O")})
 	@Transactional
 	public static Result guardarNota(boolean nou) {
 		play.mvc.Http.Request request = request();
@@ -317,7 +319,7 @@ public class Notes extends Controller {
 			return redirect(routes.Notes.llistarNotesFiltrades(1));
 		}
 	}
-
+	@Restrict({@Group("A"),@Group("P")})
 	@Transactional
 	public static Result guardarMovimentNota(Boolean nou) {
 		play.mvc.Http.Request request = request();
@@ -382,7 +384,7 @@ public class Notes extends Controller {
 					movimentNotaForm.nota, 1));
 		}
 	}
-
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result notificarNota(Nota nota) {
 

@@ -1,3 +1,5 @@
+@import be.objectify.deadbolt.java.views.html._
+@import be.objectify.deadbolt.core.utils.TemplateUtils._
 @(moviments:List[MovimentNota],nota:Nota, page:Page)
 @import play.i18n.Messages
 @main(Messages.get("moviments")) {
@@ -22,8 +24,9 @@
         <th>@Messages.get("estat")</th>
        	<th>@Messages.get("autor")</th>
 	    <th class="text-center">@Messages.get("notificat")</th>
+					                @restrict(la(as("A"))) {
 		<th  class="text-center">@Messages.get("opcions")</th>
-        
+        }
         <th></th>
       </tr>
     </thead>
@@ -42,10 +45,11 @@
 		<td class="text-center">@if(moviment.notificada==true){Si}else{No} </td>
 		
         <td  class="text-center">
+          				                @restrict(la(as("A"))) {
              <a href="@routes.Notes.detallMovimentNota(moviment)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_movnota")"></i>&nbsp </a> 
         
                <a onclick="javascript:del('@routes.Notes.borrarMovimentNota(moviment)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_movnota")"></i>&nbsp</a> 
-       
+       }
         </td>
      </tr>
       }
@@ -53,12 +57,13 @@
     </tbody>
           
    </table>
+       @restrict(la(as("P"),as("A"))) {
   
   <a class="btn btn-primary" href="@routes.Notes.nouMovimentNota(nota)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
   <br>
   &nbsp
   <br>
-  
+  }
   
    
    
