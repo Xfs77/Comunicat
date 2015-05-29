@@ -1,4 +1,4 @@
-login=Iniciar Sesión
+login=Iniciar Sesión.
 nif=Nif
 nom=Nombre
 cp=Código Postal
@@ -49,6 +49,7 @@ Propietari=Propietario
 Llogater=Inquilino
 formulari_usuaris=Formulario Usuarios
 dni=DNI
+back=Volver
 tipus=Tipo Vecino
 error.desconegut=Error inesperado
 ok_enviament_mail=El correo de alta se ha enviado correctamente al usuario %s
