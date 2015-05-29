@@ -57,12 +57,28 @@
     </tbody>
           
    </table>
+   <div id="page-selection" text-align="left">
+   </div>
+   
+     &nbsp&nbsp<a class="btn btn-info" href="@routes.Notes.llistarNotesFiltrades(1)"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> @Messages.get("back")</a>
+   
        @restrict(la(as("P"),as("A"))) {
   
-  <a class="btn btn-primary" href="@routes.Notes.nouMovimentNota(nota)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
-  <br>
-  &nbsp
-  <br>
+ &nbsp&nbsp  <a class="btn btn-primary" href="@routes.Notes.nouMovimentNota(nota)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
+  
+  
+ <script>
+        // init bootpag
+        $('#page-selection').bootpag({
+            total: @page.totalPages,
+            	href: "@nota.codi?page={{number}}"
+
+        	
+        }).on("page", function(event, /* page number here */ num){
+        });
+    </script>
+  
+  
   }
   
    

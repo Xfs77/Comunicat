@@ -83,8 +83,15 @@ public class Usuaris extends Controller {
 			 return badRequest();
 		} else {
 			UsuarisFiltre filtre = boundForm.get();
-			Page p = Usuari.llistarUsuarisFiltrats(1,filtre);
-			List<Usuari> l = p.getList();
+			Page p=null;
+			List<Usuari> l=null;
+			try{
+			p = Usuari.llistarUsuarisFiltrats(page,filtre);
+			l = p.getList();
+			}catch(Exception e){
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			List<Comunitat> lc=null;
 			try {
 				lc = Comunitat.accesComunitats();
@@ -269,7 +276,8 @@ public class Usuaris extends Controller {
 		List<ElementVei> e=usuari.elementsVei;
 		//Collections.sort(e,Element.ElementComparator);
 		Page p=new Page(usuari.elementsVei,page);
-		return ok(llista_elements_assignats.render(usuari.elementsVei,usuari,p));
+		List<ElementVei> l=p.getList();
+		return ok(llista_elements_assignats.render(l,usuari,p));
 	}
 	
 	@Restrict({@Group("A")})
@@ -278,7 +286,8 @@ public class Usuaris extends Controller {
 		List<ElementVei> e=element.elementsVei;
 		//Collections.sort(e,Element.ElementComparator);
 		Page p=new Page(element.elementsVei,page);
-		return ok(llista_usuaris_assignats.render(element.elementsVei,element,p));
+		List<ElementVei>l=p.getList();
+		return ok(llista_usuaris_assignats.render(l,element,p));
 	}
 	
 	@Restrict({@Group("A")})

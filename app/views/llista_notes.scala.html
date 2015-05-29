@@ -102,15 +102,28 @@
 		</tbody>
 
 	</table>
-
+<div id="page-selection" text-align="left">
+   </div>
+   
      @restrict(la(as("O"),as("A"))) {
-	<a class="btn btn-primary" href="@routes.Notes.novaNota()"><span
+	  &nbsp&nbsp<a class="btn btn-primary" href="@routes.Notes.novaNota()"><span
 		class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-		@Messages.get("registre")</a> <br> &nbsp <br>
+		@Messages.get("registre")</a> 
 }
 
 
 
 </div>
 
+    
+ <script>
+        // init bootpag
+        $('#page-selection').bootpag({
+            total: @page.totalPages,
+            	href: "?fechaIni=@filtre("fechaIni").value&fechaFi=@filtre("fechaFi").value&estat=@filtre("estat").value&comunitat=@filtre("comunitat").value&page={{number}}"
+
+        	
+        }).on("page", function(event, /* page number here */ num){
+        });
+    </script>
 }

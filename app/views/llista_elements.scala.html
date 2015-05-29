@@ -41,8 +41,22 @@
     </tbody>
           
    </table>
-   @restrict(la(as("A"))){  <a class="btn btn-primary" href="@routes.Comunitats.nouElement(comunitat)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>}
+     </table>
+   <div id="page-selection" text-align="left">
+   </div>
+     &nbsp&nbsp<a class="btn btn-info" href="@routes.Comunitats.llistarSubComunitats(comunitat.pare)"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> @Messages.get("back")</a>
+   @restrict(la(as("A"))){   &nbsp&nbsp<a class="btn btn-primary" href="@routes.Comunitats.nouElement(comunitat)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>}
   
+ <script>
+        // init bootpag
+        $('#page-selection').bootpag({
+            total: @page.totalPages,
+            	href: "?page={{number}}"
+
+        	
+        }).on("page", function(event, /* page number here */ num){
+        });
+    </script>
    
   }
    

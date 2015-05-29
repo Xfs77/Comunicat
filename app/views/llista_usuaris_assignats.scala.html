@@ -44,7 +44,19 @@
           
    </table>
   
+  <div id="page-selection" text-align="left">
+   </div>
    
+ <script>
+        // init bootpag
+        $('#page-selection').bootpag({
+            total: @page.totalPages,
+            	href: "?page={{number}}"
+
+        	
+        }).on("page", function(event, /* page number here */ num){
+        });
+    </script>
   }
    
    

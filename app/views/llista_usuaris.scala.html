@@ -88,14 +88,29 @@
     </tbody>
           
    </table>
-  
+   <div id="page-selection" text-align="left">
+   </div>
    
-  <a class="btn btn-primary" href="@routes.Usuaris.nouUsuari()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
+    &nbsp&nbsp<a class="btn btn-primary" href="@routes.Usuaris.nouUsuari()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
   
   <br>
   &nbsp
   <br>
     </div>
+ 
+ 
+
+    
+ <script>
+        // init bootpag
+        $('#page-selection').bootpag({
+            total: @page.totalPages,
+            	href: "?comunitat=@filtre("comunitat").value&page={{number}}"
+
+        	
+        }).on("page", function(event, /* page number here */ num){
+        });
+    </script>
  
   }
    

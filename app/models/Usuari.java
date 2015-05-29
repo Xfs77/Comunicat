@@ -168,7 +168,7 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 	}
 
 	public static Page llistarUsuarisFiltrats(int page,
-			UsuarisFiltre usuariFiltreForm) {
+			UsuarisFiltre usuariFiltreForm) throws Exception {
 		// TODO Auto-generated method stub
 		Query query = null;
 		UsuarisFiltre u = usuariFiltreForm;
@@ -180,12 +180,16 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 		} else {
 			query = JPA.em().createQuery(exp);
 		}
-
+		try{
 		List list = query.getResultList();
-
 		Collections.sort(list, UsuariComparator);
 		Page p = new Page(list, page);
 		return p;
+		}
+		catch(Exception e){
+			throw e;
+		}
+		
 	}
 
 	public static List<Usuari> obtenirUsuaris() throws Exception {

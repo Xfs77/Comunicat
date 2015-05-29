@@ -69,12 +69,9 @@
         // init bootpag
         $('#page-selection').bootpag({
             total: @page.totalPages,
-            @if(pare!=null) {
-            	href: "?pare=@pare.nif&page={{number}}"
-            } else{
-            	href: "?pare=null&page={{number}}"
+           
+            	href: "?page={{number}}"
 
-            }
         	
         }).on("page", function(event, /* page number here */ num){
         });

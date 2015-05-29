@@ -41,11 +41,25 @@
     </tbody>
           
    </table>
-  
+   <div id="page-selection" text-align="left">
+   </div>
+     &nbsp&nbsp<a class="btn btn-info" href="@routes.Comunitats.llistarSubComunitats(comunitat.pare)"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> @Messages.get("back")</a>
    
  
     </div>
  
+ 
+ <script>
+        // init bootpag
+        $('#page-selection').bootpag({
+            total: @page.totalPages,
+            	href: "?page={{number}}"
+
+        	
+        }).on("page", function(event, /* page number here */ num){
+        });
+    </script>
+    
   }
    
    

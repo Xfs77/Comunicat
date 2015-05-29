@@ -56,7 +56,7 @@ public class Notes extends Controller {
 			List<Nota> l = null;
 
 			try {
-				p = Nota.llistarNotesFiltrades(1, filtre);
+				p = Nota.llistarNotesFiltrades(page, filtre);
 				l = p.getList();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

@@ -10,7 +10,6 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
-							<th>@Messages.get("codi")</th>
 							<th>@Messages.get("descripcio")</th>
 			
 
@@ -23,7 +22,6 @@
 			@for( document <- documents) {
 
 			<tr>
-							<td>@document.codi</td>
 							<td>@document.descripcio</td>
 				<td class="text-center">
            @restrict(la(as("P"),as("A"))) {
@@ -38,15 +36,29 @@
 		</tbody>
 
 	</table>
-
+<div id="page-selection" text-align="left">
+   </div>
+     &nbsp&nbsp<a class="btn btn-info" href="@routes.Reunions.llistarReunionsFiltrades(1)"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> @Messages.get("back")</a>
+   
            @restrict(la(as("P"),as("A"))) {
 
-	<a class="btn btn-primary" href="@routes.Reunions.nouDocument(reunio)"><span
+	 &nbsp&nbsp<a class="btn btn-primary" href="@routes.Reunions.nouDocument(reunio)"><span
 		class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 		@Messages.get("registre")</a> <br> &nbsp <br>
 }
 
 
+
+ <script>
+        // init bootpag
+        $('#page-selection').bootpag({
+            total: @page.totalPages,
+            	href: "?@reunio.codi&page={{number}}"
+
+        	
+        }).on("page", function(event, /* page number here */ num){
+        });
+    </script>
 
 <script>
         	function pdf(nif) {

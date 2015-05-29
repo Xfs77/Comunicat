@@ -57,24 +57,28 @@
    <div id="page-selection" text-align="left">
    </div>
  }
+   @if(pare.nif!="arrel"){  
+  &nbsp&nbsp<a class="btn btn-info" href="@routes.Comunitats.llistarSubComunitats(pare.pare)"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> @Messages.get("back")</a>
+}
    @if((comunitats.isEmpty && pare.nif=="arrel" )|| (pare.nif!="arrel")){
+
   @restrict(la(as("A"))){
   &nbsp&nbsp<a class="btn btn-primary" href="@routes.Comunitats.novaComunitat(pare)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> @Messages.get("registre")</a>
-  }}
-
+  }
   
+  
+  
+  }
+
 
     
  <script>
         // init bootpag
         $('#page-selection').bootpag({
             total: @page.totalPages,
-            @if(pare!=null) {
-            	href: "?pare=@pare.nif&page={{number}}"
-            } else{
-            	href: "?pare=null&page={{number}}"
+           
+            	href: "?page={{number}}"
 
-            }
         	
         }).on("page", function(event, /* page number here */ num){
         });

@@ -117,7 +117,7 @@ public class Reunions extends Controller {
 			}
 
 			try {
-				p = Reunio.llistarReunionsFiltrades(1, filtre);
+				p = Reunio.llistarReunionsFiltrades(page, filtre);
 				l = p.getList();
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
@@ -188,12 +188,12 @@ public class Reunions extends Controller {
 			Reunio reunioForm = boundForm.get();
 			try {
 				Reunio.guardarReunio(reunioForm, nou);
-				flash("success", String.format(Messages.get("success.guardar_reunio"), reunioForm.codi));
+				flash("success", String.format(Messages.get("success.guardar_reunio"), reunioForm.descripcio));
 
 				return redirect(routes.Reunions.llistarReunionsFiltrades(1));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				flash("error", String.format(Messages.get("error.guardar_reunio"), reunioForm.codi));
+				flash("error", String.format(Messages.get("error.guardar_reunio"), reunioForm.descripcio));
 				return badRequest(detalls_reunio.render(boundForm, lc, EstatReunio.obtenirEstatsReunio(), nou));
 
 			}
@@ -203,15 +203,15 @@ public class Reunions extends Controller {
 	@Transactional
 	public static Result borrarReunio(Reunio reunio) {
 		if (reunio == null) {
-			return notFound(String.format(Messages.get("error.borrar_reunio"), reunio.codi));
+			return notFound(String.format(Messages.get("error.borrar_reunio"), reunio.descripcio));
 		}
 		try {
 			Reunio.borrarReunio(reunio);
-			flash("success", String.format(Messages.get("success.borrar_reunio"), reunio.codi));
+			flash("success", String.format(Messages.get("success.borrar_reunio"), reunio.descripcio));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			flash("error", String.format(Messages.get("error.borrar_reunio") + " ("
-					+ e.getCause().getCause().toString() + ")", reunio.codi));
+					+ e.getCause().getCause().toString() + ")", reunio.descripcio));
 		}
 		return redirect(routes.Reunions.llistarReunionsFiltrades(1));
 	}
@@ -272,12 +272,12 @@ public class Reunions extends Controller {
 
 			try {
 				Document.guardarDocument(documentForm, nou);
-				flash("success", String.format(Messages.get("success.guardar_document"), documentForm.codi));
+				flash("success", String.format(Messages.get("success.guardar_document"), documentForm.descripcio));
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				flash("error", String.format(Messages.get("error.guardar_document"), documentForm.codi));
+				flash("error", String.format(Messages.get("error.guardar_document"), documentForm.descripcio));
 
 			}
 
@@ -288,17 +288,17 @@ public class Reunions extends Controller {
 	@Transactional
 	public static Result borrarDocument(Document document) {
 		if (document == null) {
-			return notFound(String.format("El document %s no existeix.", document.codi));
+			return notFound(String.format("El document %s no existeix.", document.descripcio));
 		}
 		try {
 			Document.borrarDocument(document);
-			flash("success", String.format(Messages.get("success.borrar_document"), document.codi));
+			flash("success", String.format(Messages.get("success.borrar_document"), document.descripcio));
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			flash("error",
 					String.format(Messages.get("error.borrar_document") + " (" + e.getCause().getCause().toString()
-							+ ")", document.codi));
+							+ ")", document.descripcio));
 			e.printStackTrace();
 		}
 
