@@ -1,4 +1,4 @@
-login=Iniciar Sesión
+login=Iniciar Sesión.
 nif=Nif
 nom=Nombre
 cp=Código Postal
