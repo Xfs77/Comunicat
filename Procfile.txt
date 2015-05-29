@@ -1,0 +1,1 @@
+web: target/universal/stage/bin/reclamacions -Dhttp.port=${PORT} -DapplyEvolutions.default=true -Ddb.default.driver=org.postgresql.Driver -Ddb.default.url=postgres://hngrlpsuhbhctf:rZsUki43kDBZ6r9JYLdoB7scc3@ec2-23-21-231-14.compute-1.amazonaws.com:5432/d66v8r1jcrp4ka -Ddb.default.user=hngrlpsuhbhctf -Ddb.default.password=rZsUki43kDBZ6r9JYLdoB7scc3
