@@ -19,7 +19,7 @@ public class Page {
 	   public Page(List list, int page) {
 	       
 	       this.page = page;
-	       this.pageSize =2;
+	       this.pageSize =10;
 	      
 		   int registres=list.size();
 		   if ((registres % pageSize)==0){

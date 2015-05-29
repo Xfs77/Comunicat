@@ -303,7 +303,10 @@ public class Nota implements Serializable, PathBindable<Nota> {
 
 		public int compare(Nota n1, Nota n2) {
 
-			return Integer.compare(n1.codi, n2.codi) * -1;
+			if(n1.codi<n2.codi)	{
+				return 1;
+			}
+			else return -1;
 		}
 	};
 

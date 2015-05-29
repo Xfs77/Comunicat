@@ -146,11 +146,17 @@ import play.mvc.PathBindable;
 
 			public int compare(MovimentNota m1, MovimentNota m2) {
 
-				if(Integer.compare(m1.nota.codi,m2.nota.codi)==0){
-					return Integer.compare(m1.codi, m2.codi)*-1;
+				if(m1.nota.codi==m2.nota.codi){
+					if(m1.codi<m2.codi)	{
+						return 1;
+					}
+					else return -1;
 					}
 				else{
-					return Integer.compare(m1.nota.codi, m2.nota.codi)*-1;
+					if(m1.nota.codi<m2.nota.codi)	{
+						return 1;
+					}
+					else return -1;
 				}
 
 			}
