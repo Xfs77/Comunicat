@@ -64,7 +64,7 @@
         	function pdf(codi) {
  	    	    jsRoutes.controllers.Reunions.readFile(codi).ajax({
         	        success: function(data) {        	
-        	        	
+        	        	alert("Inici");
         	        	var a ="@routes.Assets.at("javascripts/web/viewer.html")";
                 		alert(a);
                 	  	var b = encodeURIComponent("http://@host:9000/assets/javascripts/web/tmp/"+data);
