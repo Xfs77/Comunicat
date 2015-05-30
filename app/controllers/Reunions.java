@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -234,7 +235,14 @@ public class Reunions extends Controller {
 			e.printStackTrace();
 		}
 		List<Document> l = p.getList();
-		return ok(llista_documents.render(l, p, reunio));
+		String host="";
+		try{
+		host=InetAddress.getLocalHost().getHostName();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return ok(llista_documents.render(l, p, reunio,host));
 	}
 	@Restrict({@Group("A"),@Group("P")})
 	@Transactional(readOnly = true)
