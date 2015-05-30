@@ -30,8 +30,13 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
     	final Usuari c[] = { null };
 		JPA.withTransaction(new F.Callback0() {
 			@Override
-			public void invoke() throws Throwable {
-				c[0] = (Usuari.recercaPerDni(dni));
+			public void invoke() {
+				try {
+					c[0] = (Usuari.recercaPerDni(dni));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 

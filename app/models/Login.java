@@ -13,10 +13,15 @@ public  class Login {
 		this.password=password;
 	}
 	
-	public String validate() throws Exception {
-	    if (Usuari.authenticate(dni, password) == null) {
-	      return "invalid_user_password";
-	    }
+	public String validate() {
+	    try {
+			if (Usuari.authenticate(dni, password) == null) {
+			  return "invalid_user_password";
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			  return "invalid_user_password";
+		}
 	    return null;
 	}
 }
