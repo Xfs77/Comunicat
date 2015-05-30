@@ -163,7 +163,7 @@ import play.mvc.PathBindable;
 
 		 public static void borrarArchiuDirectori() {
 
-			  String direccion = "c:\\Usuarios\\Xavi\\git\\Comunicat\\public\\javascripts\\web\\tmp";
+			  String direccion = "\\public\\javascripts\\web\\tmp";
 		        File directorio = new File(direccion);
 		        File f;
 		        boolean t =directorio.isDirectory();
