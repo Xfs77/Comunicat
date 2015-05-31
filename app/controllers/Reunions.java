@@ -240,7 +240,7 @@ public class Reunions extends Controller {
 		}
 		List<Document> l = p.getList();
 		try{
-		tempdf = File.createTempFile("CU" + reunio.codi, ".pdf", new File("public\\javascripts\\web\\tmp"));
+		tempdf = File.createTempFile("CU" + reunio.codi, ".pdf");
 		b=tempdf.canRead();
 		}catch(Exception e){
 			
