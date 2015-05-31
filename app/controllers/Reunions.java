@@ -238,16 +238,24 @@ public class Reunions extends Controller {
 		}
 		List<Document> l = p.getList();
 		String host="";
+		File tempdfl=null;
+		try {
+			tempdfl = File.createTempFile("CUssssssssssssss", ".pdf");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		boolean bb=tempdfl.canRead();
 		try{
 		String direccion= Play.application().getFile("/public/").getAbsolutePath()+"--"+Play.application().getFile("/public/").getPath()+"--"+InetAddress.getLocalHost().getAddress()+"--"+InetAddress.getLocalHost().getHostName();;
-
+		File tempdf = File.createTempFile("CU" , ".pdf");
 //		host=InetAddress.getLocalHost().getHostName();
 		host=direccion;
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		return ok(llista_documents.render(l, p, reunio,host));
+		return ok(llista_documents.render(l, p, reunio,Boolean.toString(bb)));
 	}
 	@Restrict({@Group("A"),@Group("P")})
 	@Transactional(readOnly = true)
@@ -355,7 +363,6 @@ public class Reunions extends Controller {
 	    String tempDir = System.getProperty("java.io.tmpdir");
 
 		File tempdf = File.createTempFile("CU" + codi, ".pdf");
-		tempdf.deleteOnExit();
 
 		try {
 			FileOutputStream fos = new FileOutputStream(tempdf);
