@@ -1,6 +1,6 @@
 @import be.objectify.deadbolt.java.views.html._
 @import be.objectify.deadbolt.core.utils.TemplateUtils._
-@(documents:List[Document], page:Page, reunio:Reunio,host:String) @import play.i18n.Messages
+@(documents:List[Document], page:Page, reunio:Reunio, host:String) @import play.i18n.Messages
 @main(Messages.get("Documents")) {
 
 <div id="maincontent">
@@ -61,14 +61,13 @@
     </script>
 
 <script>
-        	function pdf(codi) {
- 	    	    jsRoutes.controllers.Reunions.readFile(codi).ajax({
-        	        alert("");
- 	    	    	success: function(data) {        	
+        	function pdf(nif) {
+ 	    	    jsRoutes.controllers.Reunions.readFile(nif).ajax({
+        	        success: function(data) {        	
         	        	var a ="@routes.Assets.at("javascripts/web/viewer.html")";
                 		var b = encodeURIComponent("http://localhost:9000/assets/javascripts/web/tmp/"+data);
                 	    var fin=a+"?file="+b;  
-                	    window.open(fin);
+                	    window.open(a);
                 	    },
         	        error: function () {
         	           alert("Error!")

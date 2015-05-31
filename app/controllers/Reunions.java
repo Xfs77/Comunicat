@@ -228,6 +228,10 @@ public class Reunions extends Controller {
 	@Transactional(readOnly = true)
 	public static Result llistarDocuments(Reunio reunio, int page) {
 		Page p = null;
+		String host=null;
+		File tempdf=null;
+		String host1=null;
+		boolean b=false;
 		try {
 			p = Document.llistarDocuments(reunio, page);
 		} catch (Exception e) {
@@ -235,22 +239,13 @@ public class Reunions extends Controller {
 			e.printStackTrace();
 		}
 		List<Document> l = p.getList();
-		File tempdf=null;
-		boolean b=false;
-		try {
-			tempdf = File.createTempFile("CU" + reunio.codi, ".pdf");
-			 b=tempdf.canRead();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		String host="";
 		try{
-		host=InetAddress.getLocalHost().getHostName();
+		tempdf = File.createTempFile("CU" + reunio.codi, ".pdf", new File("public\\javascripts\\web\\tmp"));
+		b=tempdf.canRead();
+		}catch(Exception e){
+			
 		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
+		
 		return ok(llista_documents.render(l, p, reunio,Boolean.toString(b)));
 	}
 	@Restrict({@Group("A"),@Group("P")})
@@ -342,7 +337,6 @@ public class Reunions extends Controller {
 	@Transactional(readOnly = true)
 	public static Result readFile(String codi) throws IOException {
 		Document.borrarArchiuDirectori();
-		
 		Document d = null;
 		try {
 			d = Document.recercaPerCodi(Integer.parseInt(codi));
@@ -354,7 +348,7 @@ public class Reunions extends Controller {
 			e1.printStackTrace();
 		}
 
-		File tempdf = File.createTempFile("CU" + codi, ".pdf", new File("public\\javascripts\\web\\tmp"));
+		File tempdf = File.createTempFile("CU" + codi, ".pdf");
 		tempdf.deleteOnExit();
 
 		try {
@@ -367,7 +361,7 @@ public class Reunions extends Controller {
 			e.printStackTrace();
 		}
 
-		return ok(tempdf.getName());
+		return ok(tempdf.getAbsolutePath());
 
 	}
 
