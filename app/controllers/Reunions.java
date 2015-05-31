@@ -354,7 +354,7 @@ public class Reunions extends Controller {
 		}
 	    String tempDir = System.getProperty("java.io.tmpdir");
 
-		File tempdf = File.createTempFile("CU" + codi, ".pdf", new File(tempDir));
+		File tempdf = File.createTempFile("CU" + codi, ".pdf");
 		tempdf.deleteOnExit();
 
 		try {
