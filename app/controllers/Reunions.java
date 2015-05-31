@@ -352,8 +352,9 @@ public class Reunions extends Controller {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	    String tempDir = System.getProperty("java.io.tmpdir");
 
-		File tempdf = File.createTempFile("CU" + codi, ".pdf", new File("public\\javascripts\\web\\tmp"));
+		File tempdf = File.createTempFile("CU" + codi, ".pdf", new File(tempDir));
 		tempdf.deleteOnExit();
 
 		try {
