@@ -245,7 +245,7 @@ public class Reunions extends Controller {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		boolean bb=tempdfl.canRead();
+		boolean bb=Desktop.isDesktopSupported();
 		try{
 		String direccion= Play.application().getFile("/public/").getAbsolutePath()+"--"+Play.application().getFile("/public/").getPath()+"--"+InetAddress.getLocalHost().getAddress()+"--"+InetAddress.getLocalHost().getHostName();;
 		File tempdf = File.createTempFile("CU" , ".pdf");
