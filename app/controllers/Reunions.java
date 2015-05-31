@@ -1,5 +1,6 @@
 package controllers;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -254,6 +255,9 @@ public class Reunions extends Controller {
 		Form<Document> filledForm = documentForm.fill(document);
 		return ok(detalls_document.render(filledForm, document.reunio, false));
 	}
+	
+		
+
 	@Restrict({@Group("A"),@Group("P")})
 	@Transactional
 	public static Result guardarDocument(Reunio reunio, boolean nou) {
@@ -335,12 +339,12 @@ public class Reunions extends Controller {
 	}
 	@Restrict({@Group("A"),@Group("O")})
 	@Transactional(readOnly = true)
-	public static Result readFile(String codi) throws IOException {
+	public static Result readFile(int codi) throws IOException {
 		Document.borrarArchiuDirectori();
 		
 		Document d = null;
 		try {
-			d = Document.recercaPerCodi(Integer.parseInt(codi));
+			d = Document.recercaPerCodi(codi);
 		} catch (NumberFormatException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -356,6 +360,13 @@ public class Reunions extends Controller {
 			FileOutputStream fos = new FileOutputStream(tempdf);
 			fos.write(d.document);
 			fos.close();
+			if (Desktop.isDesktopSupported()) {
+			    try {
+			        Desktop.getDesktop().open(tempdf);
+			    } catch (IOException ex) {
+			        // no application registered for PDFs
+			    }
+			}
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

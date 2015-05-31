@@ -27,7 +27,7 @@
            @restrict(la(as("P"),as("A"))) {
 				        <a href="@routes.Reunions.detallDocument(document)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a> 
         <a onclick="javascript:del('@routes.Reunions.borrarDocument(document)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a>} 
-          <a onclick="javascript:pdf('@document.codi')"><i class="glyphicon glyphicon-eye-open"></i></a> 
+          <a href="@routes.Reunions.readFile(document.codi)"><i class="glyphicon glyphicon-eye-open"></i></a> 
 
 					</td>
 			</tr>
@@ -64,10 +64,12 @@
         	function pdf(codi) {
  	    	    jsRoutes.controllers.Reunions.readFile(codi).ajax({
         	        success: function(data) {        	
+        	        	
+        	        	alert("");
         	        	var a="http:/polar-lowlands-9787.herokuapp.com/assets/javascripts/web/viewer.html");
                 		var fin=encodeURIComponent("polar-lowlands-9787.herokuapp.com/assets/javascripts/web/tmp/"+data);        	    window.open(fin);
                 		
-                	          	    window.open(a);
+                	              	    window.open(fin);
                 	    },
         	        error: function () {
         	           alert("Error!")

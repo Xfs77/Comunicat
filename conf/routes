@@ -67,7 +67,7 @@ GET  /reunions/documents/llistar/:reunio				controllers.Reunions.llistarDocument
 GET  /reunions/documents/detall/:document				controllers.Reunions.detallDocument(document:models.Document)
 POST /reunions/documents/guardar/:reunio    			controllers.Reunions.guardarDocument(reunio:models.Reunio,nou:Boolean)
 DELETE	/reunions/documents/borrar/:document          	controllers.Reunions.borrarDocument(document: models.Document)
-GET  /reunions/documents/obrir/:codi					controllers.Reunions.readFile(codi: String)
+GET  /reunions/documents/obrir/:codi					controllers.Reunions.readFile(codi: Int)
 GET  /reunions/notificar/:reunio						controllers.Reunions.notificarReunio(reunio:models.Reunio)
 
 # Javascript routing
