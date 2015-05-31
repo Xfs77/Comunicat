@@ -61,13 +61,13 @@
     </script>
 
 <script>
-        	function pdf(nif) {
- 	    	    jsRoutes.controllers.Reunions.readFile(nif).ajax({
+        	function pdf(codi) {
+ 	    	    jsRoutes.controllers.Reunions.readFile(codi).ajax({
         	        success: function(data) {        	
         	        	var a ="@routes.Assets.at("javascripts/web/viewer.html")";
                 		var b = encodeURIComponent("http://localhost:9000/assets/javascripts/web/tmp/"+data);
-                	    var fin=a+"?file="+b;  
-                	    window.open(a);
+                	    var fin=a+"?file="+data;  
+                	    window.open(fin);
                 	    },
         	        error: function () {
         	           alert("Error!")

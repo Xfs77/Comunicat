@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -226,12 +226,8 @@ public class Reunions extends Controller {
 	}
 	@Restrict({@Group("A"),@Group("O")})
 	@Transactional(readOnly = true)
-	public static Result llistarDocuments(Reunio reunio, int page) {
+	public static Result llistarDocuments(Reunio reunio, int page) throws IOException {
 		Page p = null;
-		String host=null;
-		File tempdf=null;
-		String host1=null;
-		boolean b=false;
 		try {
 			p = Document.llistarDocuments(reunio, page);
 		} catch (Exception e) {
@@ -239,14 +235,10 @@ public class Reunions extends Controller {
 			e.printStackTrace();
 		}
 		List<Document> l = p.getList();
-		try{
-		tempdf = File.createTempFile("CU" + reunio.codi, ".pdf");
-		b=tempdf.canRead();
-		}catch(Exception e){
-			
-		}
-		
-		return ok(llista_documents.render(l, p, reunio,Boolean.toString(b)));
+		File tempdf=null; 
+		tempdf= File.createTempFile("CjjjjjjjU", ".pdf");
+		tempdf.toURI().toURL();
+		return ok(llista_documents.render(l, p, reunio,tempdf.toURI().toURL().getPath()));
 	}
 	@Restrict({@Group("A"),@Group("P")})
 	@Transactional(readOnly = true)
@@ -335,11 +327,11 @@ public class Reunions extends Controller {
 	}
 	@Restrict({@Group("A"),@Group("O")})
 	@Transactional(readOnly = true)
-	public static Result readFile(String codi) throws IOException {
+	public static Result readFile(int codi) throws IOException {
 		Document.borrarArchiuDirectori();
 		Document d = null;
 		try {
-			d = Document.recercaPerCodi(Integer.parseInt(codi));
+			d = Document.recercaPerCodi((codi));
 		} catch (NumberFormatException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -348,8 +340,9 @@ public class Reunions extends Controller {
 			e1.printStackTrace();
 		}
 
-		File tempdf = File.createTempFile("CU" + codi, ".pdf");
+		File tempdf = File.createTempFile("CU" + codi, ".pdf", new File("public\\javascripts\\web\\tmp"));
 		tempdf.deleteOnExit();
+		URL u = tempdf.toURI().toURL();
 
 		try {
 			FileOutputStream fos = new FileOutputStream(tempdf);
@@ -361,7 +354,7 @@ public class Reunions extends Controller {
 			e.printStackTrace();
 		}
 
-		return ok(tempdf.getAbsolutePath());
+		return ok(tempdf.getName());
 
 	}
 
