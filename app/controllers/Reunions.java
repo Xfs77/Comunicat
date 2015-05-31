@@ -28,6 +28,7 @@ import models.Page;
 import models.Reunio;
 import models.ReunionsFiltre;
 import models.Usuari;
+import play.Play;
 import play.data.Form;
 import play.data.validation.ValidationError;
 import play.db.jpa.Transactional;
@@ -237,6 +238,8 @@ public class Reunions extends Controller {
 		List<Document> l = p.getList();
 		String host="";
 		try{
+		String direccion= Play.application().getFile("/public/").getAbsolutePath()+"--"+Play.application().getFile("/public/").getPath();
+
 		host=InetAddress.getLocalHost().getHostName();
 		}
 		catch(Exception e){
