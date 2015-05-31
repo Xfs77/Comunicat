@@ -371,9 +371,11 @@ public class Reunions extends Controller {
 			if (Desktop.isDesktopSupported()) {
 			    try {
 			        Desktop.getDesktop().open(tempdf);
+					flash("success","success.program_pdf");
+
 			    } catch (IOException ex) {
 			        // no application registered for PDFs
-					flash("error","error.program_pdf");
+					flash("error","error0.program_pdf");
 
 			    }
 			}
@@ -381,9 +383,11 @@ public class Reunions extends Controller {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			flash("error","error1.program_pdf");
+
 		}
 
-		flash("success","success.program_pdf");
+		flash("success","success1.program_pdf");
 
 		return redirect(routes.Reunions.llistarDocuments(d.reunio, 1));
 
