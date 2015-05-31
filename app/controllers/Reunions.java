@@ -1,6 +1,5 @@
 package controllers;
 
-import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,7 +28,6 @@ import models.Page;
 import models.Reunio;
 import models.ReunionsFiltre;
 import models.Usuari;
-import play.Play;
 import play.data.Form;
 import play.data.validation.ValidationError;
 import play.db.jpa.Transactional;
@@ -237,25 +235,23 @@ public class Reunions extends Controller {
 			e.printStackTrace();
 		}
 		List<Document> l = p.getList();
-		String host="";
-		File tempdfl=null;
+		File tempdf=null;
+		boolean b=false;
 		try {
-			tempdfl = File.createTempFile("CUssssssssssssss", ".pdf");
+			tempdf = File.createTempFile("CU" + reunio.codi, ".pdf", new File("public\\javascripts\\web\\tmp"));
+			 b=tempdf.canRead();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		boolean bb=Desktop.isDesktopSupported();
+		String host="";
 		try{
-		String direccion= Play.application().getFile("/public/").getAbsolutePath()+"--"+Play.application().getFile("/public/").getPath()+"--"+InetAddress.getLocalHost().getAddress()+"--"+InetAddress.getLocalHost().getHostName();;
-		File tempdf = File.createTempFile("CU" , ".pdf");
-//		host=InetAddress.getLocalHost().getHostName();
-		host=direccion;
+		host=InetAddress.getLocalHost().getHostName();
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		return ok(llista_documents.render(l, p, reunio,Boolean.toString(bb)));
+		return ok(llista_documents.render(l, p, reunio,Boolean.toString(b)));
 	}
 	@Restrict({@Group("A"),@Group("P")})
 	@Transactional(readOnly = true)
@@ -263,9 +259,6 @@ public class Reunions extends Controller {
 		Form<Document> filledForm = documentForm.fill(document);
 		return ok(detalls_document.render(filledForm, document.reunio, false));
 	}
-	
-		
-
 	@Restrict({@Group("A"),@Group("P")})
 	@Transactional
 	public static Result guardarDocument(Reunio reunio, boolean nou) {
@@ -347,12 +340,12 @@ public class Reunions extends Controller {
 	}
 	@Restrict({@Group("A"),@Group("O")})
 	@Transactional(readOnly = true)
-	public static Result readFile(int codi) throws IOException {
+	public static Result readFile(String codi) throws IOException {
 		Document.borrarArchiuDirectori();
 		
 		Document d = null;
 		try {
-			d = Document.recercaPerCodi(codi);
+			d = Document.recercaPerCodi(Integer.parseInt(codi));
 		} catch (NumberFormatException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -360,36 +353,21 @@ public class Reunions extends Controller {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	    String tempDir = System.getProperty("java.io.tmpdir");
 
-		File tempdf = File.createTempFile("CU" + codi, ".pdf");
+		File tempdf = File.createTempFile("CU" + codi, ".pdf", new File("public\\javascripts\\web\\tmp"));
+		tempdf.deleteOnExit();
 
 		try {
 			FileOutputStream fos = new FileOutputStream(tempdf);
 			fos.write(d.document);
 			fos.close();
-			if (Desktop.isDesktopSupported()) {
-			    try {
-			        Desktop.getDesktop().open(tempdf);
-					flash("success","success.program_pdf");
-
-			    } catch (IOException ex) {
-			        // no application registered for PDFs
-					flash("error","error0.program_pdf");
-
-			    }
-			}
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			flash("error","error1.program_pdf");
-
 		}
 
-		flash("success","success1.program_pdf");
-
-		return redirect(routes.Reunions.llistarDocuments(d.reunio, 1));
+		return ok(tempdf.getName());
 
 	}
 

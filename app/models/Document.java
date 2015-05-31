@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.net.InetAddress;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,12 +39,9 @@ import javax.validation.ConstraintValidator;
 import javax.validation.Payload;
 
 
-
-
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import play.Play;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
@@ -157,7 +153,6 @@ import play.mvc.PathBindable;
 				Reunio refReunio=Reunio.obtenirRefReunio(formDocument.reunio);
 				refReunio.documents.add(formDocument);
 				try{
-					
 				JPA.em().persist(formDocument);
 				}catch(Exception e){
 					throw e;
@@ -167,9 +162,8 @@ import play.mvc.PathBindable;
 		
 
 		 public static void borrarArchiuDirectori() {
-			String direccion= Play.application().getFile("/public/").getAbsolutePath();
-			direccion=direccion+"//javascripts//web//tmp";
-			 // String direccion = "c:\\Users\\Xavier\\git\\Comunicat\\public\\javascripts\\web\\tmp";
+
+			  String direccion = "c:\\Usuarios\\Xavi\\git\\Comunicat\\public\\javascripts\\web\\tmp";
 		        File directorio = new File(direccion);
 		        File f;
 		        boolean t =directorio.isDirectory();
