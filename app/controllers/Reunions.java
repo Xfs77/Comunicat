@@ -365,6 +365,8 @@ public class Reunions extends Controller {
 			        Desktop.getDesktop().open(tempdf);
 			    } catch (IOException ex) {
 			        // no application registered for PDFs
+					flash("error","error.program_pdf");
+
 			    }
 			}
 
@@ -373,7 +375,9 @@ public class Reunions extends Controller {
 			e.printStackTrace();
 		}
 
-		return ok(tempdf.getName());
+		flash("success","success.program_pdf");
+
+		return redirect(routes.Reunions.llistarDocuments(d.reunio, 1));
 
 	}
 
