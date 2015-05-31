@@ -66,7 +66,7 @@
         	        success: function(data) {        	
         	        	var a ="@routes.Assets.at("javascripts/web/viewer.html")";
                 		var b = encodeURIComponent("http://localhost:9000/assets/javascripts/web/tmp/"+data);
-                	    var fin=a
+                	    var fin="http:/"+@host+"/assets/javascripts/web/viewer.html";
                 	    window.open(fin);
                 	    },
         	        error: function () {
