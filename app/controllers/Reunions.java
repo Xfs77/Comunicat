@@ -240,7 +240,8 @@ public class Reunions extends Controller {
 		try{
 		String direccion= Play.application().getFile("/public/").getAbsolutePath()+"--"+Play.application().getFile("/public/").getPath();
 
-		host=InetAddress.getLocalHost().getHostName();
+//		host=InetAddress.getLocalHost().getHostName();
+		host=direccion;
 		}
 		catch(Exception e){
 			e.printStackTrace();
