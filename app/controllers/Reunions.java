@@ -28,6 +28,7 @@ import models.Page;
 import models.Reunio;
 import models.ReunionsFiltre;
 import models.Usuari;
+import play.Play;
 import play.data.Form;
 import play.data.validation.ValidationError;
 import play.db.jpa.Transactional;
@@ -237,7 +238,8 @@ public class Reunions extends Controller {
 		List<Document> l = p.getList();
 		String host="";
 		try{
-		host=InetAddress.getLocalHost().getHostName();
+		host= Play.application().getFile("/public/").getAbsolutePath();
+;
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -333,6 +335,7 @@ public class Reunions extends Controller {
 	@Transactional(readOnly = true)
 	public static Result readFile(String codi) throws IOException {
 		Document.borrarArchiuDirectori();
+		
 		Document d = null;
 		try {
 			d = Document.recercaPerCodi(Integer.parseInt(codi));
