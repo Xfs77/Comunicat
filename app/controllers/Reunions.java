@@ -238,7 +238,7 @@ public class Reunions extends Controller {
 		File tempdf=null;
 		boolean b=false;
 		try {
-			tempdf = File.createTempFile("CU" + reunio.codi, ".pdf", new File("public\\javascripts\\web\\tmp"));
+			tempdf = File.createTempFile("CU" + reunio.codi, ".pdf");
 			 b=tempdf.canRead();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
