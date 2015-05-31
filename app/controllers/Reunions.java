@@ -238,7 +238,7 @@ public class Reunions extends Controller {
 		List<Document> l = p.getList();
 		String host="";
 		try{
-		String direccion= Play.application().getFile("/public/").getAbsolutePath()+"--"+Play.application().getFile("/public/").getPath();
+		String direccion= Play.application().getFile("/public/").getAbsolutePath()+"--"+Play.application().getFile("/public/").getPath()+"--"+InetAddress.getLocalHost().getAddress()+"--"+InetAddress.getLocalHost().getHostName();;
 
 //		host=InetAddress.getLocalHost().getHostName();
 		host=direccion;
