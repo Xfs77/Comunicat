@@ -168,7 +168,7 @@ import play.mvc.PathBindable;
 
 		 public static void borrarArchiuDirectori() {
 			String direccion= Play.application().getFile("/public/").getAbsolutePath();
-			direccion=direccion+"\\javascripts\\web\\tmp";
+			direccion=direccion+"//javascripts//web//tmp";
 			 // String direccion = "c:\\Users\\Xavier\\git\\Comunicat\\public\\javascripts\\web\\tmp";
 		        File directorio = new File(direccion);
 		        File f;

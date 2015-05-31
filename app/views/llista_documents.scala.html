@@ -10,7 +10,6 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
-			@host
 							<th>@Messages.get("descripcio")</th>
 			
 
@@ -63,10 +62,17 @@
 
 <script>
         	function pdf(codi) {
-        		alert("http:/@host/assets/javascripts/web/viewer.html");
-        		var fin="http:/"+@host+"/assets/javascripts/web/viewer.html";
-        	    window.open(fin);
-        		
+ 	    	    jsRoutes.controllers.Reunions.readFile(codi).ajax({
+        	        success: function(data) {        	
+        	        	var a="http:/polar-lowlands-9787.herokuapp.com/assets/javascripts/web/viewer.html");
+                		var fin=encodeURIComponent("polar-lowlands-9787.herokuapp.com/assets/javascripts/web/tmp/"+data);        	    window.open(fin);
+                		
+                	          	    window.open(a);
+                	    },
+        	        error: function () {
+        	           alert("Error!")
+        	        } 
+        	 })
         		
         	}
         </script>
