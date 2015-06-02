@@ -50,7 +50,7 @@
 <strong>@Messages.get("estat")</strong>
 	<p class="sls"></p>
 
-  <select class="selectpicker"  id="estat"  name="estat" data-width="200px" @if(false==false) {nou="true"} >
+  <select class="selectpicker"  id="estat"  name="estat" data-width="200px" @if(false==false) {nou="true"} @if(nou==false){disabled="true"}>
     @for( estat <- estats) {
  <option value=@estat.estat @if(movimentForm("estat").value==estat.estat){Selected} )>@Messages.get(estat.estat)</option>
       }

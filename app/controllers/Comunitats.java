@@ -206,7 +206,7 @@ public class Comunitats extends Controller {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			flash("error", String.format(Messages.get("error.element_borrar"), element.codi));
+			flash("error", String.format(Messages.get("error.element_borrar"), element.codi)+" (" +e.getCause().getCause().toString()+")");
 
 		}
 		return redirect(routes.Comunitats.llistarComunitats(1));

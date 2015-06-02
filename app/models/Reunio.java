@@ -43,7 +43,7 @@ import play.mvc.PathBindable;
 		
 		@Id
 		@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_reunio")
-		@SequenceGenerator(name = "seq_reunio", sequenceName = "seq_reunio", allocationSize = 1, initialValue = 2)
+		@SequenceGenerator(name = "seq_reunio", sequenceName = "seq_reunio", allocationSize = 1, initialValue = 1)
 		@Column(name = "codi")
 		public int codi;
 		@Required
@@ -148,6 +148,7 @@ import play.mvc.PathBindable;
 				for (Iterator<Document> it =ld.iterator();it.hasNext();){
 					Document d=it.next();
 					em.remove(d);
+					em.flush();
 				}
 				em.remove(refReunio);
 				em.flush();

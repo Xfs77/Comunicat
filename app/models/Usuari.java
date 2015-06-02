@@ -237,13 +237,22 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 						PasswordGenerator.MINUSCULAS
 								+ PasswordGenerator.MAYUSCULAS
 								+ PasswordGenerator.NUMEROS, 6);
-				JPA.em().persist(usuari);
-				Usuaris.correuAlta(usuari);
+				try{
+					JPA.em().persist(usuari);	
+					JPA.em().flush();
+
+					Usuaris.correuAlta(usuari);
+
+				}
+				catch(Exception e){
+					throw e;
+				}				
 			}
 		} catch (Exception e) {
 			throw e;
 		}
-
+		
+		
 	}
 
 	public static void correuAlta(Usuari usuari) throws Exception {

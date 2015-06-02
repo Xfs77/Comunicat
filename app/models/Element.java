@@ -165,6 +165,7 @@ public class Element implements Serializable,
 			refElement.coeficient=element.coeficient;
 			try{
 			JPA.em().merge(refElement);
+			JPA.em().flush();
 			}
 			catch(Exception e){
 				throw e;
@@ -173,6 +174,7 @@ public class Element implements Serializable,
 			element.comunitat=Comunitat.obtenirRefComunitat(element.comunitat); 
 			try{
 			JPA.em().persist(element);
+			JPA.em().flush();
 			}
 			catch(Exception e){
 				throw e;
@@ -193,6 +195,7 @@ public class Element implements Serializable,
 		
 		try{
 		em.remove(actorToBeRemoved);
+		em.flush();
 		}
 		catch(Exception e){
 			throw e;

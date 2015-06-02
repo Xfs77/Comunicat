@@ -144,6 +144,8 @@ import play.mvc.PathBindable;
 				if(formDocument.document!=null) refDocument.document=formDocument.document;
 				try{
 				JPA.em().merge(refDocument);
+				JPA.em().flush();
+			
 				}
 				catch(Exception e){
 					throw e;
@@ -154,6 +156,7 @@ import play.mvc.PathBindable;
 				refReunio.documents.add(formDocument);
 				try{
 				JPA.em().persist(formDocument);
+				JPA.em().flush();
 				}catch(Exception e){
 					throw e;
 				}

@@ -45,7 +45,7 @@
         @restrict(la(as("A"))){ <a href="@routes.Comunitats.detallComunitat(comunitat)"><i class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" title="@Messages.get("editar_comunitat")"></i>&nbsp </a>} 
          @restrict(la(as("A"))){<a onclick="javascript:del('@routes.Comunitats.borrarComunitat(comunitat)')"><i class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="@Messages.get("eliminar_comunitat")"></i>&nbsp</a>} 
            @restrict(la(as("P"),as("A"))) { <a href="@routes.Comunitats.llistarElements(comunitat)"><i class="glyphicon glyphicon-tower" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_elements_comunitat")"></i>&nbsp</a>} 
-        <a href="@routes.Comunitats.llistarContactes(comunitat,1)"><i class="glyphicon glyphicon-earphone" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_contactes_comunitat")"></i>&nbsp</a> 
+         @restrict(la(as("O"),as("A"))){<a href="@routes.Comunitats.llistarContactes(comunitat,1)"><i class="glyphicon glyphicon-earphone" data-toggle="tooltip" data-placement="top" title="@Messages.get("veure_contactes_comunitat")"></i>&nbsp</a>} 
         </td>
      </tr>
       }

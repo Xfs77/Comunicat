@@ -74,6 +74,9 @@
       	@if(session.get("dni")==null){
               <li><a href="@routes.Application.login()"><span class="glyphicon glyphicon-user green" aria-hidden="true"></span></i> @Messages.get("login")</i> <span class="sr-only">(current)</span></a></li>
   } else{
+  	
+  		<li><a><strong>@session().get(
+				"dni")</strong></a></li>
   		 <li><a href="@routes.Application.logout()"><span class="glyphicon glyphicon-off red" aria-hidden="true"></span></i> @Messages.get("logout")</i> <span class="sr-only">(current)</span></a></li>
   }
        

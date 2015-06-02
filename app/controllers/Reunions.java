@@ -1,9 +1,11 @@
 package controllers;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -129,7 +131,7 @@ public class Reunions extends Controller {
 
 		}
 	}
-	@Restrict({@Group("A"),@Group("P")})
+	@Restrict({@Group("A")})
 	@Transactional(readOnly = true)
 	public static Result detallReunio(Reunio reunio) {
 		Form<Reunio> filledForm = reunioForm.fill(reunio);
@@ -156,7 +158,7 @@ public class Reunions extends Controller {
 		return ok(detalls_reunio.render(filledForm, lc, ler, false));
 	}
 
-	@Restrict({@Group("A"),@Group("P")})
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result guardarReunio(boolean nou) {
 		play.mvc.Http.Request request = request();
@@ -200,7 +202,7 @@ public class Reunions extends Controller {
 			}
 		}
 	}
-	@Restrict({@Group("A"),@Group("P")})
+	@Restrict({@Group("A")})
 	@Transactional
 	public static Result borrarReunio(Reunio reunio) {
 		if (reunio == null) {
@@ -340,21 +342,10 @@ public class Reunions extends Controller {
 			e1.printStackTrace();
 		}
 
-		File tempdf = File.createTempFile("CU" + codi, ".pdf", new File("public\\javascripts\\web\\tmp"));
-		tempdf.deleteOnExit();
-		URL u = tempdf.toURI().toURL();
+		  response().setContentType("application/pdf");
+		  return ok(d.document);
 
-		try {
-			FileOutputStream fos = new FileOutputStream(tempdf);
-			fos.write(d.document);
-			fos.close();
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return ok(tempdf.getName());
+	
 
 	}
 

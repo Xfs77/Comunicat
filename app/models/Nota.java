@@ -44,7 +44,7 @@ public class Nota implements Serializable, PathBindable<Nota> {
 	private static final Object[] Address = null;
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_nota")
-	@SequenceGenerator(name = "seq_nota", sequenceName = "seq_nota", allocationSize = 1, initialValue = 7)
+	@SequenceGenerator(name = "seq_nota", sequenceName = "seq_nota", allocationSize = 1, initialValue = 1)
 	@Column(name = "codi")
 	public int codi;
 	@Column(name = "fecha")
@@ -189,6 +189,7 @@ public class Nota implements Serializable, PathBindable<Nota> {
 			for (Iterator<MovimentNota> it =lm.iterator();it.hasNext();){
 				MovimentNota m=it.next();
 				em.remove(m);
+				em.flush();
 			}
 			em.remove(refNota);
 			em.flush();
@@ -280,8 +281,14 @@ public class Nota implements Serializable, PathBindable<Nota> {
 
 		} else {
 
-			Nota n = (JPA.em().merge(formNota));
-			MovimentNota m = new MovimentNota();
+			Nota n=null;
+			try{
+			 n=JPA.em().merge(formNota);
+			}
+			catch(Exception e){
+				throw e;
+			}
+			 MovimentNota m = new MovimentNota();
 			m.nota = n;
 			m.fecha = new Date();
 			m.detall = detall;

@@ -33,7 +33,7 @@ import play.mvc.PathBindable;
 	public class MovimentNota implements Serializable, PathBindable<MovimentNota> {
 		
 		@Id
-		@ManyToOne(fetch=FetchType.EAGER)
+		@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
 		@JoinColumn(name = "nota")
 		public Nota nota;
 		@Id
@@ -182,6 +182,30 @@ import play.mvc.PathBindable;
 				MovimentNota refMovimentNota = obtenirRefMovimentNota(moviment);
 				try{
 				em.remove(refMovimentNota);
+				em.flush();
+				}catch(Exception e){
+					throw e;
+				}
+				Query query = null;
+				query = JPA.em().createQuery("SELECT MAX(m.codi) from MovimentNota m WHERE m.nota=?1");
+				query.setParameter(1, moviment.nota);
+				Integer m=0;
+				MovimentNota ultimMov=null;
+				try{
+					m=(Integer) query.getSingleResult();
+				}
+				catch(Exception e){
+					throw e;
+				}
+				try{
+					ultimMov=MovimentNota.recercaPerCodi(moviment.nota,m);
+				}catch(Exception e){
+					throw e;
+				}
+				try{
+					ultimMov.nota.estat=ultimMov.estat;
+					JPA.em().merge(ultimMov);
+					JPA.em().flush();
 				}catch(Exception e){
 					throw e;
 				}

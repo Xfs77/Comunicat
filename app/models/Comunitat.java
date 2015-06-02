@@ -256,6 +256,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 			refComunitat.president = formComunitat.president;
 			try {
 				JPA.em().merge(refComunitat);
+				JPA.em().flush();
 			} catch (Exception e) {
 				throw e;
 			}
@@ -264,6 +265,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 			formComunitat.pare = pare;
 			try {
 				JPA.em().persist(formComunitat);
+				JPA.em().flush();
 			} catch (Exception e) {
 				throw e;
 			}
