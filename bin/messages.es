@@ -39,6 +39,7 @@ tel1=Teléfono 1
 tel2=Teléfono 2
 email=Correo
 baixa=Baja
+assignar=Asignar
 bloquejat=Bloqueado
 president=Presidente
 administrador=Administrador

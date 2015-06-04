@@ -49,7 +49,7 @@ public class Comunitats extends Controller {
 		comunitatForm.fill(comunitat);
 		List<Usuari> lu=null;
 		try {
-			lu = Usuari.obtenirUsuaris();
+			lu = Usuari.obtenirUsuarisPresi();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,7 +62,7 @@ public class Comunitats extends Controller {
 		Form<Comunitat> filledForm = comunitatForm.fill(comunitat);
 		List<Usuari> lu = null;
 		try {
-			lu=Usuari.obtenirUsuaris();
+			lu=Usuari.obtenirUsuarisPresi();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

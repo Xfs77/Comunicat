@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -203,6 +204,17 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 		}
 	}
 
+	public static List<Usuari> obtenirUsuarisPresi() throws Exception {
+		Query query = null;
+		try {
+			query = JPA.em().createQuery("from Usuari u where u.president=true");
+			List list = query.getResultList();
+			return list;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
 	public static Usuari obtenirRefUsuari(Usuari usuari) throws Exception {
 		EntityManager em = JPA.em();
 		try {
@@ -317,11 +329,12 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 		Element refElement = Element.obtenirRefElement(element);
 		ElementVei elementVei = new ElementVei(refUsuari, refElement,
 				TipusVei.recerca(t.tipus));
-		try {
-			refUsuari.elementsVei.add(elementVei);
-			JPA.em().persist(elementVei);
-			JPA.em().flush();
-		} catch (Exception e) {
+		try{
+		refUsuari.elementsVei.add(elementVei);
+		JPA.em().persist(elementVei);
+		JPA.em().flush();
+		}
+		catch(Exception e){
 			throw e;
 		}
 		Comunitat c = (refElement.comunitat);
