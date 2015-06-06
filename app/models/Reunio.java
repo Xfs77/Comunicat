@@ -1,6 +1,7 @@
 package models;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -320,9 +321,11 @@ import play.mvc.PathBindable;
 				Usuari u = iterator.next();
 				email.addBcc(u.email);
 			}
-			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			String date = sdf.format(reunio.fecha);
+
 			email.setBodyText(String.format(
-					 Messages.get("notificacio.detall.reunio"), reunio.fecha.toString(),reunio.lloc, reunio.hora,reunio.descripcio));		
+					 Messages.get("notificacio.detall.reunio"), date,reunio.lloc, reunio.hora,reunio.descripcio));		
 	
 			try{
 			MailerPlugin.send(email);

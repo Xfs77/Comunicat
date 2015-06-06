@@ -228,7 +228,7 @@ public class Reunions extends Controller {
 	}
 	@Restrict({@Group("A"),@Group("O")})
 	@Transactional(readOnly = true)
-	public static Result llistarDocuments(Reunio reunio, int page) throws IOException {
+	public static Result llistarDocuments(Reunio reunio, int page) {
 		Page p = null;
 		try {
 			p = Document.llistarDocuments(reunio, page);
@@ -238,9 +238,7 @@ public class Reunions extends Controller {
 		}
 		List<Document> l = p.getList();
 		File tempdf=null; 
-		tempdf= File.createTempFile("CjjjjjjjU", ".pdf");
-		tempdf.toURI().toURL();
-		return ok(llista_documents.render(l, p, reunio,tempdf.toURI().toURL().getPath()));
+		return ok(llista_documents.render(l, p, reunio,""));
 	}
 	@Restrict({@Group("A"),@Group("P")})
 	@Transactional(readOnly = true)

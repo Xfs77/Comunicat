@@ -198,8 +198,8 @@ error.inesperat=Error=El movimiento %s no se ha podido registrar correctamente.
 success.borrar_movnota=El movimiento %s se ha borrado correctamente.
 error.borrar_movnota=El movimiento %s no se ha podido borrar correctamente.
 notificacio.cap.alta_usuari=Notificacio Alta Usuari www.ComunicatComunitat.cat
-notificacio.cap.reunio=Notificacio Reunió www.ComunicatComunitat.cat
+notificacio.cap_reunio=Notificacio Reunió www.ComunicatComunitat.cat
 notificacio.cap.alta_nota=Notificacio Nota www.ComunicatComunitat.cat
 notificacio.detall.alta_nota=Des de Comunica´t Comunitat l´informem que a la seva comunitat s´ha generat un moviment referent a la nota número %s amb títol %s sent el seu estat %s. Per a més informació preguem consulti el nostre portal web.
 notificacio.detall.alta_usuari=Des de Comunica´t Comunitat ens plau comunicar-li que el Sr/a %s ja té donat d´alta l´usuari i contrassenya per entrar al portal. El seu usuari és %s i la seva contrassenya és %s. 
-notificacio.detall.reunio=Des de Comunica´t ens plau comunicar-li que el proper %s hi ha convocada una reunió a %s a les %s. El tema a tractar és: %s. Per a més informació entri consulti nostre portal web. 
+notificacio.detall.reunio=Des de Comunica´t ens plau comunicar-li que el proper %s hi ha convocada una reunió a %s a les %s h. El tema a tractar és: %s. Per a més informació entri consulti el nostre portal web. 

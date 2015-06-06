@@ -33,7 +33,7 @@
   
  
 <input type="hidden" name="usuari" value=@notaForm("usuari").value />
-
+			<option>@Messages.get("res_select")</option> 
 <strong>@Messages.get("estat")</strong>
 	<p class="sls"></p>
 
@@ -49,6 +49,7 @@
 	<p class="sls"></p>
 
   <select class="selectpicker" id="comunitat"  name="comunitat"  >
+ 			<option>@Messages.get("res_select")</option> 
     @for( comunitat <- comunitats) {
  <option value=@comunitat.nif @if(notaForm("comunitat").value()==comunitat.nif){selected}>@comunitat.nif - @comunitat.pare.nom @comunitat.nom</option>
       }

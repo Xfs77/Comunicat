@@ -231,8 +231,12 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 		query = JPA.em().createQuery("select c from Comunitat c where c.pare=?1 ");
 		}
 		else{
-		query= JPA.em().createQuery("select distinct(c) from Comunitat c join c.accesComunitats  where c.pare=?1 ORDER BY c ASC ");
+		query= JPA.em().createQuery("select distinct(c) from Comunitat c join c.accesComunitats  a where c.pare=?1  and a=?2 ORDER BY c ASC ");
 		}
+if (query.toString().contains("?2")){
+	query.setParameter(2,usuari);
+
+}
 		query.setParameter(1, pare);
 		try {
 			List<Comunitat> list = query.getResultList();
