@@ -21,6 +21,10 @@ body {
 
 }
 
+.error {
+  color: red;
+}
+
 p.sl {
     line-height: 100%;
 }
@@ -37,16 +41,16 @@ p.sls {
           color:#FFFFFF;
           }
 
-
-       #footer{
-
-        bottom: 0px;
-        height: 80px;
-        left: 10;
-        position: absolute;
-        right: 10;
-        
-       }
+#body {
+   padding:10px;
+   padding-bottom:60px;   /* Height of the footer */
+}
+#footer {
+   position:absolute;
+   bottom:0;
+   width:100%;
+   height:60px;   /* Height of the footer */
+}
 
 
 #maincontent{

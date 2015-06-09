@@ -191,8 +191,7 @@ public class Nota implements Serializable, PathBindable<Nota> {
 				em.remove(m);
 				em.flush();
 			}
-			em.remove(refNota);
-			em.flush();
+
 		} catch (Exception e) {
 			throw e;
 		}
