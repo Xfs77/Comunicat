@@ -228,7 +228,6 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 	public static void guardarUsuari(Usuari usuari, boolean nou)
 			throws Exception {
 
-		try {
 			Usuari refUsuari = obtenirRefUsuari(usuari);
 			if (nou == false) {
 				refUsuari.nom = usuari.nom;
@@ -242,7 +241,13 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 				refUsuari.baixa = usuari.baixa;
 				refUsuari.bloquejat = usuari.bloquejat;
 				refUsuari.enviat = usuari.enviat;
+				try{
 				JPA.em().merge(refUsuari);
+				JPA.em().flush();
+				}
+				catch (Exception e){
+					throw e;
+				}
 
 			} else {
 				usuari.password = PasswordGenerator.getPassword(
@@ -260,9 +265,6 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 					throw e;
 				}				
 			}
-		} catch (Exception e) {
-			throw e;
-		}
 		
 		
 	}
