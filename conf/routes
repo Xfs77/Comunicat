@@ -22,7 +22,7 @@ DELETE /comunitats/borrar/:comunitat           			controllers.Comunitats.borrarC
 #ELEMENTS
 GET /elements/:comunitat								controllers.Comunitats.llistarElements(comunitat:models.Comunitat,page: Int ?=1 )
 GET /elements/nou/:comunitat							controllers.Comunitats.nouElement(comunitat:models.Comunitat)
-GET	/elements/:element  								controllers.Comunitats.detallElement(element: models.Element)
+GET	/elements/detall/:element  								controllers.Comunitats.detallElement(element: models.Element)
 POST /elements/:comunitat    							controllers.Comunitats.guardarElement(comunitat:models.Comunitat,nou:Boolean)
 DELETE /elements/borrar/:element         				controllers.Comunitats.borrarElement(element: models.Element)
 GET	/elements/veins/:element  							controllers.Comunitats.llistarUsuarisAssignats(element: models.Element, page:Int ?=1)
