@@ -45,10 +45,11 @@ import views.html.*;
 public class Reunions extends Controller {
 
 	private static Form<Reunio> reunioForm = Form.form(Reunio.class);
-	private static Form<ReunionsFiltre> reunioFiltreForm = Form.form(ReunionsFiltre.class);
+	private static Form<ReunionsFiltre> reunioFiltreForm = Form
+			.form(ReunionsFiltre.class);
 	private static Form<Document> documentForm = Form.form(Document.class);
 
-	@Restrict({@Group("A"),@Group("P")})
+	@Restrict({ @Group("A"), @Group("P") })
 	@Transactional(readOnly = true)
 	public static Result novaReunio() {
 		Reunio reunio = new Reunio();
@@ -74,32 +75,11 @@ public class Reunions extends Controller {
 		} else {
 			lc = usuari.accesComunitats;
 		}
-		return ok(detalls_reunio.render(filledForm, lc, EstatReunio.obtenirEstatsReunio(), true));
+		return ok(detalls_reunio.render(filledForm, lc,
+				EstatReunio.obtenirEstatsReunio(), true));
 	}
 
-	/*@Transactional(readOnly = true)
-	public static Result llistarReunions(int page) {
-		Page p;
-		try {
-			p = Reunio.llistarReunions(page);
-			List<Reunio> l = p.getList();
-			Form<ReunionsFiltre> filtre = reunioFiltreForm.fill(new ReunionsFiltre());
-			List<Comunitat> lc = null;
-			try {
-				lc = Comunitat.accesComunitats();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return ok(llista_reunions.render(l, p, filtre, lc, EstatReunio.obtenirEstatsReunio()));
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			return badRequest();
-		}
-
-	}
-*/
-	@Restrict({@Group("A"),@Group("O")})
+	@Restrict({ @Group("A"), @Group("O") })
 	@Transactional(readOnly = true)
 	public static Result llistarReunionsFiltrades(int page) {
 		play.mvc.Http.Request request = request();
@@ -109,8 +89,8 @@ public class Reunions extends Controller {
 			return badRequest();
 		} else {
 			ReunionsFiltre filtre = boundForm.get();
-			Page p=null;
-			List<Reunio> l=null;
+			Page p = null;
+			List<Reunio> l = null;
 			List<Comunitat> lc = null;
 			try {
 				lc = Comunitat.accesComunitats();
@@ -127,11 +107,12 @@ public class Reunions extends Controller {
 				e1.printStackTrace();
 
 			}
-			return ok(llista_reunions.render(l, p, boundForm, lc, EstatReunio.obtenirEstatsReunio()));
-
+			return ok(llista_reunions.render(l, p, boundForm, lc,
+					EstatReunio.obtenirEstatsReunio()));
 		}
 	}
-	@Restrict({@Group("A")})
+
+	@Restrict({ @Group("A") })
 	@Transactional(readOnly = true)
 	public static Result detallReunio(Reunio reunio) {
 		Form<Reunio> filledForm = reunioForm.fill(reunio);
@@ -158,7 +139,7 @@ public class Reunions extends Controller {
 		return ok(detalls_reunio.render(filledForm, lc, ler, false));
 	}
 
-	@Restrict({@Group("A")})
+	@Restrict({ @Group("A") })
 	@Transactional
 	public static Result guardarReunio(boolean nou) {
 		play.mvc.Http.Request request = request();
@@ -186,39 +167,50 @@ public class Reunions extends Controller {
 				lc = usuari.accesComunitats;
 			}
 			flash("error", Messages.get("constraint.formulari"));
-			return badRequest(detalls_reunio.render(boundForm, lc, EstatReunio.obtenirEstatsReunio(), nou));
+			return badRequest(detalls_reunio.render(boundForm, lc,
+					EstatReunio.obtenirEstatsReunio(), nou));
 		} else {
 			Reunio reunioForm = boundForm.get();
 			try {
 				Reunio.guardarReunio(reunioForm, nou);
-				flash("success", String.format(Messages.get("success.guardar_reunio"), reunioForm.descripcio));
+				flash("success", String.format(
+						Messages.get("success.guardar_reunio"),
+						reunioForm.descripcio));
 
 				return redirect(routes.Reunions.llistarReunionsFiltrades(1));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				flash("error", String.format(Messages.get("error.guardar_reunio"), reunioForm.descripcio));
-				return badRequest(detalls_reunio.render(boundForm, lc, EstatReunio.obtenirEstatsReunio(), nou));
+				flash("error", String.format(
+						Messages.get("error.guardar_reunio"),
+						reunioForm.descripcio));
+				return badRequest(detalls_reunio.render(boundForm, lc,
+						EstatReunio.obtenirEstatsReunio(), nou));
 
 			}
 		}
 	}
-	@Restrict({@Group("A")})
+
+	@Restrict({ @Group("A") })
 	@Transactional
 	public static Result borrarReunio(Reunio reunio) {
 		if (reunio == null) {
-			return notFound(String.format(Messages.get("error.borrar_reunio"), reunio.descripcio));
+			return notFound(String.format(Messages.get("error.borrar_reunio"),
+					reunio.descripcio));
 		}
 		try {
 			Reunio.borrarReunio(reunio);
-			flash("success", String.format(Messages.get("success.borrar_reunio"), reunio.descripcio));
+			flash("success", String.format(
+					Messages.get("success.borrar_reunio"), reunio.descripcio));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			flash("error", String.format(Messages.get("error.borrar_reunio") + " ("
-					+ e.getCause().getCause().toString() + ")", reunio.descripcio));
+			flash("error", String.format(Messages.get("error.borrar_reunio")
+					+ " (" + e.getCause().getCause().toString() + ")",
+					reunio.descripcio));
 		}
 		return redirect(routes.Reunions.llistarReunionsFiltrades(1));
 	}
-	@Restrict({@Group("A"),@Group("P")})
+
+	@Restrict({ @Group("A"), @Group("P") })
 	@Transactional(readOnly = true)
 	public static Result nouDocument(Reunio reunio) {
 		Document document = new Document();
@@ -226,7 +218,8 @@ public class Reunions extends Controller {
 		Form<Document> filledForm = documentForm.fill(document);
 		return ok(detalls_document.render(filledForm, document.reunio, true));
 	}
-	@Restrict({@Group("A"),@Group("O")})
+
+	@Restrict({ @Group("A"), @Group("O") })
 	@Transactional(readOnly = true)
 	public static Result llistarDocuments(Reunio reunio, int page) {
 		Page p = null;
@@ -237,16 +230,18 @@ public class Reunions extends Controller {
 			e.printStackTrace();
 		}
 		List<Document> l = p.getList();
-		File tempdf=null; 
-		return ok(llista_documents.render(l, p, reunio,""));
+		File tempdf = null;
+		return ok(llista_documents.render(l, p, reunio, ""));
 	}
-	@Restrict({@Group("A"),@Group("P")})
+
+	@Restrict({ @Group("A"), @Group("P") })
 	@Transactional(readOnly = true)
 	public static Result detallDocument(Document document) {
 		Form<Document> filledForm = documentForm.fill(document);
 		return ok(detalls_document.render(filledForm, document.reunio, false));
 	}
-	@Restrict({@Group("A"),@Group("P")})
+
+	@Restrict({ @Group("A"), @Group("P") })
 	@Transactional
 	public static Result guardarDocument(Reunio reunio, boolean nou) {
 		play.mvc.Http.Request request = request();
@@ -264,7 +259,8 @@ public class Reunions extends Controller {
 				String tipus = part.getContentType();
 				if (!tipus.equals("application/pdf")) {
 					flash("error", Messages.get("constraint.pdf"));
-					return badRequest(detalls_document.render(boundForm, reunio, nou));
+					return badRequest(detalls_document.render(boundForm,
+							reunio, nou));
 				}
 				try {
 					documentForm.document = Files.toByteArray(document);
@@ -276,56 +272,66 @@ public class Reunions extends Controller {
 
 			try {
 				Document.guardarDocument(documentForm, nou);
-				flash("success", String.format(Messages.get("success.guardar_document"), documentForm.descripcio));
+				flash("success", String.format(
+						Messages.get("success.guardar_document"),
+						documentForm.descripcio));
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				flash("error", String.format(Messages.get("error.guardar_document"), documentForm.descripcio));
+				flash("error", String.format(
+						Messages.get("error.guardar_document"),
+						documentForm.descripcio));
 
 			}
 
 			return redirect(routes.Reunions.llistarDocuments(reunio, 1));
 		}
 	}
-	@Restrict({@Group("A"),@Group("P")})
+
+	@Restrict({ @Group("A"), @Group("P") })
 	@Transactional
 	public static Result borrarDocument(Document document) {
 		if (document == null) {
-			return notFound(String.format("El document %s no existeix.", document.descripcio));
+			return notFound(String.format("El document %s no existeix.",
+					document.descripcio));
 		}
 		try {
 			Document.borrarDocument(document);
-			flash("success", String.format(Messages.get("success.borrar_document"), document.descripcio));
+			flash("success", String.format(
+					Messages.get("success.borrar_document"),
+					document.descripcio));
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			flash("error",
-					String.format(Messages.get("error.borrar_document") + " (" + e.getCause().getCause().toString()
-							+ ")", document.descripcio));
+			flash("error", String.format(Messages.get("error.borrar_document")
+					+ " (" + e.getCause().getCause().toString() + ")",
+					document.descripcio));
 			e.printStackTrace();
 		}
 
 		return redirect(routes.Reunions.llistarDocuments(document.reunio, 1));
 	}
-	@Restrict({@Group("A"),@Group("P")})
+
+	@Restrict({ @Group("A"), @Group("P") })
 	@Transactional
 	public static Result notificarReunio(Reunio reunio) {
 
 		try {
 			Reunio.notificarReunio(reunio);
-			flash("success", String.format(
-					String.format(Messages.get("ok_enviament_reunio"),reunio.descripcio)));
+			flash("success", String.format(String.format(
+					Messages.get("ok_enviament_reunio"), reunio.descripcio)));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			flash("error", String.format(
-					String.format(Messages.get("no_enviament_reunio"),reunio.descripcio)));
+			flash("error", String.format(String.format(
+					Messages.get("no_enviament_reunio"), reunio.descripcio)));
 			e.printStackTrace();
 		}
 		return redirect(routes.Reunions.llistarReunionsFiltrades(1));
 
 	}
-	@Restrict({@Group("A"),@Group("O")})
+
+	@Restrict({ @Group("A"), @Group("O") })
 	@Transactional(readOnly = true)
 	public static Result readFile(int codi) throws IOException {
 		Document.borrarArchiuDirectori();
@@ -340,10 +346,8 @@ public class Reunions extends Controller {
 			e1.printStackTrace();
 		}
 
-		  response().setContentType("application/pdf");
-		  return ok(d.document);
-
-	
+		response().setContentType("application/pdf");
+		return ok(d.document);
 
 	}
 

@@ -39,32 +39,7 @@ import be.objectify.deadbolt.core.models.Subject;
 @Table(name = "comunicat.Usuari")
 public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 
-	@Override
-	public Usuari bind(String arg0, final String arg1) {
-		// TODO Auto-generated method stub
-		final Usuari u[] = { null };
-		JPA.withTransaction(new F.Callback0() {
-			@Override
-			public void invoke() throws Throwable {
-				u[0] = (Usuari.recercaPerDni(arg1));
-			}
-		});
-
-		return (u[0]);
-	}
-
-	@Override
-	public String javascriptUnbind() {
-		// TODO Auto-generated method stub
-		return this.dni;
-	}
-
-	@Override
-	public String unbind(String arg0) {
-		// TODO Auto-generated method stub
-		return this.dni;
-	}
-
+	
 	@Id
 	@Required
 	@MaxLength(50)
@@ -115,6 +90,32 @@ public class Usuari implements Serializable, PathBindable<Usuari>, Subject {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinTable(name = "comunicat.accescomunitat", joinColumns = { @JoinColumn(name = "vei", referencedColumnName = "dni") }, inverseJoinColumns = { @JoinColumn(table = "comunitat", name = "comunitat", referencedColumnName = "nif") })
 	public List<Comunitat> accesComunitats = new ArrayList<Comunitat>();
+
+	@Override
+	public Usuari bind(String arg0, final String arg1) {
+		// TODO Auto-generated method stub
+		final Usuari u[] = { null };
+		JPA.withTransaction(new F.Callback0() {
+			@Override
+			public void invoke() throws Throwable {
+				u[0] = (Usuari.recercaPerDni(arg1));
+			}
+		});
+
+		return (u[0]);
+	}
+
+	@Override
+	public String javascriptUnbind() {
+		// TODO Auto-generated method stub
+		return this.dni;
+	}
+
+	@Override
+	public String unbind(String arg0) {
+		// TODO Auto-generated method stub
+		return this.dni;
+	}
 
 	public Usuari() {
 

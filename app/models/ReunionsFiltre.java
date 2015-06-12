@@ -31,16 +31,6 @@ public ReunionsFiltre(){
 	this.comunitat = comunitat;
 }
 
-
-
-
-
-
-
-
-
-
-
 	public Date sumarRestarDiasFecha(Date fecha, int dias){
 		       Calendar calendar = Calendar.getInstance();
 		       calendar.setTime(fecha); // Configuramos la fecha que se recibe

@@ -6,9 +6,9 @@ public class MovimentNotaPK implements Serializable {
 
 	int nota;
 	int codi;
-	
-	public MovimentNotaPK(){
-		
+
+	public MovimentNotaPK() {
+
 	}
 
 	public MovimentNotaPK(int nota, int codi) {
@@ -57,8 +57,5 @@ public class MovimentNotaPK implements Serializable {
 	public void setCodi(int codi) {
 		this.codi = codi;
 	}
-	
 
-	
-	
 }

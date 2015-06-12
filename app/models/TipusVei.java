@@ -13,17 +13,13 @@ import play.db.jpa.JPA;
 import play.libs.F;
 import play.mvc.PathBindable;
 
-
 @Entity
 @Table(name = "comunicat.TipusVei")
 public class TipusVei implements Serializable, PathBindable<TipusVei> {
 
-	
 	@Id
 	@Column(name = "tipus")
 	public String tipus;
-	
-
 
 	public TipusVei() {
 
@@ -32,13 +28,12 @@ public class TipusVei implements Serializable, PathBindable<TipusVei> {
 	public static TipusVei recerca(String txt) {
 		TipusVei result = null;
 		Query query = JPA.em().createQuery("from TipusVei t where t.tipus=?1");
-		query.setParameter(1,txt);
+		query.setParameter(1, txt);
 		result = (TipusVei) query.getSingleResult();
 
 		return result;
 	}
 
-	
 	public TipusVei(String tipus) {
 		super();
 		this.tipus = tipus;
@@ -56,7 +51,7 @@ public class TipusVei implements Serializable, PathBindable<TipusVei> {
 		});
 
 		return (t[0]);
-		}
+	}
 
 	@Override
 	public String javascriptUnbind() {
@@ -95,5 +90,4 @@ public class TipusVei implements Serializable, PathBindable<TipusVei> {
 		return true;
 	}
 
-	
 }

@@ -24,22 +24,19 @@ import javax.persistence.Id;
  * @author Steve Chaloner (steve@objectify.be)
  */
 
-public class SecurityRole implements Role
-{
-  
+public class SecurityRole implements Role {
+	public String name;
 
-    public String name;
-    
-    SecurityRole(){
-    	
-    }
+	SecurityRole() {
 
-	SecurityRole(String name){
-		this.name=name;
 	}
-    public String getName()
-    {
-        return name;
-    }
+
+	SecurityRole(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
 
 }

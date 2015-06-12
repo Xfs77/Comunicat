@@ -71,7 +71,8 @@ import views.html.*;
 
 @Entity
 @Table(name = "comunicat.Comunitat")
-public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, PathBindable<Comunitat> {
+public class Comunitat implements Serializable, QueryStringBindable<Comunitat>,
+		PathBindable<Comunitat> {
 
 	@Id
 	@Required
@@ -139,7 +140,8 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 	}
 
 	@Override
-	public play.libs.F.Option<Comunitat> bind(final String arg0, final Map<String, String[]> arg1) {
+	public play.libs.F.Option<Comunitat> bind(final String arg0,
+			final Map<String, String[]> arg1) {
 		// TODO Auto-generated method stub
 
 		if (arg0 == "pare" && arg1.get("pare") != null) {
@@ -170,8 +172,10 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 		return this.nif;
 	}
 
-	public Comunitat(String nif, String nom, String adreca, String cp, String poblacio, float coeficient,
-			Comunitat pare, Usuari president, List<Element> elements, List<Usuari> accesComunitats) {
+	public Comunitat(String nif, String nom, String adreca, String cp,
+			String poblacio, float coeficient, Comunitat pare,
+			Usuari president, List<Element> elements,
+			List<Usuari> accesComunitats) {
 		super();
 		this.nif = nif;
 		this.nom = nom;
@@ -184,7 +188,7 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 		this.elements = elements;
 		this.accesComunitats = accesComunitats;
 	}
-	
+
 	public static Page llistarComunitats(int page) throws Exception {
 		Query query = null;
 		query = JPA.em().createQuery("from Comunitat");
@@ -212,9 +216,10 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 		}
 	}
 
-	public static List<Comunitat> llistarComunitatsElements() throws Exception{
+	public static List<Comunitat> llistarComunitatsElements() throws Exception {
 		Query query = null;
-		query = JPA.em().createQuery("select c from Comunitat c  join c.elements group by c.nif");
+		query = JPA.em().createQuery(
+				"select c from Comunitat c  join c.elements group by c.nif");
 		try {
 			List list = query.getResultList();
 			Collections.sort(list, ComunitatComparator);
@@ -224,19 +229,24 @@ public class Comunitat implements Serializable, QueryStringBindable<Comunitat>, 
 		}
 	}
 
-	public static Page llistarSubComunitats(Comunitat pare, int page) throws Exception {
-	  Usuari usuari=Usuari.recercaPerDni( play.mvc.Controller.session().get("dni"));
+	public static Page llistarSubComunitats(Comunitat pare, int page)
+			throws Exception {
+		Usuari usuari = Usuari.recercaPerDni(play.mvc.Controller.session().get(
+				"dni"));
 		Query query = null;
-		if (usuari.administrador==true){
-		query = JPA.em().createQuery("select c from Comunitat c where c.pare=?1 ");
+		if (usuari.administrador == true) {
+			query = JPA.em().createQuery(
+					"select c from Comunitat c where c.pare=?1 ");
+		} else {
+			query = JPA
+					.em()
+					.createQuery(
+							"select distinct(c) from Comunitat c join c.accesComunitats  a where c.pare=?1  and a=?2 ORDER BY c ASC ");
 		}
-		else{
-		query= JPA.em().createQuery("select distinct(c) from Comunitat c join c.accesComunitats  a where c.pare=?1  and a=?2 ORDER BY c ASC ");
-		}
-if (query.toString().contains("?2")){
-	query.setParameter(2,usuari);
+		if (query.toString().contains("?2")) {
+			query.setParameter(2, usuari);
 
-}
+		}
 		query.setParameter(1, pare);
 		try {
 			List<Comunitat> list = query.getResultList();
@@ -248,10 +258,11 @@ if (query.toString().contains("?2")){
 		}
 	}
 
-	public static void guardarComunitat(Comunitat formComunitat, Comunitat pare,boolean nou) throws Exception {
+	public static void guardarComunitat(Comunitat formComunitat,
+			Comunitat pare, boolean nou) throws Exception {
 
 		Comunitat refComunitat = obtenirRefComunitat(formComunitat);
-		if (refComunitat != null && nou==false) {
+		if (refComunitat != null && nou == false) {
 			refComunitat.nom = formComunitat.nom;
 			refComunitat.adreca = formComunitat.adreca;
 			refComunitat.cp = formComunitat.cp;
@@ -294,8 +305,8 @@ if (query.toString().contains("?2")){
 		Comunitat RefComunitat = em.find(Comunitat.class, comunitat.nif);
 		return RefComunitat;
 	}
-	
-	public static Comunitat recercaPerNif(String id) throws Exception{
+
+	public static Comunitat recercaPerNif(String id) throws Exception {
 		Comunitat result = null;
 		Query query = JPA.em().createQuery("from Comunitat c");
 		try {
@@ -321,18 +332,20 @@ if (query.toString().contains("?2")){
 
 	};
 
-	public static Page llistarContactes(Comunitat comunitat, int page) throws Exception {
+	public static Page llistarContactes(Comunitat comunitat, int page)
+			throws Exception {
 		// TODO Auto-generated method stub
-		Query query = JPA.em().createQuery("from Usuari u where u.administrador=true");
-		try{
-		List<Usuari> contactes = query.getResultList();
-		contactes.add(comunitat.president);
-		Page p = new Page(contactes, page);
-		return p;
+		Query query = JPA.em().createQuery(
+				"from Usuari u where u.administrador=true");
+		try {
+			List<Usuari> contactes = query.getResultList();
+			contactes.add(comunitat.president);
+			Page p = new Page(contactes, page);
+			return p;
 		} catch (Exception e) {
 			throw e;
 		}
-		
+
 	}
 
 	public static List<Comunitat> accesComunitats() throws Exception {
@@ -345,7 +358,7 @@ if (query.toString().contains("?2")){
 			lc = Comunitat.obtenirComunitats();
 		} else {
 			lc = usuari.accesComunitats;
-			String s="";
+			String s = "";
 		}
 		return lc;
 	}

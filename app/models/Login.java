@@ -1,28 +1,27 @@
 package models;
 
-public  class Login {
+public class Login {
 	public String dni;
 	public String password;
-	
-	public Login(){
-		
+
+	public Login() {
+
 	}
-	
-	public Login(String dni, String password){
-		this.dni=dni;
-		this.password=password;
+
+	public Login(String dni, String password) {
+		this.dni = dni;
+		this.password = password;
 	}
-	
+
 	public String validate() {
-	    try {
+		try {
 			if (Usuari.authenticate(dni, password) == null) {
-			  return "invalid_user_password";
+				return "invalid_user_password";
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			  return "invalid_user_password";
+			return "invalid_user_password";
 		}
-	    return null;
+		return null;
 	}
 }
-

@@ -37,12 +37,6 @@ public class Notes extends Controller {
 	private static Form<NotesFiltre> notaFiltreForm = Form
 			.form(NotesFiltre.class);
 
-	/*
-	 * @Transactional(readOnly = true) public static Result llistarNotes(int
-	 * page) { Page p; try { p = Nota.llistarNotes(page); } catch (Exception e)
-	 * { // TODO Auto-generated catch block e.printStackTrace(); } List<Nota> l
-	 * = p.getList(); return ok(); }
-	 */
 	@Transactional(readOnly = true)
 	public static Result llistarNotesFiltrades(int page) {
 		play.mvc.Http.Request request = request();
@@ -82,7 +76,8 @@ public class Notes extends Controller {
 			return ok(llista_notes.render(l, p, boundForm, lc, le));
 		}
 	}
-	@Restrict({@Group("A"),@Group("O")})
+
+	@Restrict({ @Group("A"), @Group("O") })
 	@Transactional(readOnly = true)
 	public static Result novaNota() {
 		String dni = session("dni");
@@ -124,7 +119,8 @@ public class Notes extends Controller {
 		}
 		return ok(detalls_nota.render(filledForm, usuari, len, lc, "", true));
 	}
-	@Restrict({@Group("A"),@Group("O")})
+
+	@Restrict({ @Group("A"), @Group("O") })
 	@Transactional(readOnly = true)
 	public static Result nouMovimentNota(Nota nota) {
 		String dni = session("dni");
@@ -152,7 +148,8 @@ public class Notes extends Controller {
 		return ok(detalls_movimentnota.render(filledForm, nota, usuari, len,
 				true));
 	}
-	@Restrict({@Group("A")})
+
+	@Restrict({ @Group("A") })
 	@Transactional(readOnly = true)
 	public static Result detallNota(Nota nota) {
 		Form<Nota> filledForm = notaForm.fill(nota);
@@ -187,7 +184,7 @@ public class Notes extends Controller {
 		return ok(detalls_nota.render(filledForm, usuari, len, lc, "", false));
 	}
 
-	@Restrict({@Group("A")})
+	@Restrict({ @Group("A") })
 	@Transactional(readOnly = true)
 	public static Result detallMovimentNota(MovimentNota moviment) {
 		Form<MovimentNota> filledForm = movimentForm.fill(moviment);
@@ -217,7 +214,8 @@ public class Notes extends Controller {
 		}
 		return ok(llista_movimentsnotes.render(l, nota, p));
 	}
-	@Restrict({@Group("A")})
+
+	@Restrict({ @Group("A") })
 	@Transactional
 	public static Result borrarNota(Nota nota) {
 		if (nota == null) {
@@ -236,7 +234,8 @@ public class Notes extends Controller {
 			return redirect(routes.Notes.llistarNotesFiltrades(1));
 		}
 	}
-	@Restrict({@Group("A")})
+
+	@Restrict({ @Group("A") })
 	@Transactional
 	public static Result borrarMovimentNota(MovimentNota moviment) {
 		if (moviment == null) {
@@ -244,20 +243,20 @@ public class Notes extends Controller {
 		}
 		try {
 			MovimentNota.borrarMovimentNota(moviment);
-			flash("success", String.format(Messages.get("success.borrar_movnota"),
-					moviment.codi));
-			
+			flash("success", String.format(
+					Messages.get("success.borrar_movnota"), moviment.codi));
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			flash("error", String.format(Messages.get("error.borrar_movnota"),
 					moviment.codi));
 			e.printStackTrace();
 		}
-		
 
 		return redirect(routes.Notes.llistarNotesFiltrades(1));
 	}
-	@Restrict({@Group("A"),@Group("O")})
+
+	@Restrict({ @Group("A"), @Group("O") })
 	@Transactional
 	public static Result guardarNota(boolean nou) {
 		play.mvc.Http.Request request = request();
@@ -319,7 +318,8 @@ public class Notes extends Controller {
 			return redirect(routes.Notes.llistarNotesFiltrades(1));
 		}
 	}
-	@Restrict({@Group("A"),@Group("P")})
+
+	@Restrict({ @Group("A"), @Group("P") })
 	@Transactional
 	public static Result guardarMovimentNota(Boolean nou) {
 		play.mvc.Http.Request request = request();
@@ -366,10 +366,9 @@ public class Notes extends Controller {
 
 		} else {
 			MovimentNota movimentNotaForm = boundForm.get();
-			MovimentNota mf=null;
+			MovimentNota mf = null;
 			try {
-				mf = MovimentNota.guardarMovimentNota(
-						movimentNotaForm, nou);
+				mf = MovimentNota.guardarMovimentNota(movimentNotaForm, nou);
 				flash("success", String.format(
 						Messages.get("success.guardar_movnota"), mf.codi));
 			} catch (Exception e) {
@@ -378,13 +377,13 @@ public class Notes extends Controller {
 						Messages.get("error.guardar_movnota"), mf.codi));
 				e.printStackTrace();
 			}
-			
 
 			return redirect(routes.Notes.llistarMoviments(
 					movimentNotaForm.nota, 1));
 		}
 	}
-	@Restrict({@Group("A")})
+
+	@Restrict({ @Group("A") })
 	@Transactional
 	public static Result notificarNota(Nota nota) {
 

@@ -68,6 +68,33 @@ public class Nota implements Serializable, PathBindable<Nota> {
 	@OneToMany(mappedBy="nota",fetch=FetchType.EAGER)
 	private List<MovimentNota> movimentsNota = new ArrayList<MovimentNota>();
 
+
+	@Override
+	public Nota bind(String arg0, final String arg1) {
+		// TODO Auto-generated method stub
+		final Nota c[] = { null };
+		JPA.withTransaction(new F.Callback0() {
+			@Override
+			public void invoke() throws Throwable {
+				c[0] = (Nota.recercaPerCodi(Integer.parseInt(arg1)));
+			}
+		});
+
+		return (c[0]);
+	}
+
+	@Override
+	public String javascriptUnbind() {
+		// TODO Auto-generated method stub
+		return Integer.toString(this.codi);
+	}
+
+	@Override
+	public String unbind(String arg0) {
+		// TODO Auto-generated method stub
+		return Integer.toString(this.codi);
+	}
+	
 	public Nota() {
 	}
 
@@ -316,31 +343,6 @@ public class Nota implements Serializable, PathBindable<Nota> {
 		}
 	};
 
-	@Override
-	public Nota bind(String arg0, final String arg1) {
-		// TODO Auto-generated method stub
-		final Nota c[] = { null };
-		JPA.withTransaction(new F.Callback0() {
-			@Override
-			public void invoke() throws Throwable {
-				c[0] = (Nota.recercaPerCodi(Integer.parseInt(arg1)));
-			}
-		});
-
-		return (c[0]);
-	}
-
-	@Override
-	public String javascriptUnbind() {
-		// TODO Auto-generated method stub
-		return Integer.toString(this.codi);
-	}
-
-	@Override
-	public String unbind(String arg0) {
-		// TODO Auto-generated method stub
-		return Integer.toString(this.codi);
-	}
 
 	public static Nota recercaPerCodi(int codi) throws Exception {
 		Nota result = null;

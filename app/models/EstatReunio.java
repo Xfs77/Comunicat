@@ -19,23 +19,43 @@ import play.mvc.PathBindable;
 @Table(name = "comunicat.EstatReunio")
 public class EstatReunio implements Serializable, PathBindable<EstatReunio> {
 
-	
-
 	@Id
 	@Column(name = "estat")
 	public String estat;
 	@Column(name = "descripcio")
 	public String descripcio;
-	
+
+	@Override
+	public EstatReunio bind(String arg0, final String arg1) {
+		// TODO Auto-generated method stub
+		final EstatReunio t[] = { null };
+		JPA.withTransaction(new F.Callback0() {
+			@Override
+			public void invoke() throws Throwable {
+				t[0] = (EstatReunio.recerca(arg1));
+			}
+		});
+
+		return (t[0]);
+		}
+
+	@Override
+	public String javascriptUnbind() {
+		// TODO Auto-generated method stub
+		return this.estat;
+	}
+
+	@Override
+	public String unbind(String arg0) {
+		// TODO Auto-generated method stub
+		return this.estat;
+	}
 
 
 	public EstatReunio() {
 
 	}
 
-	
-	
-	
 	public static EstatReunio recerca(String estat) {
 		EstatReunio result = null;
 		Query query = JPA.em().createQuery("from EstatReunio e");
@@ -70,32 +90,6 @@ public class EstatReunio implements Serializable, PathBindable<EstatReunio> {
 		this.estat = estat;
 	}
 
-	@Override
-	public EstatReunio bind(String arg0, final String arg1) {
-		// TODO Auto-generated method stub
-		final EstatReunio t[] = { null };
-		JPA.withTransaction(new F.Callback0() {
-			@Override
-			public void invoke() throws Throwable {
-				t[0] = (EstatReunio.recerca(arg1));
-			}
-		});
-
-		return (t[0]);
-		}
-
-	@Override
-	public String javascriptUnbind() {
-		// TODO Auto-generated method stub
-		return this.estat;
-	}
-
-	@Override
-	public String unbind(String arg0) {
-		// TODO Auto-generated method stub
-		return this.estat;
-	}
-
-
+	
 	
 }
